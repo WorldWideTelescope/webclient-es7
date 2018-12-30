@@ -1,0 +1,102 @@
+{
+  "name": "vue-webclient",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "test:e2e": "vue-cli-service test:e2e"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bootstrap-less": "^3.3.8",
+    "lodash": "^4.17.11",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.2.0",
+    "@vue/cli-plugin-e2e-cypress": "^3.2.0",
+    "@vue/cli-plugin-eslint": "^3.2.0",
+    "@vue/cli-service": "^3.2.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-html": "^4.0.5",
+    "eslint-plugin-vue": "^5.0.0-0",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
+    "vue-template-compiler": "^2.5.17"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential"
+    ],
+    "rules": {
+      "indent": [
+        2,
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "vue/script-indent": [
+        "warning",
+        "space",
+        {
+          "baseIndent": 2
+        }
+      ],
+      "quotes": [
+        2,
+        "single",
+        {
+          "allowTemplateLiterals": true
+        }
+      ],
+      "semi": [
+        2,
+        "always"
+      ],
+      "comma-dangle": [
+        "error",
+        "never"
+      ],
+      "no-console": 0,
+      "space-infix-ops": [
+        "error"
+      ],
+      "arrow-spacing": [
+        "error",
+        {
+          "before": true,
+          "after": true
+        }
+      ],
+      "vue/attribute-hyphenation": "warning",
+      "vue/html-indent": "error",
+      "vue/html-self-closing": "warning",
+      "vue/max-attributes-per-line": "warning",
+      "vue/mustache-interpolation-spacing": "warning"
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

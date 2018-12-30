@@ -1,0 +1,92 @@
+﻿@import 'mixins.less';
+
+@brand-primary:         rgb(3,20,34);
+@brand-success:         #3CB521;
+@brand-warning:         #D47500;
+@brand-danger:          #f6ff00;
+@brand-info:            #009cff;
+@brand-blue:            #6ba9e6;
+@brand-heading:         fade(white,80%);  
+@brand-yellow:          #f6ff00;
+
+//== Scaffolding
+//
+//wwt webclient overrides
+
+//** Background color for `<body>`.
+@body-bg:               #000;
+//** Global text color on `<body>`.
+@text-color:            fade(white,80%); 
+@wc_bg:                 rgba(25,30,43,.7);
+
+//** Global textual link color.
+@link-color:            fade(white,80%);
+@font-family-sans-serif:  "Segoe UI", "Helvetica Neue", "Open Sans", Helvetica, Arial, sans-serif;
+//** Global color for active items (e.g., navs or dropdowns).
+@component-active-color:    @text-color;
+//** Global background color for active items (e.g., navs or dropdowns).
+@component-active-bg:       fade(#010e17,85%);
+
+//** Dropdown link text color.
+@dropdown-link-color:            fade(white,80%);//@gray-dark;
+//** Hover color for dropdown links.
+@dropdown-link-hover-color:      white;
+//** Hover background for dropdown links.
+@dropdown-link-hover-bg:         fade(#010e17,85%);
+@bordercolor: rgba(105,115,150,.7);
+@bordercolor-opaque: rgba(78,86,114,1);
+
+
+// our own custom mixin to make the ribbon look like the windows client ribbon
+
+input[type=file]{
+    visibility:collapse;height:0;width:0;
+}
+//other mixins (shortcuts)
+.iblock {
+	display:inline-block;
+}
+.rel {
+	position:relative;
+}
+.boxGradient {
+	-webkit-text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+	border-radius: 3px;
+	border: solid 1px #566783; // #394558;
+	background: transparent;
+	display: inline-block;
+	box-shadow: inset 0 1px 4px lighten(#394558, 10%);
+	#gradient > .vertical-four-colors(rgba(255,255,255,.6), rgba(155,155,155,.3), 55%, rgba(0,0,0,.3), 55.1%, rgba(0,0,0,.6));
+}
+
+.boxhilite {
+  box-shadow: inset 0 1px 4px lighten(#394558, 10%), 0 0 10px 1px rgba(62,157,206,1);
+  border-color: rgba(128,168,220,.99);
+}
+
+.indent{
+	margin-left:16px;
+}
+
+.vtop {
+	vertical-align:top;
+}
+.offscreen{
+    position:absolute;
+    top:-9999px
+}
+
+.invisible{
+    visibility:hidden;
+}
+.tinybutton{
+    padding: 0;
+    height: 11px;
+    width: 22px;
+    i.fa{
+        position:relative;
+        top: -3px;
+        left: -5px;
+    }
+}
