@@ -8,11 +8,11 @@ Not sure where the final version will live. This is temp to get my work in progr
 To run
 
 Install yarn globally
-npm i -g yarn
+`npm i -g yarn`
 
 Install dependencies
-yarn
+`yarn`
 
 run locally
-yarn serve
+`yarn serve`
 

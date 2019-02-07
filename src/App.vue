@@ -7,12 +7,12 @@
   </div>
 </template>
 <script>
-import ribbon from './components/ribbon';
+import ribbon from './views/ribbon';
 import {mapMutations,mapGetters,mapActions} from 'vuex';
 import eventbus from './components/eventbus';
 const listenResize = cb => {
   window.addEventListener('resize',cb);
-}
+};
 export default {
   name:'wwt-web-client',
   data:() => {
@@ -46,9 +46,13 @@ export default {
   },
   mounted() {
     this.initLocalization();
-    this.init(wwtlib.WWTControl.initControlParam('WWTCanvas', true));
-    this.$store.dispatch('places/init');
-    this.$store.dispatch('setLanguage','EN');
+    let ctl = wwtlib.WWTControl.initControlParam('WWTCanvas', true);
+    ctl.add_ready(() => {
+      this.init(ctl);
+      this.$store.dispatch('places/init');
+      this.$store.dispatch('setLanguage','EN');
+    });
+
     listenResize(this.resize);
     this.resize();
   }
