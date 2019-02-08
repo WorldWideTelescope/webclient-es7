@@ -1,4 +1,4 @@
-import {VSC} from '../VSC';
+import {VSC} from './AAEarth';
 import {ACFT} from './AAAberration';
 import {MoonCoefficient1, MoonCoefficient2} from './AAMoon';
 import {PlutoCoefficient1, PlutoCoefficient2} from './AAPluto';

@@ -1,5 +1,5 @@
 import GFX from './GFX';
-import {C3D, COR, CT } from './AACoordinateTransformation';
+import { CT } from './AACoordinateTransformation';
 
 const eclipticLongitude = JD => {
   const rho = (JD - 2451545) / 365250;
@@ -199,3 +199,9 @@ export const CAAEarth = {
   eclipticLatitudeJ2000,
   eclipticLongitudeJ2000
 };
+
+export function VSC(a, b, c) {
+  this.a = a;
+  this.b = b;
+  this.c = c;
+}

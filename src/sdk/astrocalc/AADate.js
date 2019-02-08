@@ -2,121 +2,121 @@
 
 import ss from '../scriptsharp/ss';
 
-export function DT() {
-  this.m_dblJulian = 0;
-  this.m_bGregorianCalendar = false;
-  this.m_dblJulian = 0;
-  this.m_bGregorianCalendar = false;
-}
-DT.create = function(Year, Month, Day, bGregorianCalendar) {
-  const item = new DT();
-  item.set(Year, Month, Day, 0, 0, 0, bGregorianCalendar);
-  return item;
-};
-DT.createHMS = function(Year, Month, Day, Hour, Minute, Second, bGregorianCalendar) {
-  const item = new DT();
-  item.set(Year, Month, Day, Hour, Minute, Second, bGregorianCalendar);
-  return item;
-};
-DT.createJD = function(JD, bGregorianCalendar) {
-  const item = new DT();
-  item.setJD(JD, bGregorianCalendar);
-  return item;
-};
-DT.dateToJD = function(Year, Month, Day, bGregorianCalendar) {
-  let Y = Year;
-  let M = Month;
-  if (M < 3) {
-    Y = Y - 1;
-    M = M + 12;
+export class DT{
+  constructor() {
+    this.m_dblJulian = 0;
+    this.m_bGregorianCalendar = false;
+    this.m_dblJulian = 0;
+    this.m_bGregorianCalendar = false;
   }
-  let A = 0;
-  let B = 0;
-  if (bGregorianCalendar) {
-    A = ss.truncate((Y / 100));
-    B = 2 - A + ss.truncate((A / 4));
+  static create(Year, Month, Day, bGregorianCalendar) {
+    const item = new DT();
+    item.set(Year, Month, Day, 0, 0, 0, bGregorianCalendar);
+    return item;
   }
-  return ss.truncate((365.25 * (Y + 4716))) + ss.truncate((30.6001 * (M + 1))) + Day + B - 1524.5;
-};
-DT.isLeap = function(Year, bGregorianCalendar) {
-  if (bGregorianCalendar) {
-    if (!(Year % 100)) {
-      return (!(Year % 400)) ? true : false;
+  static createHMS(Year, Month, Day, Hour, Minute, Second, bGregorianCalendar) {
+    const item = new DT();
+    item.set(Year, Month, Day, Hour, Minute, Second, bGregorianCalendar);
+    return item;
+  }
+  static createJD(JD, bGregorianCalendar) {
+    const item = new DT();
+    item.setJD(JD, bGregorianCalendar);
+    return item;
+  }
+  static dateToJD(Year, Month, Day, bGregorianCalendar) {
+    let Y = Year;
+    let M = Month;
+    if (M < 3) {
+      Y = Y - 1;
+      M = M + 12;
+    }
+    let A = 0;
+    let B = 0;
+    if (bGregorianCalendar) {
+      A = ss.truncate((Y / 100));
+      B = 2 - A + ss.truncate((A / 4));
+    }
+    return ss.truncate((365.25 * (Y + 4716))) + ss.truncate((30.6001 * (M + 1))) + Day + B - 1524.5;
+  }
+  static isLeap(Year, bGregorianCalendar) {
+    if (bGregorianCalendar) {
+      if (!(Year % 100)) {
+        return (!(Year % 400));
+      }
+      else {
+        return (!(Year % 4));
+      }
     }
     else {
-      return (!(Year % 4)) ? true : false;
+      return (!(Year % 4));
     }
   }
-  else {
-    return (!(Year % 4)) ? true : false;
+  static afterPapalReform(Year, Month, Day) {
+    return ((Year > 1582) || ((Year === 1582) && (Month > 10)) || ((Year === 1582) && (Month === 10) && (Day >= 15)));
   }
-};
-DT.afterPapalReform = function(Year, Month, Day) {
-  return ((Year > 1582) || ((Year === 1582) && (Month > 10)) || ((Year === 1582) && (Month === 10) && (Day >= 15)));
-};
-DT.afterPapalReformJD = function(JD) {
-  return (JD >= 2299160.5);
-};
-DT.dayOfYearJD = function(JD, Year, bGregorianCalendar) {
-  return JD - DT.dateToJD(Year, 1, 1, bGregorianCalendar) + 1;
-};
-DT.daysInMonthForMonth = function(Month, bLeap) {
-  console.assert(Month >= 1 && Month <= 12);
-  const MonthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 0];
-  if (bLeap) {
-    MonthLength[1]++;
+  static afterPapalReformJD(JD) {
+    return (JD >= 2299160.5);
   }
-  return MonthLength[Month - 1];
-};
-DT.INT = function(vvalue) {
-  if (vvalue >= 0) {
-    return ss.truncate(vvalue);
+  static dayOfYearJD(JD, Year, bGregorianCalendar) {
+    return JD - DT.dateToJD(Year, 1, 1, bGregorianCalendar) + 1;
   }
-  else {
-    return ss.truncate((vvalue - 1));
+  static daysInMonthForMonth(Month, bLeap) {
+    console.assert(Month >= 1 && Month <= 12);
+    const MonthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 0];
+    if (bLeap) {
+      MonthLength[1]++;
+    }
+    return MonthLength[Month - 1];
   }
-};
-DT.prototype = {
-  julian: function () {
+  static INT(vvalue) {
+    if (vvalue >= 0) {
+      return ss.truncate(vvalue);
+    }
+    else {
+      return ss.truncate((vvalue - 1));
+    }
+  }
+  julian() {
     return this.m_dblJulian;
-  },
-  day: function () {
+  }
+  day() {
     const D = this.get();
     return ss.truncate(D[2]);
-  },
-  month: function () {
+  }
+  month() {
     const D = this.get();
     return ss.truncate(D[1]);
-  },
-  year: function () {
+  }
+  year() {
     const D = this.get();
     return ss.truncate(D[0]);
-  },
-  hour: function () {
+  }
+  hour() {
     const D = this.get();
     return ss.truncate(D[3]);
-  },
-  minute: function () {
+  }
+  minute() {
     const D = this.get();
     return ss.truncate(D[4]);
-  },
-  second: function () {
+  }
+  second() {
     const D = this.get();
     return ss.truncate(D[5]);
-  },
-  set: function (Year, Month, Day, Hour, Minute, Second, bGregorianCalendar) {
+  }
+  set(Year, Month, Day, Hour, Minute, Second, bGregorianCalendar) {
     const dblDay = Day + (Hour / 24) + (Minute / 1440) + (Second / 86400);
     this.setJD(DT.dateToJD(Year, Month, dblDay, bGregorianCalendar), bGregorianCalendar);
-  },
-  setJD: function (JD, bGregorianCalendar) {
+  }
+  setJD(JD, bGregorianCalendar) {
     this.m_dblJulian = JD;
     this.setInGregorianCalendar(bGregorianCalendar);
-  },
-  setInGregorianCalendar: function (bGregorianCalendar) {
+  }
+  setInGregorianCalendar(bGregorianCalendar) {
     const bAfterPapalReform = (this.m_dblJulian >= 2299160.5);
     this.m_bGregorianCalendar = bGregorianCalendar && bAfterPapalReform;
-  },
-  get: function () {
+  }
+  get() {
     let Year;
     let Month;
     let Day;
@@ -156,21 +156,21 @@ DT.prototype = {
     Minute = ss.truncate(((F - Hour / 24) * 1440));
     Second = (F - (Hour / 24) - (Minute / 1440)) * 86400;
     return [Year, Month, Day, Hour, Minute, Second];
-  },
-  dayOfWeek: function () {
+  }
+  dayOfWeek() {
     return (ss.truncate((this.m_dblJulian + 1.5)) % 7);
-  },
-  dayOfYear: function () {
+  }
+  dayOfYear() {
     const year = ss.truncate(this.get()[0]);
     return DT.dayOfYearJD(this.m_dblJulian, year, DT.afterPapalReform(year, 1, 1));
-  },
-  daysInMonth: function () {
+  }
+  daysInMonth() {
     const D = this.get();
     const Year = ss.truncate(D[0]);
     const Month = ss.truncate(D[1]);
     return DT.daysInMonthForMonth(Month, DT.isLeap(Year, this.m_bGregorianCalendar));
-  },
-  daysInYear: function () {
+  }
+  daysInYear() {
     const D = this.get();
     const Year = ss.truncate(D[0]);
     if (DT.isLeap(Year, this.m_bGregorianCalendar)) {
@@ -178,14 +178,14 @@ DT.prototype = {
     } else {
       return 365;
     }
-  },
-  leap: function () {
+  }
+  leap() {
     return DT.isLeap(this.year(), this.m_bGregorianCalendar);
-  },
-  inGregorianCalendar: function () {
+  }
+  inGregorianCalendar() {
     return this.m_bGregorianCalendar;
-  },
-  fractionalYear: function () {
+  }
+  fractionalYear() {
     const D = this.get();
     const Year = ss.truncate(D[0]);
     const Month = ss.truncate(D[1]);
@@ -201,14 +201,8 @@ DT.prototype = {
     }
     return Year + ((this.m_dblJulian - DT.dateToJD(Year, 1, 1, DT.afterPapalReform(Year, 1, 1))) / DaysInYear);
   }
-};
-
-
-
+}
 export function CalD() {
-  this.year = 0;
-  this.month = 0;
-  this.day = 0;
   this.year = 0;
   this.month = 0;
   this.day = 0;
@@ -220,6 +214,6 @@ CalD.create = function(year, month, day) {
   item.day = day;
   return item;
 };
-export const CalD$ = {};
+
 
 

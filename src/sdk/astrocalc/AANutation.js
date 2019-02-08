@@ -6,7 +6,7 @@
 import {CT} from './AACoordinateTransformation';
 import GFX from './GFX';
 
-const nutationInLongitude = function(JD) {
+const nutationInLongitude = JD => {
   const T = (JD - 2451545) / 36525;
   const Tsquared = T * T;
   const Tcubed = Tsquared * T;
@@ -29,7 +29,7 @@ const nutationInLongitude = function(JD) {
   }
   return vvalue;
 };
-const nutationInObliquity = function(JD) {
+const nutationInObliquity = JD => {
   const T = (JD - 2451545) / 36525;
   const Tsquared = T * T;
   const Tcubed = Tsquared * T;
@@ -52,19 +52,19 @@ const nutationInObliquity = function(JD) {
   }
   return vvalue;
 };
-const nutationInRightAscension = function(Alpha, Delta, Obliquity, NutationInLongitude, NutationInObliquity) {
+const nutationInRightAscension = (Alpha, Delta, Obliquity, NutationInLongitude, NutationInObliquity) => {
   Alpha = CT.h2R(Alpha);
   Delta = CT.d2R(Delta);
   Obliquity = CT.d2R(Obliquity);
   return (Math.cos(Obliquity) + Math.sin(Obliquity) * Math.sin(Alpha) * Math.tan(Delta)) * NutationInLongitude - Math.cos(Alpha) * Math.tan(Delta) * NutationInObliquity;
 };
-const nutationInDeclination = function(Alpha, Delta, Obliquity, NutationInLongitude, NutationInObliquity) {
+const nutationInDeclination = (Alpha, Delta, Obliquity, NutationInLongitude, NutationInObliquity) => {
   Alpha = CT.h2R(Alpha);
   Delta = CT.d2R(Delta);
   Obliquity = CT.d2R(Obliquity);
   return Math.sin(Obliquity) * Math.cos(Alpha) * NutationInLongitude + Math.sin(Alpha) * NutationInObliquity;
 };
-const meanObliquityOfEcliptic = function(JD) {
+const meanObliquityOfEcliptic = JD => {
   const U = (JD - 2451545) / 3652500;
   const Usquared = U * U;
   const Ucubed = Usquared * U;
@@ -77,9 +77,7 @@ const meanObliquityOfEcliptic = function(JD) {
   const U10 = U9 * U;
   return CT.dmS2D(23, 26, 21.448) - CT.dmS2D(0, 0, 4680.93) * U - CT.dmS2D(0, 0, 1.55) * Usquared + CT.dmS2D(0, 0, 1999.25) * Ucubed - CT.dmS2D(0, 0, 51.38) * U4 - CT.dmS2D(0, 0, 249.67) * U5 - CT.dmS2D(0, 0, 39.05) * U6 + CT.dmS2D(0, 0, 7.12) * U7 + CT.dmS2D(0, 0, 27.87) * U8 + CT.dmS2D(0, 0, 5.79) * U9 + CT.dmS2D(0, 0, 2.45) * U10;
 };
-const trueObliquityOfEcliptic = function(JD) {
-  return CAANutation.meanObliquityOfEcliptic(JD) + CT.dmS2D(0, 0, CAANutation.nutationInObliquity(JD));
-};
+const trueObliquityOfEcliptic = JD => CAANutation.meanObliquityOfEcliptic(JD) + CT.dmS2D(0, 0, CAANutation.nutationInObliquity(JD));
 export const CAANutation = {
   nutationInLongitude,
   nutationInObliquity,

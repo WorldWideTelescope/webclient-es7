@@ -1,10 +1,6 @@
-
-// EOE
-
 import {C3D, CT} from './AACoordinateTransformation';
 import {CAAEarth} from './AAEarth';
 import {CAAMercury} from './AAMercury';
-import {CAAKepler, CAAMars} from '../CAA';
 import {CAANeptune} from './AANeptune';
 import {ABR} from './AAAberration';
 import {CAAFK5} from './AAFK5';
@@ -12,9 +8,13 @@ import {CAANutation} from './AANutation';
 import {CAASun} from './AASun';
 import {CAAPluto} from './AAPluto';
 import {CAAVenus} from './AAVenus';
+import {CAAMars} from './AAMars';
 import {CAAJupiter} from './AAJupiter';
 import {CAASaturn} from './AASaturn';
 import {CAAUranus} from './AAUranus';
+import {CAAKepler} from './AAKepler';
+import {Vector3d} from '../Double3d';
+import {Util} from '../Util';
 
 export function EOE() {
   this.a = 0;
@@ -34,7 +34,7 @@ export function EOE() {
   this.jdEquinox = 0;
   this.t = 0;
 }
-EOE._create = function(br) {
+EOE._create = br => {
   const tmp = new EOE();
   tmp.a = br.readSingle();
   tmp.e = br.readSingle();
@@ -88,10 +88,8 @@ export function EOD() {
   this.phaseAngle = 0;
 }
 
-const distanceToLightTime = function(Distance) {
-  return Distance * 0.0057755183;
-};
-const calculate = function(JD, oobject) {
+const distanceToLightTime = Distance => Distance * 0.0057755183;
+const calculate = (JD, oobject) => {
   const details = new EPD();
   let JD0 = JD;
   let L0 = 0;
@@ -226,13 +224,9 @@ const calculate = function(JD, oobject) {
   details.apparentGeocentricDeclination = ApparentEqu.y;
   return details;
 };
-const semiMajorAxisFromPerihelionDistance = function(q, e) {
-  return q / (1 - e);
-};
-const meanMotionFromSemiMajorAxis = function(a) {
-  return 0.9856076686 / (a * Math.sqrt(a));
-};
-const calculateRectangularJD = function(JD, elements) {
+const semiMajorAxisFromPerihelionDistance = (q, e) => q / (1 - e);
+const meanMotionFromSemiMajorAxis = a => 0.9856076686 / (a * Math.sqrt(a));
+const calculateRectangularJD = (JD, elements) => {
   const JD0 = JD;
   const omega = CT.d2R(elements.omega);
   const w = CT.d2R(elements.w);
@@ -266,7 +260,7 @@ const calculateRectangularJD = function(JD, elements) {
   const z = r * c * Math.sin(C + w + v);
   return Vector3d.create(x, z, y);
 };
-const calculateRectangular = function(elements, meanAnomoly) {
+const calculateRectangular = (elements, meanAnomoly) => {
   const omega = CT.d2R(elements.omega);
   const w = CT.d2R(elements.w);
   const i = CT.d2R(elements.i);
@@ -299,7 +293,7 @@ const calculateRectangular = function(elements, meanAnomoly) {
   const z = r * c * Math.sin(C + w + v);
   return Vector3d.create(x, z, y);
 };
-const calculateElements = function(JD, elements) {
+const calculateElements = (JD, elements) => {
   let Epsilon = CAANutation.meanObliquityOfEcliptic(elements.jdEquinox);
   let JD0 = JD;
   const details = new EOD();
@@ -382,23 +376,15 @@ const calculateElements = function(JD, elements) {
   }
   return details;
 };
-const instantaneousVelocity = function(r, a) {
-  return 42.1219 * Math.sqrt((1 / r) - (1 / (2 * a)));
-};
-const velocityAtPerihelion = function(e, a) {
-  return 29.7847 / Math.sqrt(a) * Math.sqrt((1 + e) / (1 - e));
-};
-const velocityAtAphelion = function(e, a) {
-  return 29.7847 / Math.sqrt(a) * Math.sqrt((1 - e) / (1 + e));
-};
-const lengthOfEllipse = function(e, a) {
+const instantaneousVelocity = (r, a) => 42.1219 * Math.sqrt((1 / r) - (1 / (2 * a)));
+const velocityAtPerihelion = (e, a) => 29.7847 / Math.sqrt(a) * Math.sqrt((1 + e) / (1 - e));
+const velocityAtAphelion = (e, a) => 29.7847 / Math.sqrt(a) * Math.sqrt((1 - e) / (1 + e));
+const lengthOfEllipse = (e, a) => {
   const b = a * Math.sqrt(1 - e * e);
   return CT.PI() * (3 * (a + b) - Math.sqrt((a + 3 * b) * (3 * a + b)));
 };
-const cometMagnitude = function(g, delta, k, r) {
-  return g + 5 * Util.log10(delta) + k * Util.log10(r);
-};
-const minorPlanetMagnitude = function(H, delta, G, r, PhaseAngle) {
+const cometMagnitude = (g, delta, k, r) => g + 5 * Util.log10(delta) + k * Util.log10(r);
+const minorPlanetMagnitude = (H, delta, G, r, PhaseAngle) => {
   PhaseAngle = CT.d2R(PhaseAngle);
   const phi1 = Math.exp(-3.33 * Math.pow(Math.tan(PhaseAngle / 2), 0.63));
   const phi2 = Math.exp(-1.87 * Math.pow(Math.tan(PhaseAngle / 2), 1.22));

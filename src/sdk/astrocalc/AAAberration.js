@@ -3,9 +3,8 @@ import GFX from './GFX';
 import {CAASun} from './AASun';
 import {C3D, COR, CT } from './AACoordinateTransformation';
 
-export function ABR() {
-}
-ABR.earthVelocity = function(JD) {
+
+const earthVelocity = function(JD) {
   const T = (JD - 2451545) / 36525;
   const L2 = 3.1761467 + 1021.3285546 * T;
   const L3 = 1.7534703 + 628.3075849 * T;
@@ -31,7 +30,7 @@ ABR.earthVelocity = function(JD) {
   }
   return velocity;
 };
-ABR.eclipticAberration = function(Lambda, Beta, JD) {
+const eclipticAberration = function(Lambda, Beta, JD) {
   const aberration = new COR();
   const T = (JD - 2451545) / 36525;
   const Tsquared = T * T;
@@ -47,7 +46,7 @@ ABR.eclipticAberration = function(Lambda, Beta, JD) {
   aberration.y = -k * Math.sin(Beta) * (Math.sin(SunLongitude - Lambda) - e * Math.sin(pi - Lambda)) / 3600;
   return aberration;
 };
-ABR.equatorialAberration = function(Alpha, Delta, JD) {
+const equatorialAberration = function(Alpha, Delta, JD) {
   Alpha = CT.d2R(Alpha * 15);
   Delta = CT.d2R(Delta);
   const cosAlpha = Math.cos(Alpha);
@@ -59,6 +58,11 @@ ABR.equatorialAberration = function(Alpha, Delta, JD) {
   aberration.x = CT.r2H((velocity.y * cosAlpha - velocity.x * sinAlpha) / (17314463350 * cosDelta));
   aberration.y = CT.r2D(-(((velocity.x * cosAlpha + velocity.y * sinAlpha) * sinDelta - velocity.z * cosDelta) / 17314463350));
   return aberration;
+};
+export const ABR = {
+  earthVelocity,
+  eclipticAberration,
+  equatorialAberration
 };
 
 export function ACFT(L2, L3, L4, L5, L6, L7, L8, Ldash, D, Mdash, F, xsin, xsint, xcos, xcost, ysin, ysint, ycos, ycost, zsin, zsint, zcos, zcost) {

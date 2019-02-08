@@ -1,8 +1,7 @@
 import GFX from './GFX';
 import {CT} from './AACoordinateTransformation';
 
-export function CAAJupiter() {}
-CAAJupiter.eclipticLongitude = function(JD) {
+const eclipticLongitude = JD => {
   const rho = (JD - 2451545) / 365250;
   const rhosquared = rho * rho;
   const rhocubed = rhosquared * rho;
@@ -43,7 +42,7 @@ CAAJupiter.eclipticLongitude = function(JD) {
   vvalue = CT.m360(CT.r2D(vvalue));
   return vvalue;
 };
-CAAJupiter.eclipticLatitude = function(JD) {
+const eclipticLatitude = JD => {
   const rho = (JD - 2451545) / 365250;
   const rhosquared = rho * rho;
   const rhocubed = rhosquared * rho;
@@ -84,7 +83,7 @@ CAAJupiter.eclipticLatitude = function(JD) {
   vvalue = CT.r2D(vvalue);
   return vvalue;
 };
-CAAJupiter.radiusVector = function(JD) {
+const radiusVector = JD => {
   const rho = (JD - 2451545) / 365250;
   const rhosquared = rho * rho;
   const rhocubed = rhosquared * rho;
@@ -123,4 +122,9 @@ CAAJupiter.radiusVector = function(JD) {
   }
   return (R0 + R1 * rho + R2 * rhosquared + R3 * rhocubed + R4 * rho4 + R5 * rho5) / 100000000;
 };
-export const CAAJupiter$ = {};
+
+export const CAAJupiter = {
+  eclipticLongitude,
+  eclipticLatitude,
+  radiusVector
+};

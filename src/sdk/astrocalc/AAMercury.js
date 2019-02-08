@@ -1,7 +1,7 @@
 import GFX from './GFX';
 import {CT} from './AACoordinateTransformation';
 
-const eclipticLongitude = function(JD) {
+const eclipticLongitude = JD => {
   const rho = (JD - 2451545) / 365250;
   const rhosquared = rho * rho;
   const rhocubed = rhosquared * rho;
@@ -42,7 +42,7 @@ const eclipticLongitude = function(JD) {
   vvalue = CT.m360(CT.r2D(vvalue));
   return vvalue;
 };
-const eclipticLatitude = function(JD) {
+const eclipticLatitude = JD => {
   const rho = (JD - 2451545) / 365250;
   const rhosquared = rho * rho;
   const rhocubed = rhosquared * rho;
@@ -77,7 +77,7 @@ const eclipticLatitude = function(JD) {
   vvalue = CT.r2D(vvalue);
   return vvalue;
 };
-const radiusVector = function(JD) {
+const radiusVector = JD => {
   const rho = (JD - 2451545) / 365250;
   const rhosquared = rho * rho;
   const rhocubed = rhosquared * rho;

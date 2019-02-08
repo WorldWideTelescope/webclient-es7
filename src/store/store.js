@@ -39,8 +39,12 @@ export default new Vuex.Store({
   mutations: {
     init(state,ctl){
       state.ctrlInst = ctl;
-      let mars = wwtlib.WWTControl.imageSets.find(s=>s._name==='Visible Imagery');
-      mars.set_name('Mars');
+      window.wc = ctl;
+      ctl.settings.set_solarSystemMinorOrbits(true);
+      ctl.settings.set_solarSystemMinorPlanets(true);
+      /*let mars = wwtlib.WWTControl.imageSets.find(s=>s._name==='Visible Imagery');
+      mars.set_name('Mars');*/
+      ctl.setBackgroundImageByName('3D Solar System View');
     },
     setAny(state, obj){
       Object.keys(obj).forEach(k => state[k] = obj[k]);

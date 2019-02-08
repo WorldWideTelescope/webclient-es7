@@ -1,15 +1,12 @@
+import {CT} from './AACoordinateTransformation';
+
 export function CAAEclipticalElementDetails() {
   this.i = 0;
   this.w = 0;
   this.omega = 0;
-  this.i = 0;
-  this.w = 0;
-  this.omega = 0;
 }
-export const CAAEclipticalElementDetails$ = {};
 
-export function CAAEclipticalElements() {}
-CAAEclipticalElements.calculate = function(i0, w0, omega0, JD0, JD) {
+const calculate = function(i0, w0, omega0, JD0, JD) {
   const T = (JD0 - 2451545) / 36525;
   const Tsquared = T * T;
   const t = (JD - JD0) / 36525;
@@ -46,7 +43,7 @@ CAAEclipticalElements.calculate = function(i0, w0, omega0, JD0, JD) {
   details.w = CT.m360(w0 + deltaw);
   return details;
 };
-CAAEclipticalElements.fK4B1950ToFK5J2000 = function(i0, w0, omega0) {
+const fK4B1950ToFK5J2000 = function(i0, w0, omega0) {
   const L = CT.d2R(5.19856209);
   const J = CT.d2R(0.00651966);
   const i0rad = CT.d2R(i0);
@@ -70,4 +67,8 @@ CAAEclipticalElements.fK4B1950ToFK5J2000 = function(i0, w0, omega0) {
   details.omega = CT.m360(CT.r2D(Math.atan2(sini0rad * sinW, cosi0rad * sinJ + sini0rad * cosJ * cosW)) - 4.50001688);
   return details;
 };
-export const CAAEclipticalElements$ = {};
+
+export const CAAEclipticalElements = {
+  calculate,
+  fK4B1950ToFK5J2000
+};

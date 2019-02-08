@@ -1,4 +1,5 @@
 import GFX from './GFX';
+import {CT} from './AACoordinateTransformation';
 
 const k = Year => 13.2555 * (Year - 1999.97);
 const meanPerigee = k => {
@@ -85,11 +86,6 @@ const apogeeParallax = k => {
 };
 
 export function MPAC(D, M, F, C, T) {
-  this.d = 0;
-  this.m = 0;
-  this.f = 0;
-  this.c = 0;
-  this.t = 0;
   this.d = D;
   this.m = M;
   this.f = F;

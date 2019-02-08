@@ -606,3 +606,32 @@ export const Classification = {
   galactic: 133693440,
   other: 436207616
 };
+
+export function Enums() {
+}
+Enums.parse = function(enumType, value) {
+  if (value === 'Default') {
+    value = 'DefaultV';
+  }
+  if (value === '0') {
+    return 0;
+  }
+  const val = value.substr(0, 1).toLowerCase() + value.substr(1);
+  return wwtlib[enumType][val];
+};
+Enums.toXml = function(enumType, value) {
+  let x = '0';
+  const p = Object.keys(wwtlib[enumType]);
+  for (let i in p){
+    if (wwtlib[enumType][p[i]] == value) {
+      x = p[i]; break;
+    }
+  }
+  const val = x;
+  let enumString = val.substr(0, 1).toUpperCase() + val.substr(1);
+  if (enumString === 'DefaultV') {
+    enumString = 'Default';
+  }
+  return enumString;
+};
+export const Enums$ = {};

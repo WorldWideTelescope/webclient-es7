@@ -170,10 +170,6 @@ const radiusVectorToHorizontalParallax = RadiusVector => CT.r2D(Math.asin(6378.1
 const horizontalParallaxToRadiusVector = Parallax => 6378.14 / Math.sin(CT.d2R(Parallax));
 
 export function MoonCoefficient1(d, m, mdash, f) {
-  this.d = 0;
-  this.m = 0;
-  this.mdash = 0;
-  this.f = 0;
   this.d = d;
   this.m = m;
   this.mdash = mdash;
@@ -184,8 +180,6 @@ export function MoonCoefficient2(a, b) {
   this.a = a;
   this.b = b;
 }
-
-const MoonCoefficient2$ = {};
 
 export const CAAMoon = {
   meanLongitude,
@@ -200,4 +194,4 @@ export const CAAMoon = {
   radiusVector,
   radiusVectorToHorizontalParallax,
   horizontalParallaxToRadiusVector
-}
+};

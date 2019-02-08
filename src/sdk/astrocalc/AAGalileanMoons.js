@@ -313,7 +313,6 @@ export const GM = {
   fillInPhenomenaDetails
 };
 
-
 // GMD
 
 export function GMD() {
