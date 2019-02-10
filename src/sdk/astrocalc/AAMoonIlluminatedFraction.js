@@ -1,6 +1,6 @@
 import {CT} from './AACoordinateTransformation';
 
-export let MIFR = {
+export const MIFR = {
   geocentricElongation: (ObjectAlpha, ObjectDelta, SunAlpha, SunDelta) => {
     ObjectAlpha = CT.d2R(ObjectAlpha * 15);
     SunAlpha = CT.d2R(SunAlpha * 15);

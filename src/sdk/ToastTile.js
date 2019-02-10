@@ -548,26 +548,25 @@ export const ToastTile$ = {
 };
 // wwtlib.DistanceCalc
 
-export function DistanceCalc() {
+export class DistanceCalc {
+  static lineToPoint(l0, l1, p) {
+    const v = Vector3d.subtractVectors(l1, l0);
+    const w = Vector3d.subtractVectors(p, l0);
+    const dist = Vector3d.cross(w, v).length() / v.length();
+    return dist;
+  }
+  static getUVFromInnerPoint (ul, ur, ll, lr, pnt) {
+    ul.normalize();
+    ur.normalize();
+    ll.normalize();
+    lr.normalize();
+    pnt.normalize();
+    const dUpper = DistanceCalc.lineToPoint(ul, ur, pnt);
+    const dLower = DistanceCalc.lineToPoint(ll, lr, pnt);
+    const dVert = dUpper + dLower;
+    const dRight = DistanceCalc.lineToPoint(ur, lr, pnt);
+    const dLeft = DistanceCalc.lineToPoint(ul, ll, pnt);
+    const dHoriz = dRight + dLeft;
+    return Vector2d.create(dLeft / dHoriz, dUpper / dVert);
+  }
 }
-DistanceCalc.lineToPoint = function(l0, l1, p) {
-  const v = Vector3d.subtractVectors(l1, l0);
-  const w = Vector3d.subtractVectors(p, l0);
-  const dist = Vector3d.cross(w, v).length() / v.length();
-  return dist;
-};
-DistanceCalc.getUVFromInnerPoint = function(ul, ur, ll, lr, pnt) {
-  ul.normalize();
-  ur.normalize();
-  ll.normalize();
-  lr.normalize();
-  pnt.normalize();
-  const dUpper = DistanceCalc.lineToPoint(ul, ur, pnt);
-  const dLower = DistanceCalc.lineToPoint(ll, lr, pnt);
-  const dVert = dUpper + dLower;
-  const dRight = DistanceCalc.lineToPoint(ur, lr, pnt);
-  const dLeft = DistanceCalc.lineToPoint(ul, ll, pnt);
-  const dHoriz = dRight + dLeft;
-  return Vector2d.create(dLeft / dHoriz, dUpper / dVert);
-};
-export const DistanceCalc$ = {};

@@ -2,7 +2,7 @@ import {Vector3d, Vector4d,ConvexHull} from './Double3d';
 import {Util} from './Util';
 import ss from './scriptsharp/ss';
 import {BlendState} from './BlendState';
-import {Texture} from './Texture';
+import {Texture} from './Graphics/Texture';
 import {TileCache} from './TileCache';
 import {TileShader} from './Graphics/Shaders';
 

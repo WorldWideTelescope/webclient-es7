@@ -1,6 +1,4 @@
 
-// wwtlib.TileCache
-
 import ss from './scriptsharp/ss';
 import {Tile} from './Tile';
 import {Vector3d} from './Double3d';
@@ -8,7 +6,7 @@ import {Imageset} from './Imageset';
 
 export function TileCache() {
 }
-TileCache.getTile = function(level, x, y, dataset, parent) {
+TileCache.getTile = (level, x, y, dataset, parent) => {
   let retTile = null;
   const tileKey = Imageset.getTileKey(dataset, level, x, y);
   if (!ss.keyExists(TileCache._tiles, tileKey)) {
@@ -21,7 +19,7 @@ TileCache.getTile = function(level, x, y, dataset, parent) {
   const p = 0;
   return retTile;
 };
-TileCache.getCachedTile = function(level, x, y, dataset, parent) {
+TileCache.getCachedTile = (level, x, y, dataset, parent) => {
   if (level < dataset.get_baseLevel()) {
     return null;
   }
@@ -39,7 +37,7 @@ TileCache.getCachedTile = function(level, x, y, dataset, parent) {
   }
   return retTile;
 };
-TileCache.getReadyToRenderTileCount = function() {
+TileCache.getReadyToRenderTileCount = () => {
   const notReadyCullList = [];
   const readyCullList = [];
   try {
@@ -66,7 +64,7 @@ TileCache.getReadyToRenderTileCount = function() {
     return -1;
   }
 };
-TileCache.processQueue = function(renderContext) {
+TileCache.processQueue = renderContext => {
   while (ss.keyCount(TileCache._queue) > 0 && TileCache.openThreads > 0) {
     let minDistance = 100000;
     let overlayTile = false;
@@ -112,7 +110,7 @@ TileCache.processQueue = function(renderContext) {
     }
   }
 };
-TileCache.addTileToQueue = function(tile) {
+TileCache.addTileToQueue = tile => {
   let hitValue;
   hitValue = 256;
   if (!tile.downloading && !tile.readyToRender) {
@@ -126,7 +124,7 @@ TileCache.addTileToQueue = function(tile) {
   }
   return true;
 };
-TileCache.removeFromQueue = function(key, complete) {
+TileCache.removeFromQueue = (key, complete) => {
   if (complete) {
     const workTile = TileCache._queue[key];
     if (workTile != null) {
@@ -137,13 +135,13 @@ TileCache.removeFromQueue = function(key, complete) {
   }
   delete TileCache._queue[key];
 };
-TileCache.clearCache = function() {
+TileCache.clearCache = () => {
   ss.clearKeys(TileCache._tiles);
 };
-TileCache.purgeQueue = function() {
+TileCache.purgeQueue = () => {
   ss.clearKeys(TileCache._queue);
 };
-TileCache.purgeLRU = function() {
+TileCache.purgeLRU = () => {
   if (ss.keyCount(TileCache._tiles) < TileCache.maxReadyToRenderSize) {
     return;
   }
@@ -169,9 +167,7 @@ TileCache.purgeLRU = function() {
     }
     TileCache.readyToRenderCount = readyCullList.length;
     if (readyCullList.length > TileCache.maxReadyToRenderSize) {
-      readyCullList.sort(function(t1, t2) {
-        return (t2.accessCount < t1.accessCount) ? 1 : ((t2.accessCount === t1.accessCount) ? 0 : -1);
-      });
+      readyCullList.sort((t1, t2) => (t2.accessCount < t1.accessCount) ? 1 : ((t2.accessCount === t1.accessCount) ? 0 : -1));
       var totalToPurge = readyCullList.length - TileCache.maxReadyToRenderSize;
       const $enum3 = ss.enumerate(readyCullList);
       while ($enum3.moveNext()) {
@@ -187,9 +183,7 @@ TileCache.purgeLRU = function() {
       return;
     }
     if (notReadyCullList.length > TileCache.maxTileCacheSize) {
-      notReadyCullList.sort(function(t1, t2) {
-        return (t2.accessCount < t1.accessCount) ? 1 : ((t2.accessCount === t1.accessCount) ? 0 : -1);
-      });
+      notReadyCullList.sort((t1, t2) => (t2.accessCount < t1.accessCount) ? 1 : ((t2.accessCount === t1.accessCount) ? 0 : -1));
       var totalToPurge = notReadyCullList.length - TileCache.maxTileCacheSize;
       if (totalToPurge > 20) {
         totalToPurge = 20;
@@ -212,7 +206,7 @@ TileCache.purgeLRU = function() {
   }
   return;
 };
-TileCache.decimateQueue = function() {
+TileCache.decimateQueue = () => {
   const list = [];
   const $enum1 = ss.enumerate(ss.keys(TileCache._queue));
   while ($enum1.moveNext()) {
@@ -238,4 +232,3 @@ TileCache.decimateQueue = function() {
     delete TileCache._queue[t.get_key()];
   }
 };
-export const TileCache$ = {};

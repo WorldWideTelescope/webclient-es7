@@ -1,5 +1,5 @@
-import {Tile} from './Tile';
-import {Util} from './Util';
+import {Tile} from '../Tile';
+import {Util} from '../Util';
 
 export function Texture() {
   this.imageElement = null;

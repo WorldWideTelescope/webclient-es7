@@ -1,19 +1,20 @@
 import {PositionTexture, Vector2d, Vector3d} from './Double3d';
 
-export function Triangle() {
-  this.a = -1;
-  this.b = -1;
-  this.c = -1;
-}
-Triangle.create = function(a, b, c) {
-  const temp = new Triangle();
-  temp.a = a;
-  temp.b = b;
-  temp.c = c;
-  return temp;
-};
-export const Triangle$ = {
-  subDivide: function (triList, vertexList) {
+
+export class Triangle {
+  constructor(){
+    this.a = -1;
+    this.b = -1;
+    this.c = -1;
+  }
+  static create(a, b, c) {
+    const temp = new Triangle();
+    temp.a = a;
+    temp.b = b;
+    temp.c = c;
+    return temp;
+  }
+  subDivide(triList, vertexList) {
     const a1 = Vector3d.lerp(vertexList[this.b].position, vertexList[this.c].position, 0.5);
     const b1 = Vector3d.lerp(vertexList[this.c].position, vertexList[this.a].position, 0.5);
     const c1 = Vector3d.lerp(vertexList[this.a].position, vertexList[this.b].position, 0.5);
@@ -33,8 +34,8 @@ export const Triangle$ = {
     triList.push(Triangle.create(this.b, aIndex, cIndex));
     triList.push(Triangle.create(this.c, bIndex, aIndex));
     triList.push(Triangle.create(aIndex, bIndex, cIndex));
-  },
-  subDivideNoNormalize: function (triList, vertexList) {
+  }
+  subDivideNoNormalize(triList, vertexList) {
     const a1 = Vector3d.lerp(vertexList[this.b].position, vertexList[this.c].position, 0.5);
     const b1 = Vector3d.lerp(vertexList[this.c].position, vertexList[this.a].position, 0.5);
     const c1 = Vector3d.lerp(vertexList[this.a].position, vertexList[this.b].position, 0.5);
@@ -52,4 +53,4 @@ export const Triangle$ = {
     triList.push(Triangle.create(this.c, bIndex, aIndex));
     triList.push(Triangle.create(aIndex, bIndex, cIndex));
   }
-};
+}

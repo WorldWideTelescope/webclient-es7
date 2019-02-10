@@ -218,3 +218,53 @@ export const Util = {
   log10,
   sign
 };
+
+// wwtlib.Guid
+
+export function Guid() {
+  this._guid = Guid.create();
+}
+Guid.newGuid = function() {
+  return new Guid();
+};
+Guid.fromString = function(id) {
+  const temp = new Guid();
+  temp._guid = ss.trim(id);
+  return temp;
+};
+Guid.create = function() {
+  return  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0,
+      v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16); });;
+};
+export const Guid$ = {
+  toString: function () {
+    return this._guid;
+  }
+};
+
+
+export function Mouse() {  }
+Mouse.offsetX = (canvas, e) => {
+  let x = 0;
+  let element = canvas;
+  const me = e;
+  if (element.offsetParent != null) {
+    do {
+      x += element.offsetLeft;
+    } while ((element = element.offsetParent) != null);
+  }
+  return me.pageX - x;
+};
+Mouse.offsetY = (canvas, e) => {
+  let y = 0;
+  let element = canvas;
+  const me = e;
+  if (element.offsetParent != null) {
+    do {
+      y += element.offsetTop;
+    } while ((element = element.offsetParent) != null);
+  }
+  return me.pageY - y;
+};

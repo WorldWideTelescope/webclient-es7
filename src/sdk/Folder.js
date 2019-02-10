@@ -1,6 +1,7 @@
 import ss from './scriptsharp/ss';
 import {Util} from './Util';
 import {Imageset} from './Imageset';
+import {WebFile} from './WebFile';
 
 export class Folder{
   constructor() {
