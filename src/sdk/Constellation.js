@@ -8,159 +8,177 @@ import {WWTControl} from './WWTControl';
 import {WebFile} from './WebFile';
 import {Color} from './Color';
 import {Place} from './Place';
+import {SimpleLineList} from './Graphics/Primative3d';
+import {SimpleLineShader} from './Graphics/Shaders';
 
-export function Constellations() {
-  this._pointCount = 0;
-  this._boundry = false;
-  this._noInterpollation = false;
-  this.readOnly = false;
-  this.radius = 1;
-  this._drawCount = 0;
-  this._constellationVertexBuffers = {};
-}
-Constellations.createBasic = function(name) {
-  const temp = new Constellations();
-  temp._name = name;
-  temp._url = null;
-  temp.lines = [];
-  const $enum1 = ss.enumerate(ss.keys(Constellations.fullNames));
-  while ($enum1.moveNext()) {
-    const abbrv = $enum1.current;
-    temp.lines.push(new Lineset(abbrv));
+
+export class Constellations {
+  constructor() {
+    this._pointCount = 0;
+    this._boundry = false;
+    this._noInterpollation = false;
+    this.readOnly = false;
+    this.radius = 1;
+    this._drawCount = 0;
+    this._constellationVertexBuffers = {};
   }
-  return temp;
-};
-Constellations.create = function(name, url, boundry, noInterpollation, resource) {
-  const temp = new Constellations();
-  temp._noInterpollation = noInterpollation;
-  temp._boundry = boundry;
-  temp._name = name;
-  temp._url = url;
-  temp.getFile();
-  return temp;
-};
-Constellations.drawConstellationNames = function(renderContext, opacity, drawColor) {
-  if (Constellations._namesBatch == null) {
-    Constellations.initializeConstellationNames();
+
+  createBasic(name) {
+    const temp = new Constellations();
+    temp._name = name;
+    temp._url = null;
+    temp.lines = [];
+    const $enum1 = ss.enumerate(ss.keys(Constellations.fullNames));
+    while ($enum1.moveNext()) {
+      const abbrv = $enum1.current;
+      temp.lines.push(new Lineset(abbrv));
+    }
+    return temp;
+  };
+
+  static create(name, url, boundry, noInterpollation, resource) {
+    const temp = new Constellations();
+    temp._noInterpollation = noInterpollation;
+    temp._boundry = boundry;
+    temp._name = name;
+    temp._url = url;
+    temp.getFile();
+    return temp;
+  };
+
+  static drawConstellationNames(renderContext, opacity, drawColor) {
     if (Constellations._namesBatch == null) {
+      Constellations.initializeConstellationNames();
+      if (Constellations._namesBatch == null) {
+        return;
+      }
+    }
+    Constellations._namesBatch.draw(renderContext, opacity, drawColor);
+  };
+
+  initializeConstellationNames() {
+    if (Constellations.constellationCentroids == null) {
       return;
     }
-  }
-  Constellations._namesBatch.draw(renderContext, opacity, drawColor);
-};
-Constellations.initializeConstellationNames = function() {
-  if (Constellations.constellationCentroids == null) {
-    return;
-  }
-  Constellations._namesBatch = new Text3dBatch(80);
-  const $enum1 = ss.enumerate(ss.keys(Constellations.constellationCentroids));
-  while ($enum1.moveNext()) {
-    const key = $enum1.current;
-    const centroid = Constellations.constellationCentroids[key];
-    const center = Coordinates.raDecTo3dAu(centroid.get_RA(), centroid.get_dec(), 1);
-    const up = Vector3d.create(0, 1, 0);
-    let name = centroid.get_name();
-    if (centroid.get_name() === 'Triangulum Australe') {
-      name = ss.replaceString(name, ' ', '\n   ');
+    Constellations._namesBatch = new Text3dBatch(80);
+    const $enum1 = ss.enumerate(ss.keys(Constellations.constellationCentroids));
+    while ($enum1.moveNext()) {
+      const key = $enum1.current;
+      const centroid = Constellations.constellationCentroids[key];
+      const center = Coordinates.raDecTo3dAu(centroid.get_RA(), centroid.get_dec(), 1);
+      const up = new Vector3d(0, 1, 0);
+      let name = centroid.get_name();
+      if (centroid.get_name() === 'Triangulum Australe') {
+        name = ss.replaceString(name, ' ', '\n   ');
+      }
+      Constellations._namesBatch.add(new Text3d(center, up, name, 80, 0.000125));
     }
-    Constellations._namesBatch.add(new Text3d(center, up, name, 80, 0.000125));
-  }
-};
-Constellations.drawArtwork = function(renderContext) {
-  if (Constellations.artwork == null) {
-    if (Constellations._artFile == null) {
-      Constellations._artFile = new Folder();
-      Constellations._artFile.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?W=hevelius', Constellations._onArtReady);
+  };
+
+  static drawArtwork(renderContext) {
+    if (Constellations.artwork == null) {
+      if (Constellations._artFile == null) {
+        Constellations._artFile = new Folder();
+        Constellations._artFile.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?W=hevelius', Constellations._onArtReady);
+      }
+      return;
     }
-    return;
-  }
-  Constellations._maxSeperation = Math.max(0.5, Math.cos((renderContext.get_fovAngle() * 2) / 180 * Math.PI));
-  const $enum1 = ss.enumerate(Constellations.artwork);
-  while ($enum1.moveNext()) {
-    const place = $enum1.current;
-    const bs = Constellations.pictureBlendStates[place.get_constellation()];
-    bs.set_targetState(Settings.get_active().get_constellationArtFilter().isSet(place.get_constellation()));
-    if (bs.get_state()) {
-      const reverse = false;
-      const centroid = Constellations.constellationCentroids[place.get_constellation()];
-      if (centroid != null) {
-        const pos = Coordinates.raDecTo3d((reverse) ? -centroid.get_RA() - 6 : centroid.get_RA(), (reverse) ? centroid.get_dec() : centroid.get_dec());
-        if (Vector3d.dot(renderContext.get_viewPoint(), pos) > Constellations._maxSeperation) {
-          renderContext.drawImageSet(place.get_studyImageset(), 100);
+    Constellations._maxSeperation = Math.max(0.5, Math.cos((renderContext.get_fovAngle() * 2) / 180 * Math.PI));
+    const $enum1 = ss.enumerate(Constellations.artwork);
+    while ($enum1.moveNext()) {
+      const place = $enum1.current;
+      const bs = Constellations.pictureBlendStates[place.get_constellation()];
+      bs.set_targetState(Settings.get_active().get_constellationArtFilter().isSet(place.get_constellation()));
+      if (bs.get_state()) {
+        const reverse = false;
+        const centroid = Constellations.constellationCentroids[place.get_constellation()];
+        if (centroid != null) {
+          const pos = Coordinates.raDecTo3d((reverse) ? -centroid.get_RA() - 6 : centroid.get_RA(), (reverse) ? centroid.get_dec() : centroid.get_dec());
+          if (Vector3d.dot(renderContext.get_viewPoint(), pos) > Constellations._maxSeperation) {
+            renderContext.drawImageSet(place.get_studyImageset(), 100);
+          }
         }
       }
     }
+  };
+
+  static _onArtReady() {
+    Constellations._artFile.childLoadCallback(Constellations._loadArtList);
+  };
+
+  static _loadArtList() {
+    Constellations.artwork = Constellations._artFile.get_places();
+  };
+
+  static _loadNames() {
+    if (Constellations._webFileConstNames.get_state() === 2) {
+      alert(Constellations._webFileConstNames.get_message());
+    } else if (Constellations._webFileConstNames.get_state() === 1) {
+      Constellations._centroidsReady(Constellations._webFileConstNames.getText());
+    }
+  };
+
+  static _centroidsReady(file) {
+    Constellations.constellationCentroids = {};
+    Constellations.fullNames = {};
+    Constellations.abbreviations = {};
+    Constellations.bitIDs = {};
+    const rows = file.split('\r\n');
+    let id = 0;
+    let line;
+    const $enum1 = ss.enumerate(rows);
+    while ($enum1.moveNext()) {
+      const row = $enum1.current;
+      line = row;
+      const data = line.split(',');
+      Constellations.fullNames[data[1]] = data[0];
+      Constellations.abbreviations[data[0]] = data[1];
+      Constellations.bitIDs[data[1]] = id++;
+      Constellations.pictureBlendStates[data[1]] = BlendState.create(true, 1000);
+      Constellations.constellationCentroids[data[1]] = Place.create(data[0], parseFloat(data[3]), parseFloat(data[2]), 128, data[1], 2, 360);
+    }
+    WWTControl.set_renderNeeded(true);
+    ConstellationFilter.buildConstellationFilters();
+  };
+
+  static fullName(name) {
+    if (ss.keyExists(Constellations.fullNames, name)) {
+      return Constellations.fullNames[name];
+    }
+    return name;
+  };
+
+  static abbreviation(name) {
+    if (Constellations.abbreviations != null && !ss.emptyString(name) && ss.keyExists(Constellations.abbreviations, name)) {
+      return Constellations.abbreviations[name];
+    }
+    return name;
   }
-};
-Constellations._onArtReady = function() {
-  Constellations._artFile.childLoadCallback(Constellations._loadArtList);
-};
-Constellations._loadArtList = function() {
-  Constellations.artwork = Constellations._artFile.get_places();
-};
-Constellations._loadNames = function() {
-  if (Constellations._webFileConstNames.get_state() === 2) {
-    alert(Constellations._webFileConstNames.get_message());
-  }
-  else if (Constellations._webFileConstNames.get_state() === 1) {
-    Constellations._centroidsReady(Constellations._webFileConstNames.getText());
-  }
-};
-Constellations._centroidsReady = function(file) {
-  Constellations.constellationCentroids = {};
-  Constellations.fullNames = {};
-  Constellations.abbreviations = {};
-  Constellations.bitIDs = {};
-  const rows = file.split('\r\n');
-  let id = 0;
-  let line;
-  const $enum1 = ss.enumerate(rows);
-  while ($enum1.moveNext()) {
-    const row = $enum1.current;
-    line = row;
-    const data = line.split(',');
-    Constellations.fullNames[data[1]] = data[0];
-    Constellations.abbreviations[data[0]] = data[1];
-    Constellations.bitIDs[data[1]] = id++;
-    Constellations.pictureBlendStates[data[1]] = BlendState.create(true, 1000);
-    Constellations.constellationCentroids[data[1]] = Place.create(data[0], parseFloat(data[3]), parseFloat(data[2]), 128, data[1], 2, 360);
-  }
-  WWTControl.set_renderNeeded(true);
-  ConstellationFilter.buildConstellationFilters();
-};
-Constellations.fullName = function(name) {
-  if (ss.keyExists(Constellations.fullNames, name)) {
-    return Constellations.fullNames[name];
-  }
-  return name;
-};
-Constellations.abbreviation = function(name) {
-  if (Constellations.abbreviations != null && !ss.emptyString(name) && ss.keyExists(Constellations.abbreviations, name)) {
-    return Constellations.abbreviations[name];
-  }
-  return name;
-};
-export const Constellations$ = {
-  get_name: function () {
+
+  get_name() {
     return this._name;
-  },
-  set_name: function (value) {
+  }
+
+  set_name(value) {
     this._name = value;
     return value;
-  },
-  getFile: function () {
+  }
+
+  getFile() {
     this._webFile = new WebFile(this._url);
     this._webFile.onStateChange = ss.bind('fileStateChange', this);
     this._webFile.send();
-  },
-  fileStateChange: function () {
+  }
+
+  fileStateChange() {
     if (this._webFile.get_state() === 2) {
       alert(this._webFile.get_message());
     } else if (this._webFile.get_state() === 1) {
       this._loadConstellationData(this._webFile.getText());
     }
-  },
-  _loadConstellationData: function (data) {
+  }
+
+  _loadConstellationData(data) {
     if (this._boundry && !this._noInterpollation) {
       Constellations.boundries = {};
     }
@@ -230,8 +248,9 @@ export const Constellations$ = {
       const i = 0;
     }
     WWTControl.set_renderNeeded(true);
-  },
-  draw: function (renderContext, showOnlySelected, focusConsteallation, clearExisting) {
+  }
+
+  draw(renderContext, showOnlySelected, focusConsteallation, clearExisting) {
     Constellations._maxSeperation = Math.max(0.6, Math.cos((renderContext.get_fovAngle() * 2) / 180 * Math.PI));
     this._drawCount = 0;
     let lsSelected = null;
@@ -251,8 +270,9 @@ export const Constellations$ = {
     if (lsSelected != null) {
       this._drawSingleConstellation(renderContext, lsSelected, .2);
     }
-  },
-  _drawSingleConstellation: function (renderContext, ls, opacity) {
+  }
+
+  _drawSingleConstellation(renderContext, ls, opacity) {
     const reverse = false;
     const centroid = Constellations.constellationCentroids[ls.get_name()];
     if (centroid != null) {
@@ -293,8 +313,9 @@ export const Constellations$ = {
       col = Settings.get_globalSettings().get_constellationFigureColor();
     }
     this._constellationVertexBuffers[ls.get_name()].drawLines(renderContext, .35, Color.load(col));
-  },
-  _drawSingleConstellationOld: function (renderContext, ls) {
+  }
+
+  _drawSingleConstellationOld(renderContext, ls) {
     const reverse = false;
     const centroid = Constellations.constellationCentroids[ls.get_name()];
     if (centroid != null) {
@@ -344,8 +365,9 @@ export const Constellations$ = {
       ctx.restore();
     } else {
     }
-  },
-  findConstellationForPoint: function (ra, dec) {
+  }
+
+  findConstellationForPoint(ra, dec) {
     if (dec > 88.402 || this.lines == null) {
       return 'UMI';
     }
@@ -376,8 +398,7 @@ export const Constellations$ = {
     }
     return 'Error';
   }
-};
-
+}
 
 
 export function ConstellationFilter() {
@@ -391,7 +412,8 @@ export function ConstellationFilter() {
     this.oldBits[i] = this.bits[i];
   }
 }
-ConstellationFilter.buildConstellationFilters = function() {
+
+ConstellationFilter.buildConstellationFilters = function () {
   const all = ConstellationFilter.get_allConstellation();
   all.internal = true;
   ConstellationFilter.families['AllConstellation'] = all;
@@ -404,7 +426,7 @@ ConstellationFilter.buildConstellationFilters = function() {
   ConstellationFilter.families['Bayer Family'] = ConstellationFilter.get_bayerFamily();
   ConstellationFilter.families['La Caille Family'] = ConstellationFilter.get_laCaileFamily();
 };
-ConstellationFilter.saveCustomFilters = function() {
+ConstellationFilter.saveCustomFilters = function () {
   const sb = new ss.StringBuilder();
   const $dict1 = ConstellationFilter.families;
   for (let $key2 in $dict1) {
@@ -416,12 +438,12 @@ ConstellationFilter.saveCustomFilters = function() {
     }
   }
 };
-ConstellationFilter.get_allConstellation = function() {
+ConstellationFilter.get_allConstellation = function () {
   const all = new ConstellationFilter();
   all.setAll(true);
   return all;
 };
-ConstellationFilter.get_zodiacal = function() {
+ConstellationFilter.get_zodiacal = function () {
   const zodiacal = new ConstellationFilter();
   zodiacal.set('ARI', true);
   zodiacal.set('TAU', true);
@@ -438,7 +460,7 @@ ConstellationFilter.get_zodiacal = function() {
   zodiacal.internal = true;
   return zodiacal;
 };
-ConstellationFilter.get_ursaMajorFamily = function() {
+ConstellationFilter.get_ursaMajorFamily = function () {
   const uma = new ConstellationFilter();
   uma.set('UMA', true);
   uma.set('UMI', true);
@@ -453,7 +475,7 @@ ConstellationFilter.get_ursaMajorFamily = function() {
   uma.internal = true;
   return uma;
 };
-ConstellationFilter.get_perseusFamily = function() {
+ConstellationFilter.get_perseusFamily = function () {
   const Perseus = new ConstellationFilter();
   Perseus.set('CAS', true);
   Perseus.set('CEP', true);
@@ -467,7 +489,7 @@ ConstellationFilter.get_perseusFamily = function() {
   Perseus.internal = true;
   return Perseus;
 };
-ConstellationFilter.get_herculesFamily = function() {
+ConstellationFilter.get_herculesFamily = function () {
   const hercules = new ConstellationFilter();
   hercules.set('HER', true);
   hercules.set('SGE', true);
@@ -492,7 +514,7 @@ ConstellationFilter.get_herculesFamily = function() {
   hercules.internal = true;
   return hercules;
 };
-ConstellationFilter.get_orionFamily = function() {
+ConstellationFilter.get_orionFamily = function () {
   const orion = new ConstellationFilter();
   orion.set('ORI', true);
   orion.set('CMA', true);
@@ -502,7 +524,7 @@ ConstellationFilter.get_orionFamily = function() {
   orion.internal = true;
   return orion;
 };
-ConstellationFilter.get_heavenlyWaters = function() {
+ConstellationFilter.get_heavenlyWaters = function () {
   const waters = new ConstellationFilter();
   waters.set('DEL', true);
   waters.set('EQU', true);
@@ -516,7 +538,7 @@ ConstellationFilter.get_heavenlyWaters = function() {
   waters.internal = true;
   return waters;
 };
-ConstellationFilter.get_bayerFamily = function() {
+ConstellationFilter.get_bayerFamily = function () {
   const bayer = new ConstellationFilter();
   bayer.set('HYA', true);
   bayer.set('DOR', true);
@@ -532,7 +554,7 @@ ConstellationFilter.get_bayerFamily = function() {
   bayer.internal = true;
   return bayer;
 };
-ConstellationFilter.get_laCaileFamily = function() {
+ConstellationFilter.get_laCaileFamily = function () {
   const LaCaile = new ConstellationFilter();
   LaCaile.set('NOR', true);
   LaCaile.set('CIR', true);
@@ -550,15 +572,14 @@ ConstellationFilter.get_laCaileFamily = function() {
   LaCaile.internal = true;
   return LaCaile;
 };
-ConstellationFilter.parse = function(val) {
+ConstellationFilter.parse = function (val) {
   const parts = (val).split(',');
   const cf = new ConstellationFilter();
   try {
     for (let i = 0; i < 3; i++) {
       cf.bits[i] = parseInt(parts[i]);
     }
-  }
-  catch ($e1) {
+  } catch ($e1) {
   }
   return cf;
 };
@@ -671,3 +692,52 @@ export const ConstellationFilter$ = {
     return ss.format('{0},{1},{2}', this.bits[0], this.bits[1], this.bits[2]);
   }
 };
+
+class Lineset {
+  constructor(name) {
+    this._name = name;
+    this.points = [];
+  }
+
+  get_name() {
+    return this._name;
+  }
+
+  set_name(value) {
+    this._name = value;
+    return value;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(value) {
+    this._name = value;
+  }
+
+  add(ra, dec, pointType, name) {
+    this.points.push(new Linepoint(ra, dec, pointType, name));
+  }
+};
+
+class Linepoint {
+  constructor(ra, dec, type, name) {
+    this.RA = 0;
+    this.dec = 0;
+    this.pointType = 0;
+    this.name = null;
+    this.RA = ra;
+    this.dec = dec;
+    this.pointType = type;
+    this.name = name;
+  }
+
+  toString() {
+    if (ss.emptyString(this.name)) {
+      return Coordinates.formatDMS((((this.RA / 360) * 24 + 12) % 24)) + ', ' + Coordinates.formatDMS(this.dec) + ', ' + this.pointType.toString();
+    } else {
+      return this.name + ', ' + this.pointType.toString();
+    }
+  }
+}

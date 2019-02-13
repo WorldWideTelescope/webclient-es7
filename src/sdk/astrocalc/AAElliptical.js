@@ -258,7 +258,7 @@ const calculateRectangularJD = (JD, elements) => {
   const x = r * a * Math.sin(A + w + v);
   const y = r * b * Math.sin(B + w + v);
   const z = r * c * Math.sin(C + w + v);
-  return Vector3d.create(x, z, y);
+  return new Vector3d(x, z, y);
 };
 const calculateRectangular = (elements, meanAnomoly) => {
   const omega = CT.d2R(elements.omega);
@@ -291,7 +291,7 @@ const calculateRectangular = (elements, meanAnomoly) => {
   const x = r * a * Math.sin(A + w + v);
   const y = r * b * Math.sin(B + w + v);
   const z = r * c * Math.sin(C + w + v);
-  return Vector3d.create(x, z, y);
+  return new Vector3d(x, z, y);
 };
 const calculateElements = (JD, elements) => {
   let Epsilon = CAANutation.meanObliquityOfEcliptic(elements.jdEquinox);

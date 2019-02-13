@@ -42,7 +42,7 @@ Planets.getPlanet3dLocation = function(target) {
   }
   catch ($e1) {
   }
-  return Vector3d.create(0, 0, 0);
+  return new Vector3d(0, 0, 0);
 };
 Planets.getPlanet3dSufaceAltitude = function(target) {
   try {
@@ -71,7 +71,7 @@ Planets.getPlanet3dLocationJD = function(target, jNow) {
     const centerRaDec = AstroCalc.getPlanet(jNow, 0, 0, 0, -6378149);
     const center = Coordinates.raDecTo3dAu(centerRaDec.RA, centerRaDec.dec, centerRaDec.distance);
     if (target === 19) {
-      result = Vector3d.create(-center.x, -center.y, -center.z);
+      result = new Vector3d(-center.x, -center.y, -center.z);
     }
     else {
       const planet = AstroCalc.getPlanet(jNow, target, 0, 0, -6378149);
@@ -104,7 +104,7 @@ Planets.getPlanet3dLocationJD = function(target, jNow) {
     return result;
   }
   catch ($e1) {
-    return Vector3d.create(0, 0, 0);
+    return new Vector3d(0, 0, 0);
   }
 };
 Planets.getPlanetLocation = function(name) {
@@ -391,7 +391,7 @@ Planets.updatePlanetLocations = function(threeDee) {
     const centerRaDec = AstroCalc.getPlanet(Planets._jNow, planetCenter, (threeDee) ? 0 : SpaceTimeController.get_location().get_lat(), (threeDee) ? 0 : SpaceTimeController.get_location().get_lng(), (threeDee) ? -6378149 : SpaceTimeController.get_altitude());
     center = Coordinates.raDecTo3dAu(centerRaDec.RA, centerRaDec.dec, centerRaDec.distance);
   }
-  Planets._planet3dLocations[19] = Vector3d.create(-center.x, -center.y, -center.z);
+  Planets._planet3dLocations[19] = new Vector3d(-center.x, -center.y, -center.z);
   Planets._planet3dLocations[19].rotateX(Planets._obliquity);
   for (let i = 0; i < 18; i++) {
     Planets._planetLocations[i] = AstroCalc.getPlanet(Planets._jNow, i, (threeDee) ? 0 : SpaceTimeController.get_location().get_lat(), (threeDee) ? 0 : SpaceTimeController.get_location().get_lng(), (threeDee) ? -6378149 : SpaceTimeController.get_altitude());
@@ -496,7 +496,7 @@ Planets.updateOrbits = function(planetCenter) {
                 Planets._orbits[i][j].subtract(center);
               }
               else {
-                Planets._orbits[i][j] = Vector3d.create(-center.x, -center.y, -center.z);
+                Planets._orbits[i][j] = new Vector3d(-center.x, -center.y, -center.z);
               }
               Planets._orbits[i][j].rotateX(Planets._obliquity);
             }
@@ -634,7 +634,7 @@ Planets.setupPlanetMatrix = function(renderContext, planetID, centerPoint, makeF
   Planets._setupMatrixForPlanetGeometry(renderContext, planetID, centerPoint, makeFrustum);
   if (planetID === 0) {
     const radius = Planets.getAdjustedPlanetRadius(planetID);
-    matNonRotating.scale(Vector3d.create(radius, radius, radius));
+    matNonRotating.scale(new Vector3d(radius, radius, radius));
     const translation = Vector3d.subtractVectors(Planets._planet3dLocations[planetID], centerPoint);
     matNonRotating._multiply(Matrix3d.translation(translation));
     renderContext.set_worldBaseNonRotating(matNonRotating);
@@ -656,7 +656,7 @@ Planets._setupMatrixForPlanetGeometry = function(renderContext, planetID, center
   const matNonRotating = renderContext.get_world().clone();
   const translation = Vector3d.subtractVectors(Planets._planet3dLocations[planetID], centerPoint);
   const orientationAtEpoch = Planets.getPlanetOrientationAtEpoch(planetID);
-  matLocal.scale(Vector3d.create(radius, radius, radius));
+  matLocal.scale(new Vector3d(radius, radius, radius));
   matLocal._multiply(Matrix3d._rotationY(-rotationCurrent));
   matLocal._multiply(orientationAtEpoch);
   if (planetID === renderContext.viewCamera.target) {
@@ -673,7 +673,7 @@ Planets._setupMatrixForPlanetGeometry = function(renderContext, planetID, center
   if (makeFrustum) {
     renderContext.makeFrustum();
   }
-  matNonRotating.scale(Vector3d.create(radius, radius, radius));
+  matNonRotating.scale(new Vector3d(radius, radius, radius));
   matNonRotating._multiply(orientationAtEpoch);
   matNonRotating._multiply(Matrix3d.translation(translation));
   renderContext.set_worldBaseNonRotating(matNonRotating);
@@ -853,26 +853,26 @@ Planets.getPlanetPositionDirect = function(id, jd) {
     case 10:
       var galileanInfo = GM.calculate(jd);
       var position = galileanInfo.satellite1.eclipticRectangularCoordinates;
-      return Vector3d.create(position.x, position.z, position.y);
+      return new Vector3d(position.x, position.z, position.y);
     case 11:
       var galileanInfo = GM.calculate(jd);
       var position = galileanInfo.satellite2.eclipticRectangularCoordinates;
-      return Vector3d.create(position.x, position.z, position.y);
+      return new Vector3d(position.x, position.z, position.y);
     case 12:
       var galileanInfo = GM.calculate(jd);
       var position = galileanInfo.satellite3.eclipticRectangularCoordinates;
-      return Vector3d.create(position.x, position.z, position.y);
+      return new Vector3d(position.x, position.z, position.y);
     case 13:
       var galileanInfo = GM.calculate(jd);
       var position = galileanInfo.satellite4.eclipticRectangularCoordinates;
-      return Vector3d.create(position.x, position.z, position.y);
+      return new Vector3d(position.x, position.z, position.y);
   }
   L = Coordinates.degreesToRadians(L);
   B = Coordinates.degreesToRadians(B);
-  const eclPos = Vector3d.create(Math.cos(L) * Math.cos(B) * R, Math.sin(L) * Math.cos(B) * R, Math.sin(B) * R);
+  const eclPos = new Vector3d(Math.cos(L) * Math.cos(B) * R, Math.sin(L) * Math.cos(B) * R, Math.sin(B) * R);
   const eclipticOfDateRotation = (Coordinates.meanObliquityOfEcliptic(jd) - Coordinates.meanObliquityOfEcliptic(2451545)) * Planets.RC;
   eclPos.rotateX(eclipticOfDateRotation);
-  return Vector3d.create(eclPos.x, eclPos.z, eclPos.y);
+  return new Vector3d(eclPos.x, eclPos.z, eclPos.y);
 };
 Planets._stateVectorToKeplerian = function(position, velocity, mu) {
   const r = Vector3d.scale(position, 149598000);
@@ -891,7 +891,7 @@ Planets._stateVectorToKeplerian = function(position, velocity, mu) {
   const sinNu = Vector3d.dot(s, r);
   const E = Math.atan2(Math.sqrt(1 - e * e) * sinNu, e + cosNu);
   const elements = new KeplerianElements();
-  elements.orientation = Matrix3d.create(ecc.x, ecc.y, ecc.z, 0, s.x, s.y, s.z, 0, h.x, h.y, h.z, 0, 0, 0, 0, 1);
+  elements.orientation = new Matrix3d(ecc.x, ecc.y, ecc.z, 0, s.x, s.y, s.z, 0, h.x, h.y, h.z, 0, 0, 0, 0, 1);
   elements.a = sma;
   elements.e = e;
   elements.ea = E;
@@ -931,7 +931,7 @@ Planets._drawSingleOrbitElements = function(renderContext, eclipticColor, id, ce
 };
 Planets.isPlanetInFrustum = function(renderContext, rad) {
   const frustum = renderContext.get_frustum();
-  const center = Vector3d.create(0, 0, 0);
+  const center = new Vector3d(0, 0, 0);
   const centerV4 = new Vector4d(0, 0, 0, 1);
   for (let i = 0; i < 6; i++) {
     if (frustum[i].dot(centerV4) + rad < 0) {
@@ -1055,15 +1055,15 @@ Planets.drawSaturnsRings = function(renderContext, front, distance) {
     Planets._ringsTriangleLists[0] = [];
     Planets._ringsTriangleLists[1] = [];
     const ringSize = 2.25;
-    const TopLeft = Vector3d.create(-ringSize, 0, -ringSize);
-    const TopRight = Vector3d.create(ringSize, 0, -ringSize);
-    const BottomLeft = Vector3d.create(-ringSize, 0, ringSize);
-    const BottomRight = Vector3d.create(ringSize, 0, ringSize);
-    const center = Vector3d.create(0, 0, 0);
-    const leftCenter = Vector3d.create(-ringSize, 0, 0);
-    const topCenter = Vector3d.create(0, 0, -ringSize);
-    const bottomCenter = Vector3d.create(0, 0, ringSize);
-    const rightCenter = Vector3d.create(ringSize, 0, 0);
+    const TopLeft = new Vector3d(-ringSize, 0, -ringSize);
+    const TopRight = new Vector3d(ringSize, 0, -ringSize);
+    const BottomLeft = new Vector3d(-ringSize, 0, ringSize);
+    const BottomRight = new Vector3d(ringSize, 0, ringSize);
+    const center = new Vector3d(0, 0, 0);
+    const leftCenter = new Vector3d(-ringSize, 0, 0);
+    const topCenter = new Vector3d(0, 0, -ringSize);
+    const bottomCenter = new Vector3d(0, 0, ringSize);
+    const rightCenter = new Vector3d(ringSize, 0, 0);
     const level = 6;
     let vertexList;
     vertexList = [];
@@ -1104,8 +1104,8 @@ Planets.drawSaturnsRings = function(renderContext, front, distance) {
     const wvp = Matrix3d.multiplyMatrix(wv, renderContext.get_projection());
     var Width = renderContext.width;
     var Height = renderContext.height;
-    wvp.scale(Vector3d.create(Width / 2, -Height / 2, 1));
-    wvp.translate(Vector3d.create(Width / 2, Height / 2, 0));
+    wvp.scale(new Vector3d(Width / 2, -Height / 2, 1));
+    wvp.translate(new Vector3d(Width / 2, Height / 2, 0));
     let td = 0;
     for (let i = 0; i < 2; i++) {
       const $enum3 = ss.enumerate(Planets._ringsTriangleLists[0]);
@@ -1149,22 +1149,22 @@ Planets._initRings = function() {
     const rads1 = x * radStep;
     const rads2 = (x + 1) * radStep;
     verts[index] = new PositionTexture();
-    verts[index].position = Vector3d.create((Math.cos(rads1) * inner), 0, (Math.sin(rads1) * inner));
+    verts[index].position = new Vector3d((Math.cos(rads1) * inner), 0, (Math.sin(rads1) * inner));
     verts[index].tu = 1;
     verts[index].tv = 0;
     index++;
     verts[index] = new PositionTexture();
-    verts[index].position = Vector3d.create((Math.cos(rads1) * outer), 0, (Math.sin(rads1) * outer));
+    verts[index].position = new Vector3d((Math.cos(rads1) * outer), 0, (Math.sin(rads1) * outer));
     verts[index].tu = 0;
     verts[index].tv = 0;
     index++;
     verts[index] = new PositionTexture();
-    verts[index].position = Vector3d.create((Math.cos(rads2) * inner), 0, (Math.sin(rads2) * inner));
+    verts[index].position = new Vector3d((Math.cos(rads2) * inner), 0, (Math.sin(rads2) * inner));
     verts[index].tu = 1;
     verts[index].tv = 1;
     index++;
     verts[index] = new PositionTexture();
-    verts[index].position = Vector3d.create((Math.cos(rads2) * outer), 0, (Math.sin(rads2) * outer));
+    verts[index].position = new Vector3d((Math.cos(rads2) * outer), 0, (Math.sin(rads2) * outer));
     verts[index].tu = 0;
     verts[index].tv = 1;
     index++;

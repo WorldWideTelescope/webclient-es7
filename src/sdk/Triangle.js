@@ -18,9 +18,9 @@ export class Triangle {
     const a1 = Vector3d.lerp(vertexList[this.b].position, vertexList[this.c].position, 0.5);
     const b1 = Vector3d.lerp(vertexList[this.c].position, vertexList[this.a].position, 0.5);
     const c1 = Vector3d.lerp(vertexList[this.a].position, vertexList[this.b].position, 0.5);
-    const a1uv = Vector2d.lerp(Vector2d.create(vertexList[this.b].tu, vertexList[this.b].tv), Vector2d.create(vertexList[this.c].tu, vertexList[this.c].tv), 0.5);
-    const b1uv = Vector2d.lerp(Vector2d.create(vertexList[this.c].tu, vertexList[this.c].tv), Vector2d.create(vertexList[this.a].tu, vertexList[this.a].tv), 0.5);
-    const c1uv = Vector2d.lerp(Vector2d.create(vertexList[this.a].tu, vertexList[this.a].tv), Vector2d.create(vertexList[this.b].tu, vertexList[this.b].tv), 0.5);
+    const a1uv = Vector2d.lerp(new Vector2d(vertexList[this.b].tu, vertexList[this.b].tv), new Vector2d(vertexList[this.c].tu, vertexList[this.c].tv), 0.5);
+    const b1uv = Vector2d.lerp(new Vector2d(vertexList[this.c].tu, vertexList[this.c].tv), new Vector2d(vertexList[this.a].tu, vertexList[this.a].tv), 0.5);
+    const c1uv = Vector2d.lerp(new Vector2d(vertexList[this.a].tu, vertexList[this.a].tv), new Vector2d(vertexList[this.b].tu, vertexList[this.b].tv), 0.5);
     a1.normalize();
     b1.normalize();
     c1.normalize();
@@ -39,9 +39,9 @@ export class Triangle {
     const a1 = Vector3d.lerp(vertexList[this.b].position, vertexList[this.c].position, 0.5);
     const b1 = Vector3d.lerp(vertexList[this.c].position, vertexList[this.a].position, 0.5);
     const c1 = Vector3d.lerp(vertexList[this.a].position, vertexList[this.b].position, 0.5);
-    const a1uv = Vector2d.lerp(Vector2d.create(vertexList[this.b].tu, vertexList[this.b].tv), Vector2d.create(vertexList[this.c].tu, vertexList[this.c].tv), 0.5);
-    const b1uv = Vector2d.lerp(Vector2d.create(vertexList[this.c].tu, vertexList[this.c].tv), Vector2d.create(vertexList[this.a].tu, vertexList[this.a].tv), 0.5);
-    const c1uv = Vector2d.lerp(Vector2d.create(vertexList[this.a].tu, vertexList[this.a].tv), Vector2d.create(vertexList[this.b].tu, vertexList[this.b].tv), 0.5);
+    const a1uv = Vector2d.lerp(new Vector2d(vertexList[this.b].tu, vertexList[this.b].tv), new Vector2d(vertexList[this.c].tu, vertexList[this.c].tv), 0.5);
+    const b1uv = Vector2d.lerp(new Vector2d(vertexList[this.c].tu, vertexList[this.c].tv), new Vector2d(vertexList[this.a].tu, vertexList[this.a].tv), 0.5);
+    const c1uv = Vector2d.lerp(new Vector2d(vertexList[this.a].tu, vertexList[this.a].tv), new Vector2d(vertexList[this.b].tu, vertexList[this.b].tv), 0.5);
     const aIndex = vertexList.length;
     const bIndex = vertexList.length + 1;
     const cIndex = vertexList.length + 2;

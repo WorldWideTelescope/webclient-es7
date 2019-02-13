@@ -5,19 +5,21 @@ import {Color} from './Color';
 import {Coordinates} from './Coordinates';
 
 
-export class PositionTexture{
-  constructor(){
+export class PositionTexture {
+  constructor() {
     this.tu = 0;
     this.tv = 0;
     this.position = new Vector3d();
   }
-  static createPos(pos, u, v){
+
+  static createPos(pos, u, v) {
     const temp = new PositionTexture();
     temp.tu = u * Tile.uvMultiple;
     temp.tv = v * Tile.uvMultiple;
     temp.position = pos;
     return temp;
   }
+
   static createPosRaw(pos, u, v) {
     const temp = new PositionTexture();
     temp.tu = u;
@@ -25,6 +27,7 @@ export class PositionTexture{
     temp.position = pos;
     return temp;
   }
+
   static createPosSize(pos, u, v, width, height) {
     const temp = new PositionTexture();
     temp.tu = u * width;
@@ -32,13 +35,15 @@ export class PositionTexture{
     temp.position = pos;
     return temp;
   }
+
   static create(xvalue, yvalue, zvalue, u, v) {
     const temp = new PositionTexture();
-    temp.position = Vector3d.create(xvalue, yvalue, zvalue);
+    temp.position = new Vector3d(xvalue, yvalue, zvalue);
     temp.tu = u * Tile.uvMultiple;
     temp.tv = v * Tile.uvMultiple;
     return temp;
   }
+
   copy() {
     const temp = new PositionTexture();
     temp.position = Vector3d.makeCopy(this.position);
@@ -46,18 +51,20 @@ export class PositionTexture{
     temp.tv = this.tv;
     return temp;
   }
+
   toString() {
     return `${this.position.x}, ${this.position.y}, ${this.position.z}, ${this.tu}, ${this.tv}`;
   }
 }
 
 export class PositionColoredTextured {
-  constructor(){
+  constructor() {
     this.tu = 0;
     this.tv = 0;
     this.color = new Color();
     this.position = new Vector3d();
   }
+
   static createPos(pos, u, v) {
     const temp = new PositionColoredTextured();
     temp.tu = u * Tile.uvMultiple;
@@ -65,6 +72,7 @@ export class PositionColoredTextured {
     temp.position = pos;
     return temp;
   }
+
   static createPosRaw(pos, u, v) {
     const temp = new PositionColoredTextured();
     temp.tu = u;
@@ -72,6 +80,7 @@ export class PositionColoredTextured {
     temp.position = pos;
     return temp;
   }
+
   static createPosSize(pos, u, v, width, height) {
     const temp = new PositionColoredTextured();
     temp.tu = u * width;
@@ -79,13 +88,15 @@ export class PositionColoredTextured {
     temp.position = pos;
     return temp;
   }
+
   static create(xvalue, yvalue, zvalue, u, v) {
     const temp = new PositionTexture();
-    temp.position = Vector3d.create(xvalue, yvalue, zvalue);
+    temp.position = new Vector3d(xvalue, yvalue, zvalue);
     temp.tu = u * Tile.uvMultiple;
     temp.tv = v * Tile.uvMultiple;
     return temp;
   }
+
   copy() {
     const temp = new PositionTexture();
     temp.position = Vector3d.makeCopy(this.position);
@@ -93,6 +104,7 @@ export class PositionColoredTextured {
     temp.tv = this.tv;
     return temp;
   }
+
   toString() {
     return `${this.position.x}, ${this.position.y}, ${this.position.z}, ${this.tu}, ${this.tv}`;
   }
@@ -104,16 +116,18 @@ export class PositionColored {
     this.color = color._clone();
     this.position = pos.copy();
   }
+
   copy() {
     const temp = new PositionColored(this.position, this.color);
     return temp;
   }
+
   toString() {
     return ss.format('{0}, {1}, {2}, {3}', this.position.x, this.position.y, this.position.z, this.color.toString());
   }
 }
 
-export class PositionNormalTexturedTangent{
+export class PositionNormalTexturedTangent {
   constructor(position, normal, texCoord, tangent) {
     this.x = 0;
     this.y = 0;
@@ -138,59 +152,62 @@ export class PositionNormalTexturedTangent{
     this.tany = tangent.y;
     this.tanz = tangent.z;
   }
+
   get_normal() {
-    return Vector3d.create(this.nx, this.ny, this.nz);
+    return new Vector3d(this.nx, this.ny, this.nz);
   }
+
   set_normal(value) {
     this.nx = value.x;
     this.ny = value.y;
     this.nz = value.z;
     return value;
   }
+
   get_position() {
-    return Vector3d.create(this.x, this.y, this.z);
+    return new Vector3d(this.x, this.y, this.z);
   }
+
   set_position(value) {
     this.x = value.x;
     this.y = value.y;
     this.z = value.z;
     return value;
   }
+
   get_texCoord() {
-    return Vector2d.create(this.tu, this.tv);
+    return new Vector2d(this.tu, this.tv);
   }
+
   set_texCoord(value) {
     this.tu = value.x;
     this.tv = value.y;
     return value;
   }
+
   get_tangent() {
-    return Vector3d.create(this.tanx, this.tany, this.tanz);
+    return new Vector3d(this.tanx, this.tany, this.tanz);
   }
+
   set_tangent(value) {
     this.tanx = value.x;
     this.tany = value.y;
     this.tanz = value.z;
     return value;
   }
+
   toString() {
     return ss.format('X={0}, Y={1}, Z={2}, Nx={3}, Ny={4}, Nz={5}, U={6}, V={7}, TanX={8}, TanY={9}, TanZ={10}', this.x, this.y, this.z, this.nx, this.ny, this.nz, this.tu, this.tv, this.tanx, this.tany, this.tanz);
   }
 };
 
 export class Vector3d {
-  constructor() {
-    this.x = 0;
-    this.y = 0;
-    this.z = 0;
+  constructor(x = 0, y = 0, z = 0) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
   }
-  static create(valueX, valueY, valueZ) {
-    const temp = new Vector3d();
-    temp.x = valueX;
-    temp.y = valueY;
-    temp.z = valueZ;
-    return temp;
-  };
+
   static makeCopy(value) {
     const temp = new Vector3d();
     temp.x = value.x;
@@ -198,46 +215,62 @@ export class Vector3d {
     temp.z = value.z;
     return temp;
   };
+
   static negate(vec) {
-    return Vector3d.create(-vec.x, -vec.y, -vec.z);
+    return new Vector3d(-vec.x, -vec.y, -vec.z);
   };
+
   static midPoint(left, right) {
-    const result = Vector3d.create((left.x + right.x) / 2, (left.y + right.y) / 2, (left.z + right.z) / 2);
+    const result = new Vector3d((left.x + right.x) / 2, (left.y + right.y) / 2, (left.z + right.z) / 2);
     result.normalize();
     return result;
   };
+
   static midPointByLength(left, right) {
-    const result = Vector3d.create((left.x + right.x) / 2, (left.y + right.y) / 2, (left.z + right.z) / 2);
+    const result = new Vector3d((left.x + right.x) / 2, (left.y + right.y) / 2, (left.z + right.z) / 2);
     result.normalize();
     result.multiply(left.length());
     return result;
   };
+
+  static get empty() {
+    return new Vector3d(0, 0, 0);
+  }
+
   static get_empty() {
-    return Vector3d.create(0, 0, 0);
+    return new Vector3d(0, 0, 0);
   };
+
   static addVectors(left, right) {
-    return Vector3d.create(left.x + right.x, left.y + right.y, left.z + right.z);
+    return new Vector3d(left.x + right.x, left.y + right.y, left.z + right.z);
   };
+
   static cross(left, right) {
-    return Vector3d.create(left.y * right.z - left.z * right.y, left.z * right.x - left.x * right.z, left.x * right.y - left.y * right.x);
+    return new Vector3d(left.y * right.z - left.z * right.y, left.z * right.x - left.x * right.z, left.x * right.y - left.y * right.x);
   };
+
   static dot(left, right) {
     return left.x * right.x + left.y * right.y + left.z * right.z;
   };
+
   static getLength(source) {
     return Math.sqrt(source.x * source.x + source.y * source.y + source.z * source.z);
   };
+
   static getLengthSq(source) {
     return source.x * source.x + source.y * source.y + source.z * source.z;
   };
+
   static lerp(left, right, interpolater) {
-    return Vector3d.create(left.x * (1 - interpolater) + right.x * interpolater, left.y * (1 - interpolater) + right.y * interpolater, left.z * (1 - interpolater) + right.z * interpolater);
+    return new Vector3d(left.x * (1 - interpolater) + right.x * interpolater, left.y * (1 - interpolater) + right.y * interpolater, left.z * (1 - interpolater) + right.z * interpolater);
   };
+
   static midpoint(left, right) {
-    const tmp = Vector3d.create(left.x * (0.5) + right.x * 0.5, left.y * (0.5) + right.y * 0.5, left.z * (0.5) + right.z * 0.5);
+    const tmp = new Vector3d(left.x * (0.5) + right.x * 0.5, left.y * (0.5) + right.y * 0.5, left.z * (0.5) + right.z * 0.5);
     tmp.normalize();
     return tmp;
   };
+
   static slerp(left, right, interpolater) {
     let dot = Vector3d.dot(left, right);
     while (dot < 0.98) {
@@ -246,8 +279,7 @@ export class Vector3d {
         left = middle;
         interpolater -= 0.5;
         interpolater *= 2;
-      }
-      else {
+      } else {
         right = middle;
         interpolater *= 2;
       }
@@ -257,21 +289,25 @@ export class Vector3d {
     tmp.normalize();
     return tmp;
   };
+
   static multiplyScalar(source, f) {
     const result = source.copy();
     result.multiply(f);
     return result;
   };
+
   static scale(source, scalingFactor) {
     const result = source;
     result.multiply(scalingFactor);
     return result;
   };
+
   static subtractVectors(left, right) {
     const result = left.copy();
     result.subtract(right);
     return result;
   };
+
   static parse(data) {
     const newVector = new Vector3d();
     const list = data.split(',');
@@ -282,14 +318,17 @@ export class Vector3d {
     }
     return newVector;
   };
+
   static _transformCoordinate(vector3d, mat) {
     return mat.transform(vector3d);
   };
+
   set(valueX, valueY, valueZ) {
     this.x = valueX;
     this.y = valueY;
     this.z = valueZ;
   }
+
   copy() {
     const temp = new Vector3d();
     temp.x = this.x;
@@ -297,27 +336,33 @@ export class Vector3d {
     temp.z = this.z;
     return temp;
   }
+
   round() {
     this.x = ss.truncate((this.x * 65536)) / 65536;
     this.y = ss.truncate((this.y * 65536)) / 65536;
     this.z = ss.truncate((this.z * 65536)) / 65536;
   }
+
   add(source) {
     this.x += source.x;
     this.y += source.y;
     this.z += source.z;
   }
+
   length() {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
+
   lengthSq() {
     return this.x * this.x + this.y * this.y + this.z * this.z;
   }
+
   multiply(s) {
     this.x *= s;
     this.y *= s;
     this.z *= s;
   }
+
   normalize() {
     const length = this.length();
     if (!!length) {
@@ -326,6 +371,7 @@ export class Vector3d {
       this.z /= length;
     }
   }
+
   rotateX(radians) {
     let zTemp;
     let yTemp;
@@ -334,6 +380,7 @@ export class Vector3d {
     this.z = zTemp;
     this.y = yTemp;
   }
+
   rotateZ(radians) {
     let xTemp;
     let yTemp;
@@ -342,6 +389,7 @@ export class Vector3d {
     this.y = yTemp;
     this.x = xTemp;
   }
+
   rotateY(radians) {
     let zTemp;
     let xTemp;
@@ -350,14 +398,17 @@ export class Vector3d {
     this.x = xTemp;
     this.z = zTemp;
   }
+
   subtract(source) {
     this.x -= source.x;
     this.y -= source.y;
     this.z -= source.z;
   }
+
   toString() {
     return ss.format('{0}, {1}, {2}', this.x, this.y, this.z);
   }
+
   toSpherical() {
     let ascention;
     let declination;
@@ -371,14 +422,16 @@ export class Vector3d {
     } else {
       ascention = Math.PI - Math.asin(this.z / XZ);
     }
-    return Vector2d.create(((ascention + Math.PI) % (2 * Math.PI)), (declination + (Math.PI / 2)));
+    return new Vector2d(((ascention + Math.PI) % (2 * Math.PI)), (declination + (Math.PI / 2)));
   }
+
   toRaDec() {
     const point = this.toSpherical();
     point.x = point.x / Math.PI * 12;
     point.y = (point.y / Math.PI * 180) - 90;
     return point;
   }
+
   distanceToLine(x1, x2) {
     const t1 = Vector3d.subtractVectors(x2, x1);
     const t2 = Vector3d.subtractVectors(x1, this);
@@ -388,6 +441,7 @@ export class Vector3d {
     const d2 = t4.length();
     return d1 / d2;
   }
+
   _transformByMatrics(lookAtAdjust) {
     const temp = lookAtAdjust.transform(this);
     this.x = temp.x;
@@ -397,19 +451,22 @@ export class Vector3d {
 }
 
 export class Vector2d {
-  constructor() {
-    this.x = 0;
-    this.y = 0;
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
   }
+
   static lerp(left, right, interpolater) {
-    return Vector2d.create(left.x * (1 - interpolater) + right.x * interpolater, left.y * (1 - interpolater) + right.y * interpolater);
+    return new Vector2d(left.x * (1 - interpolater) + right.x * interpolater, left.y * (1 - interpolater) + right.y * interpolater);
   };
+
   static cartesianToSpherical2(vector) {
     const rho = Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
     const longitude = Math.atan2(vector.z, vector.x);
     const latitude = Math.asin(vector.y / rho);
-    return Vector2d.create(longitude / Math.PI * 180, latitude / Math.PI * 180);
+    return new Vector2d(longitude / Math.PI * 180, latitude / Math.PI * 180);
   };
+
   static average3d(left, right) {
     const pntLeft = Coordinates.geoTo3dDouble(left.y, left.x);
     const pntRight = Coordinates.geoTo3dDouble(right.y, right.x);
@@ -418,24 +475,22 @@ export class Vector2d {
     pntOut.normalize();
     return Vector2d.cartesianToSpherical2(pntOut);
   };
-  static create(x, y) {
-    const temp = new Vector2d();
-    temp.x = x;
-    temp.y = y;
-    return temp;
+
+  static subtract(left, right) {
+    return new Vector2d(left.x - right.x, left.y - right.y);
   };
-  static subtract (left, right) {
-    return Vector2d.create(left.x - right.x, left.y - right.y);
-  };
+
   distance3d(pointB) {
     const pnt1 = Coordinates.geoTo3dDouble(pointB.y, pointB.x);
     const pnt2 = Coordinates.geoTo3dDouble(this.y, this.x);
     const pntDiff = Vector3d.subtractVectors(pnt1, pnt2);
     return pntDiff.length() / Math.PI * 180;
   }
+
   get_length() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
   }
+
   normalize() {
     const length = this.get_length();
     if (!!length) {
@@ -443,6 +498,7 @@ export class Vector2d {
       this.y /= length;
     }
   }
+
   extend(factor) {
     this.x = this.x * factor;
     this.y = this.y * factor;
@@ -451,75 +507,55 @@ export class Vector2d {
 
 export const Vector2d$ = {};
 
-export function Matrix3d() {
-  this._m11 = 0;
-  this._m12 = 0;
-  this._m13 = 0;
-  this._m14 = 0;
-  this._m21 = 0;
-  this._m22 = 0;
-  this._m23 = 0;
-  this._m24 = 0;
-  this._m31 = 0;
-  this._m32 = 0;
-  this._m33 = 0;
-  this._m34 = 0;
-  this._offsetX = 0;
-  this._offsetY = 0;
-  this._offsetZ = 0;
-  this._m44 = 0;
-  this._isNotKnownToBeIdentity = false;
+export function Matrix3d(m11 = 0, m12 = 0, m13 = 0, m14 = 0, m21 = 0, m22 = 0, m23 = 0, m24 = 0, m31 = 0, m32 = 0, m33 = 0, m34 = 0, offsetX = 0, offsetY = 0, offsetZ = 0, m44 = 0) {
+  this._m11 = m11;
+  this._m12 = m12;
+  this._m13 = m13;
+  this._m14 = m14;
+  this._m21 = m21;
+  this._m22 = m22;
+  this._m23 = m23;
+  this._m24 = m24;
+  this._m31 = m31;
+  this._m32 = m32;
+  this._m33 = m33;
+  this._m34 = m34;
+  this._offsetX = offsetX;
+  this._offsetY = offsetY;
+  this._offsetZ = offsetZ;
+  this._m44 = m44;
+  this._isNotKnownToBeIdentity = m11 !== 0 || m12 !== 0 || m13 !== 0 || m14 !== 0 || m21 !== 0;
 }
-Matrix3d.create = function(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, offsetX, offsetY, offsetZ, m44) {
-  const temp = new Matrix3d();
-  temp._m11 = m11;
-  temp._m12 = m12;
-  temp._m13 = m13;
-  temp._m14 = m14;
-  temp._m21 = m21;
-  temp._m22 = m22;
-  temp._m23 = m23;
-  temp._m24 = m24;
-  temp._m31 = m31;
-  temp._m32 = m32;
-  temp._m33 = m33;
-  temp._m34 = m34;
-  temp._offsetX = offsetX;
-  temp._offsetY = offsetY;
-  temp._offsetZ = offsetZ;
-  temp._m44 = m44;
-  temp._isNotKnownToBeIdentity = true;
-  return temp;
-};
-Matrix3d.get_identity = function() {
+
+Matrix3d.get_identity = function () {
   const temp = new Matrix3d();
   temp.set(Matrix3d._s_identity);
   return temp;
 };
-Matrix3d.multiplyMatrix = function(matrix1, matrix2) {
+Matrix3d.multiplyMatrix = function (matrix1, matrix2) {
   if (matrix1.get__isDistinguishedIdentity()) {
     return matrix2;
   }
   if (matrix2.get__isDistinguishedIdentity()) {
     return matrix1;
   }
-  return Matrix3d.create((((matrix1._m11 * matrix2._m11) + (matrix1._m12 * matrix2._m21)) + (matrix1._m13 * matrix2._m31)) + (matrix1._m14 * matrix2._offsetX), (((matrix1._m11 * matrix2._m12) + (matrix1._m12 * matrix2._m22)) + (matrix1._m13 * matrix2._m32)) + (matrix1._m14 * matrix2._offsetY), (((matrix1._m11 * matrix2._m13) + (matrix1._m12 * matrix2._m23)) + (matrix1._m13 * matrix2._m33)) + (matrix1._m14 * matrix2._offsetZ), (((matrix1._m11 * matrix2._m14) + (matrix1._m12 * matrix2._m24)) + (matrix1._m13 * matrix2._m34)) + (matrix1._m14 * matrix2._m44), (((matrix1._m21 * matrix2._m11) + (matrix1._m22 * matrix2._m21)) + (matrix1._m23 * matrix2._m31)) + (matrix1._m24 * matrix2._offsetX), (((matrix1._m21 * matrix2._m12) + (matrix1._m22 * matrix2._m22)) + (matrix1._m23 * matrix2._m32)) + (matrix1._m24 * matrix2._offsetY), (((matrix1._m21 * matrix2._m13) + (matrix1._m22 * matrix2._m23)) + (matrix1._m23 * matrix2._m33)) + (matrix1._m24 * matrix2._offsetZ), (((matrix1._m21 * matrix2._m14) + (matrix1._m22 * matrix2._m24)) + (matrix1._m23 * matrix2._m34)) + (matrix1._m24 * matrix2._m44), (((matrix1._m31 * matrix2._m11) + (matrix1._m32 * matrix2._m21)) + (matrix1._m33 * matrix2._m31)) + (matrix1._m34 * matrix2._offsetX), (((matrix1._m31 * matrix2._m12) + (matrix1._m32 * matrix2._m22)) + (matrix1._m33 * matrix2._m32)) + (matrix1._m34 * matrix2._offsetY), (((matrix1._m31 * matrix2._m13) + (matrix1._m32 * matrix2._m23)) + (matrix1._m33 * matrix2._m33)) + (matrix1._m34 * matrix2._offsetZ), (((matrix1._m31 * matrix2._m14) + (matrix1._m32 * matrix2._m24)) + (matrix1._m33 * matrix2._m34)) + (matrix1._m34 * matrix2._m44), (((matrix1._offsetX * matrix2._m11) + (matrix1._offsetY * matrix2._m21)) + (matrix1._offsetZ * matrix2._m31)) + (matrix1._m44 * matrix2._offsetX), (((matrix1._offsetX * matrix2._m12) + (matrix1._offsetY * matrix2._m22)) + (matrix1._offsetZ * matrix2._m32)) + (matrix1._m44 * matrix2._offsetY), (((matrix1._offsetX * matrix2._m13) + (matrix1._offsetY * matrix2._m23)) + (matrix1._offsetZ * matrix2._m33)) + (matrix1._m44 * matrix2._offsetZ), (((matrix1._offsetX * matrix2._m14) + (matrix1._offsetY * matrix2._m24)) + (matrix1._offsetZ * matrix2._m34)) + (matrix1._m44 * matrix2._m44));
+  return new Matrix3d((((matrix1._m11 * matrix2._m11) + (matrix1._m12 * matrix2._m21)) + (matrix1._m13 * matrix2._m31)) + (matrix1._m14 * matrix2._offsetX), (((matrix1._m11 * matrix2._m12) + (matrix1._m12 * matrix2._m22)) + (matrix1._m13 * matrix2._m32)) + (matrix1._m14 * matrix2._offsetY), (((matrix1._m11 * matrix2._m13) + (matrix1._m12 * matrix2._m23)) + (matrix1._m13 * matrix2._m33)) + (matrix1._m14 * matrix2._offsetZ), (((matrix1._m11 * matrix2._m14) + (matrix1._m12 * matrix2._m24)) + (matrix1._m13 * matrix2._m34)) + (matrix1._m14 * matrix2._m44), (((matrix1._m21 * matrix2._m11) + (matrix1._m22 * matrix2._m21)) + (matrix1._m23 * matrix2._m31)) + (matrix1._m24 * matrix2._offsetX), (((matrix1._m21 * matrix2._m12) + (matrix1._m22 * matrix2._m22)) + (matrix1._m23 * matrix2._m32)) + (matrix1._m24 * matrix2._offsetY), (((matrix1._m21 * matrix2._m13) + (matrix1._m22 * matrix2._m23)) + (matrix1._m23 * matrix2._m33)) + (matrix1._m24 * matrix2._offsetZ), (((matrix1._m21 * matrix2._m14) + (matrix1._m22 * matrix2._m24)) + (matrix1._m23 * matrix2._m34)) + (matrix1._m24 * matrix2._m44), (((matrix1._m31 * matrix2._m11) + (matrix1._m32 * matrix2._m21)) + (matrix1._m33 * matrix2._m31)) + (matrix1._m34 * matrix2._offsetX), (((matrix1._m31 * matrix2._m12) + (matrix1._m32 * matrix2._m22)) + (matrix1._m33 * matrix2._m32)) + (matrix1._m34 * matrix2._offsetY), (((matrix1._m31 * matrix2._m13) + (matrix1._m32 * matrix2._m23)) + (matrix1._m33 * matrix2._m33)) + (matrix1._m34 * matrix2._offsetZ), (((matrix1._m31 * matrix2._m14) + (matrix1._m32 * matrix2._m24)) + (matrix1._m33 * matrix2._m34)) + (matrix1._m34 * matrix2._m44), (((matrix1._offsetX * matrix2._m11) + (matrix1._offsetY * matrix2._m21)) + (matrix1._offsetZ * matrix2._m31)) + (matrix1._m44 * matrix2._offsetX), (((matrix1._offsetX * matrix2._m12) + (matrix1._offsetY * matrix2._m22)) + (matrix1._offsetZ * matrix2._m32)) + (matrix1._m44 * matrix2._offsetY), (((matrix1._offsetX * matrix2._m13) + (matrix1._offsetY * matrix2._m23)) + (matrix1._offsetZ * matrix2._m33)) + (matrix1._m44 * matrix2._offsetZ), (((matrix1._offsetX * matrix2._m14) + (matrix1._offsetY * matrix2._m24)) + (matrix1._offsetZ * matrix2._m34)) + (matrix1._m44 * matrix2._m44));
 };
-Matrix3d.lookAtLH = function(cameraPosition, cameraTarget, cameraUpVector) {
+Matrix3d.lookAtLH = function (cameraPosition, cameraTarget, cameraUpVector) {
   const zaxis = Vector3d.subtractVectors(cameraTarget, cameraPosition);
   zaxis.normalize();
   const xaxis = Vector3d.cross(cameraUpVector, zaxis);
   xaxis.normalize();
   const yaxis = Vector3d.cross(zaxis, xaxis);
-  const mat = Matrix3d.create(xaxis.x, yaxis.x, zaxis.x, 0, xaxis.y, yaxis.y, zaxis.y, 0, xaxis.z, yaxis.z, zaxis.z, 0, -Vector3d.dot(xaxis, cameraPosition), -Vector3d.dot(yaxis, cameraPosition), -Vector3d.dot(zaxis, cameraPosition), 1);
+  const mat = new Matrix3d(xaxis.x, yaxis.x, zaxis.x, 0, xaxis.y, yaxis.y, zaxis.y, 0, xaxis.z, yaxis.z, zaxis.z, 0, -Vector3d.dot(xaxis, cameraPosition), -Vector3d.dot(yaxis, cameraPosition), -Vector3d.dot(zaxis, cameraPosition), 1);
   return mat;
 };
-Matrix3d._createIdentity = function() {
-  const matrixd = Matrix3d.create(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+Matrix3d._createIdentity = function () {
+  const matrixd = new Matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
   matrixd.set__isDistinguishedIdentity(true);
   return matrixd;
 };
-Matrix3d.equals = function(matrix1, matrix2) {
+Matrix3d.equals = function (matrix1, matrix2) {
   if (matrix1.get__isDistinguishedIdentity() || matrix2.get__isDistinguishedIdentity()) {
     return (matrix1.get_isIdentity() === matrix2.get_isIdentity());
   }
@@ -528,7 +564,7 @@ Matrix3d.equals = function(matrix1, matrix2) {
   }
   return false;
 };
-Matrix3d.fromMatrix2d = function(mat) {
+Matrix3d.fromMatrix2d = function (mat) {
   const mat3d = Matrix3d._createIdentity();
   mat3d.set_m11(mat.m11);
   mat3d.set_m12(mat.m12);
@@ -542,13 +578,13 @@ Matrix3d.fromMatrix2d = function(mat) {
   mat3d._isNotKnownToBeIdentity = true;
   return mat3d;
 };
-Matrix3d.rotationYawPitchRoll = function(heading, pitch, roll) {
+Matrix3d.rotationYawPitchRoll = function (heading, pitch, roll) {
   const matX = Matrix3d._rotationX(pitch);
   const matY = Matrix3d._rotationY(heading);
   const matZ = Matrix3d._rotationZ(roll);
   return Matrix3d.multiplyMatrix(Matrix3d.multiplyMatrix(matY, matX), matZ);
 };
-Matrix3d._rotationY = function(p) {
+Matrix3d._rotationY = function (p) {
   const v = p;
   const matNew = Matrix3d.get_identity();
   matNew._m11 = Math.cos(v);
@@ -559,7 +595,7 @@ Matrix3d._rotationY = function(p) {
   matNew._isNotKnownToBeIdentity = true;
   return matNew;
 };
-Matrix3d._rotationX = function(p) {
+Matrix3d._rotationX = function (p) {
   const v = p;
   const matNew = Matrix3d.get_identity();
   matNew._m11 = 1;
@@ -570,7 +606,7 @@ Matrix3d._rotationX = function(p) {
   matNew._isNotKnownToBeIdentity = true;
   return matNew;
 };
-Matrix3d._rotationZ = function(p) {
+Matrix3d._rotationZ = function (p) {
   const v = p;
   const matNew = Matrix3d.get_identity();
   matNew._m11 = Math.cos(v);
@@ -581,7 +617,7 @@ Matrix3d._rotationZ = function(p) {
   matNew._isNotKnownToBeIdentity = true;
   return matNew;
 };
-Matrix3d._scaling = function(x, y, z) {
+Matrix3d._scaling = function (x, y, z) {
   const matNew = Matrix3d.get_identity();
   matNew._m11 = x;
   matNew._m22 = y;
@@ -589,7 +625,7 @@ Matrix3d._scaling = function(x, y, z) {
   matNew._isNotKnownToBeIdentity = true;
   return matNew;
 };
-Matrix3d._translationXYZ = function(x, y, z) {
+Matrix3d._translationXYZ = function (x, y, z) {
   const matNew = Matrix3d.get_identity();
   matNew.set_offsetX(x);
   matNew.set_offsetY(y);
@@ -597,23 +633,23 @@ Matrix3d._translationXYZ = function(x, y, z) {
   matNew._isNotKnownToBeIdentity = true;
   return matNew;
 };
-Matrix3d.perspectiveFovLH = function(fieldOfViewY, aspectRatio, znearPlane, zfarPlane) {
+Matrix3d.perspectiveFovLH = function (fieldOfViewY, aspectRatio, znearPlane, zfarPlane) {
   const h = 1 / Math.tan(fieldOfViewY / 2);
   const w = h / aspectRatio;
-  return Matrix3d.create(w, 0, 0, 0, 0, h, 0, 0, 0, 0, zfarPlane / (zfarPlane - znearPlane), 1, 0, 0, -znearPlane * zfarPlane / (zfarPlane - znearPlane), 0);
+  return new Matrix3d(w, 0, 0, 0, 0, h, 0, 0, 0, 0, zfarPlane / (zfarPlane - znearPlane), 1, 0, 0, -znearPlane * zfarPlane / (zfarPlane - znearPlane), 0);
 };
-Matrix3d.perspectiveOffCenterLH = function(left, right, bottom, top, znearPlane, zfarPlane) {
-  return Matrix3d.create(2 * znearPlane / (right - left), 0, 0, 0, 0, 2 * znearPlane / (top - bottom), 0, 0, (left + right) / (left - right), (top + bottom) / (bottom - top), zfarPlane / (zfarPlane - znearPlane), 1, 0, 0, znearPlane * zfarPlane / (znearPlane - zfarPlane), 0);
+Matrix3d.perspectiveOffCenterLH = function (left, right, bottom, top, znearPlane, zfarPlane) {
+  return new Matrix3d(2 * znearPlane / (right - left), 0, 0, 0, 0, 2 * znearPlane / (top - bottom), 0, 0, (left + right) / (left - right), (top + bottom) / (bottom - top), zfarPlane / (zfarPlane - znearPlane), 1, 0, 0, znearPlane * zfarPlane / (znearPlane - zfarPlane), 0);
 };
-Matrix3d.invertMatrix = function(matrix3d) {
+Matrix3d.invertMatrix = function (matrix3d) {
   const mat = matrix3d.clone();
   mat.invert();
   return mat;
 };
-Matrix3d.translation = function(vector3d) {
+Matrix3d.translation = function (vector3d) {
   return Matrix3d._translationXYZ(vector3d.x, vector3d.y, vector3d.z);
 };
-Matrix3d.getMapMatrix = function(center, fieldWidth, fieldHeight, rotation) {
+Matrix3d.getMapMatrix = function (center, fieldWidth, fieldHeight, rotation) {
   let offsetX = 0;
   let offsetY = 0;
   offsetX = -((center.get_lng() + 180 - (fieldWidth / 2)) / 360);
@@ -1324,7 +1360,8 @@ export function Matrix2d() {
   this.m32 = 0;
   this.m33 = 1;
 }
-Matrix2d.create = function(m11, m12, m13, m21, m22, m23, m31, m32, m33) {
+
+Matrix2d.create = function (m11, m12, m13, m21, m22, m23, m31, m32, m33) {
   const mat = new Matrix2d();
   mat.m11 = m11;
   mat.m12 = m12;
@@ -1337,7 +1374,7 @@ Matrix2d.create = function(m11, m12, m13, m21, m22, m23, m31, m32, m33) {
   mat.m33 = m33;
   return mat;
 };
-Matrix2d.rotation = function(angle) {
+Matrix2d.rotation = function (angle) {
   const mat = new Matrix2d();
   mat.m11 = Math.cos(angle);
   mat.m21 = -Math.sin(angle);
@@ -1345,22 +1382,22 @@ Matrix2d.rotation = function(angle) {
   mat.m22 = Math.cos(angle);
   return mat;
 };
-Matrix2d.translation = function(x, y) {
+Matrix2d.translation = function (x, y) {
   const mat = new Matrix2d();
   mat.m31 = x;
   mat.m32 = y;
   return mat;
 };
-Matrix2d.scaling = function(x, y) {
+Matrix2d.scaling = function (x, y) {
   const mat = new Matrix2d();
   mat.m11 = x;
   mat.m22 = y;
   return mat;
 };
-Matrix2d.multiply = function(matrix1, matrix2) {
+Matrix2d.multiply = function (matrix1, matrix2) {
   return Matrix2d.create((((matrix1.m11 * matrix2.m11) + (matrix1.m12 * matrix2.m21)) + (matrix1.m13 * matrix2.m31)), (((matrix1.m11 * matrix2.m12) + (matrix1.m12 * matrix2.m22)) + (matrix1.m13 * matrix2.m32)), (((matrix1.m11 * matrix2.m13) + (matrix1.m12 * matrix2.m23)) + (matrix1.m13 * matrix2.m33)), (((matrix1.m21 * matrix2.m11) + (matrix1.m22 * matrix2.m21)) + (matrix1.m23 * matrix2.m31)), (((matrix1.m21 * matrix2.m12) + (matrix1.m22 * matrix2.m22)) + (matrix1.m23 * matrix2.m32)), (((matrix1.m21 * matrix2.m13) + (matrix1.m22 * matrix2.m23)) + (matrix1.m23 * matrix2.m33)), (((matrix1.m31 * matrix2.m11) + (matrix1.m32 * matrix2.m21)) + (matrix1.m33 * matrix2.m31)), (((matrix1.m31 * matrix2.m12) + (matrix1.m32 * matrix2.m22)) + (matrix1.m33 * matrix2.m32)), (((matrix1.m31 * matrix2.m13) + (matrix1.m32 * matrix2.m23)) + (matrix1.m33 * matrix2.m33)));
 };
-Matrix2d.rotateAt = function(angle, pnt) {
+Matrix2d.rotateAt = function (angle, pnt) {
   const matT0 = Matrix2d.translation(-pnt.x, -pnt.y);
   const matR = Matrix2d.rotation(angle);
   const matT1 = Matrix2d.translation(pnt.x, pnt.y);
@@ -1387,19 +1424,20 @@ export const Matrix2d$ = {
 
 export function DoubleUtilities() {
 }
-DoubleUtilities.isZero = function(value) {
+
+DoubleUtilities.isZero = function (value) {
   return (Math.abs(value) < 2.22044604925031E-50);
 };
-DoubleUtilities.isOne = function(value) {
+DoubleUtilities.isOne = function (value) {
   return (Math.abs(value - 1) < 2.22044604925031E-50);
 };
-DoubleUtilities.radiansToDegrees = function(radians) {
+DoubleUtilities.radiansToDegrees = function (radians) {
   return radians * 180 / Math.PI;
 };
-DoubleUtilities.degreesToRadians = function(degrees) {
+DoubleUtilities.degreesToRadians = function (degrees) {
   return degrees * Math.PI / 180;
 };
-DoubleUtilities.clamp = function(x, min, max) {
+DoubleUtilities.clamp = function (x, min, max) {
   return Math.max(min, Math.min(x, max));
 };
 
@@ -1451,7 +1489,8 @@ export function PositionNormalTexturedX2() {
   this.tu1 = 0;
   this.tv1 = 0;
 }
-PositionNormalTexturedX2.create2UV = function(pos, nor, u, v, u1, v1) {
+
+PositionNormalTexturedX2.create2UV = function (pos, nor, u, v, u1, v1) {
   const temp = new PositionNormalTexturedX2();
   temp.x = pos.x;
   temp.y = pos.y;
@@ -1465,7 +1504,7 @@ PositionNormalTexturedX2.create2UV = function(pos, nor, u, v, u1, v1) {
   temp.tv1 = v1;
   return temp;
 };
-PositionNormalTexturedX2.create = function(pos, nor, u, v) {
+PositionNormalTexturedX2.create = function (pos, nor, u, v) {
   const temp = new PositionNormalTexturedX2();
   temp.x = pos.x;
   temp.y = pos.y;
@@ -1480,7 +1519,7 @@ PositionNormalTexturedX2.create = function(pos, nor, u, v) {
   temp.tv1 = (1 - ((result.get_lat() + 90) / 180));
   return temp;
 };
-PositionNormalTexturedX2.createLong2UV = function(xvalue, yvalue, zvalue, nxvalue, nyvalue, nzvalue, u, v, u1, v1) {
+PositionNormalTexturedX2.createLong2UV = function (xvalue, yvalue, zvalue, nxvalue, nyvalue, nzvalue, u, v, u1, v1) {
   const temp = new PositionNormalTexturedX2();
   temp.x = xvalue;
   temp.y = yvalue;
@@ -1494,7 +1533,7 @@ PositionNormalTexturedX2.createLong2UV = function(xvalue, yvalue, zvalue, nxvalu
   temp.tv1 = v1;
   return temp;
 };
-PositionNormalTexturedX2.get_strideSize = function() {
+PositionNormalTexturedX2.get_strideSize = function () {
   return 40;
 };
 export const PositionNormalTexturedX2$ = {
@@ -1522,13 +1561,13 @@ export const PositionNormalTexturedX2$ = {
     temp.nz = nzvalue;
     temp.tu = u;
     temp.tv = v;
-    const result = Coordinates.cartesianToSpherical2(Vector3d.create(this.nx, this.ny, this.nz));
+    const result = Coordinates.cartesianToSpherical2(new Vector3d(this.nx, this.ny, this.nz));
     temp.tu1 = ((result.get_lng() + 180) / 360);
     temp.tv1 = (1 - ((result.get_lat() + 90) / 180));
     return temp;
   },
   get_normal: function () {
-    return Vector3d.create(this.nx, this.ny, this.nz);
+    return new Vector3d(this.nx, this.ny, this.nz);
   },
   set_normal: function (value) {
     this.nx = value.x;
@@ -1537,7 +1576,7 @@ export const PositionNormalTexturedX2$ = {
     return value;
   },
   get_position: function () {
-    return Vector3d.create(this.x, this.y, this.y);
+    return new Vector3d(this.x, this.y, this.y);
   },
   set_position: function (value) {
     this.x = value.x;
@@ -1563,7 +1602,8 @@ export function PositionNormalTextured() {
   this.tu = 0;
   this.tv = 0;
 }
-PositionNormalTextured.createShort = function(pos, nor, u, v) {
+
+PositionNormalTextured.createShort = function (pos, nor, u, v) {
   const temp = new PositionNormalTextured();
   temp.x = pos.x;
   temp.y = pos.y;
@@ -1575,7 +1615,7 @@ PositionNormalTextured.createShort = function(pos, nor, u, v) {
   temp.tv = v;
   return temp;
 };
-PositionNormalTextured._create = function(x, y, z, nx, ny, nz, tu, tv) {
+PositionNormalTextured._create = function (x, y, z, nx, ny, nz, tu, tv) {
   const temp = new PositionNormalTextured();
   temp.x = x;
   temp.y = y;
@@ -1587,7 +1627,7 @@ PositionNormalTextured._create = function(x, y, z, nx, ny, nz, tu, tv) {
   temp.tv = tv;
   return temp;
 };
-PositionNormalTextured.createUV = function(pos, nor, uv) {
+PositionNormalTextured.createUV = function (pos, nor, uv) {
   const temp = new PositionNormalTextured();
   temp.x = pos.x;
   temp.y = pos.y;
@@ -1613,7 +1653,7 @@ export const PositionNormalTextured$ = {
     return temp;
   },
   get_normal: function () {
-    return Vector3d.create(this.nx, this.ny, this.nz);
+    return new Vector3d(this.nx, this.ny, this.nz);
   },
   set_normal: function (value) {
     this.nx = value.x;
@@ -1622,7 +1662,7 @@ export const PositionNormalTextured$ = {
     return value;
   },
   get_position: function () {
-    return Vector3d.create(this.x, this.y, this.z);
+    return new Vector3d(this.x, this.y, this.z);
   },
   set_position: function (value) {
     this.x = value.x;
@@ -1641,7 +1681,8 @@ export const PositionNormalTextured$ = {
 export function SphereHull() {
   this.radius = 0;
 }
-SphereHull._create = function(Center, Radius) {
+
+SphereHull._create = function (Center, Radius) {
   const temp = new SphereHull();
   temp.center = Center;
   temp.radius = Radius;
@@ -1654,7 +1695,8 @@ export const SphereHull$ = {};
 
 export function ConvexHull() {
 }
-ConvexHull.findEnclosingSphereFast = function(points) {
+
+ConvexHull.findEnclosingSphereFast = function (points) {
   const result = new SphereHull();
   const count = points.length;
   const center = Vector3d.zero;
@@ -1674,7 +1716,7 @@ ConvexHull.findEnclosingSphereFast = function(points) {
   result.radius = radius;
   return result;
 };
-ConvexHull.findEnclosingSphere = function(list) {
+ConvexHull.findEnclosingSphere = function (list) {
   const Center = new Vector3d();
   let Radius = 0;
   const count = list.length;

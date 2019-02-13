@@ -130,7 +130,7 @@ import {ImageSetLayer, ImageSetLayer$} from './ImageSetLayer';
 import {Layer,Layer$} from './Layers/Layer';
 import {Histogram,Histogram$} from './Histogram';
 import {KeplerianElements, KeplerianElements$, Planets, Planets$} from './Planets';
-import {Constellations,Constellations$,ConstellationFilter,ConstellationFilter$} from './Constellation';
+import {Constellations,ConstellationFilter,ConstellationFilter$} from './Constellation';
 import {Sprite2d} from './Graphics/Sprite2d';
 import {ScriptInterface,ScriptInterface$} from './ScriptInterface';
 import {RenderContext,RenderContext$} from './RenderContext';
@@ -186,107 +186,11 @@ import {EllipseRenderer, EllipseRenderer$, Orbit, Orbit$} from './Orbit';
 import {BinaryReader,BinaryReader$} from './Utilities/BinaryReader';
 import {Star, Star$} from './Star';
 import {KeplerVertex, KeplerVertex$} from './KeplerVertex';
+import {Tessellator} from './Graphics/Tessellator';
 
 const wwtlib = (() => {
 
-  function Tessellator() {}
-  Tessellator.tesselateSimplePoly = inputList => {
-    const results = [];
-    const tess = new Tessellator();
-    tess.process(inputList, results);
-    return results;
-  };
-  const Tessellator$ = {
-    _isLeftOfHalfSpace: (pntA, pntB, pntTest) => {
-      pntA.normalize();
-      pntB.normalize();
-      const cross = Vector3d.cross(pntA, pntB);
-      const dot = Vector3d.dot(cross, pntTest);
-      return dot > 0;
-    },
-    _insideTriangle: function (pntA, pntB, pntC, pntTest) {
-      if (!this._isLeftOfHalfSpace(pntA, pntB, pntTest)) {
-        return false;
-      }
-      if (!this._isLeftOfHalfSpace(pntB, pntC, pntTest)) {
-        return false;
-      }
-      if (!this._isLeftOfHalfSpace(pntC, pntA, pntTest)) {
-        return false;
-      }
-      return true;
-    },
-    _canClipEar: function (poly, u, v, w, n, verts) {
-      let p;
-      const a = poly[verts[u]].copy();
-      const b = poly[verts[v]].copy();
-      const c = poly[verts[w]].copy();
-      let P;
-      const d = Vector3d.subtractVectors(b, a);
-      d.normalize();
-      const e = Vector3d.subtractVectors(b, c);
-      e.normalize();
-      const g = Vector3d.cross(d, e);
-      const bn = b.copy();
-      bn.normalize();
-      if (Vector3d.dot(g, bn) > 0) {
-        return false;
-      }
-      for (p = 0; p < n; p++) {
-        if ((p === u) || (p === v) || (p === w)) {
-          continue;
-        }
-        P = poly[verts[p]].copy();
-        if (this._insideTriangle(a, b, c, P)) {
-          return false;
-        }
-      }
-      return true;
-    },
-    process: function (poly, result) {
-      const n = poly.length;
-      if (poly.length < 3) {
-        return false;
-      }
-      const verts = new Array(poly.length);
-      for (let i = 0; i < n; i++) {
-        verts[i] = i;
-      }
-      let nv = n;
-      let count = 2 * nv;
-      let m = 0, v = nv - 1;
-      for (; nv > 2;) {
-        if (0 >= (count--)) {
-          return false;
-        }
-        let u = v;
-        if (nv <= u) {
-          u = 0;
-        }
-        v = u + 1;
-        if (nv <= v) {
-          v = 0;
-        }
-        let w = v + 1;
-        if (nv <= w) {
-          w = 0;
-        }
-        if (this._canClipEar(poly, u, v, w, nv, verts)) {
-          let s, t;
-          result.push(verts[u]);
-          result.push(verts[v]);
-          result.push(verts[w]);
-          m++;
-          for (s = v, t = v + 1; t < nv; s++, t++) {
-            verts[s] = verts[t];
-          }
-          nv--;
-          count = 2 * nv;
-        }
-      }
-      return true;
-    }
-  };
+
 
 
   function ScaleMap() {}
@@ -1407,7 +1311,7 @@ const wwtlib = (() => {
             height = Math.max(item.extents.y, height);
           }
         }
-        const size = Vector2d.create(width, height);
+        const size = new Vector2d(width, height);
         t3d.width = size.x * t3d.scale * factor * fntAdjust;
         t3d.height = size.y * t3d.scale * factor * fntAdjust;
         const charsLeft = text.length;
@@ -1457,8 +1361,8 @@ const wwtlib = (() => {
     const glyph = node.attributes.getNamedItem('Glyph').nodeValue;
     const item = new GlyphItem(glyph);
     item.uvRect = Rectangle.create(parseFloat(node.attributes.getNamedItem('UVLeft').nodeValue), parseFloat(node.attributes.getNamedItem('UVTop').nodeValue), parseFloat(node.attributes.getNamedItem('UVWidth').nodeValue), parseFloat(node.attributes.getNamedItem('UVHeight').nodeValue));
-    item.size = Vector2d.create(parseFloat(node.attributes.getNamedItem('SizeWidth').nodeValue), parseFloat(node.attributes.getNamedItem('SizeHeight').nodeValue));
-    item.extents = Vector2d.create(parseFloat(node.attributes.getNamedItem('ExtentsWidth').nodeValue), parseFloat(node.attributes.getNamedItem('ExtentsHeight').nodeValue));
+    item.size = new Vector2d(parseFloat(node.attributes.getNamedItem('SizeWidth').nodeValue), parseFloat(node.attributes.getNamedItem('SizeHeight').nodeValue));
+    item.extents = new Vector2d(parseFloat(node.attributes.getNamedItem('ExtentsWidth').nodeValue), parseFloat(node.attributes.getNamedItem('ExtentsHeight').nodeValue));
     return item;
   };
   const GlyphItem$ = {
@@ -2136,13 +2040,13 @@ const wwtlib = (() => {
     makePosition: function (centerX, centerY, offsetX, offsetY, angle) {
       centerX -= 960;
       centerY -= 558;
-      let point = Vector3d.create(centerX + offsetX, centerY + offsetY, 1347);
+      let point = new Vector3d(centerX + offsetX, centerY + offsetY, 1347);
       if (!!this._domeMatX || !!this._domeMatY || this._domeAngle !== angle) {
         this._domeMatX = centerX;
         this._domeMatY = centerY;
-        this._domeMatrix = Matrix3d.translation(Vector3d.create(-centerX, -centerY, 0));
+        this._domeMatrix = Matrix3d.translation(new Vector3d(-centerX, -centerY, 0));
         this._domeMatrix._multiply(Matrix3d._rotationZ((angle / 180 * Math.PI)));
-        this._domeMatrix._multiply(Matrix3d.translation(Vector3d.create(centerX, centerY, 0)));
+        this._domeMatrix._multiply(Matrix3d.translation(new Vector3d(centerX, centerY, 0)));
       }
       point = Vector3d._transformCoordinate(point, this._domeMatrix);
       return point;
@@ -2248,7 +2152,7 @@ const wwtlib = (() => {
       return value;
     },
     get_position: function () {
-      return Vector2d.create(this.get_x(), this.get_y());
+      return new Vector2d(this.get_x(), this.get_y());
     },
     set_position: function (value) {
       this.set_x(value.x);
@@ -2378,8 +2282,8 @@ const wwtlib = (() => {
     },
     hitTest: function (pntTest) {
       const tempPoints = new Array(1);
-      tempPoints[0] = Vector2d.create(pntTest.x, pntTest.y);
-      const mat = Matrix2d.rotateAt(-this.get_rotationAngle() / 180 * Math.PI, Vector2d.create(this.get_x(), this.get_y()));
+      tempPoints[0] = new Vector2d(pntTest.x, pntTest.y);
+      const mat = Matrix2d.rotateAt(-this.get_rotationAngle() / 180 * Math.PI, new Vector2d(this.get_x(), this.get_y()));
       mat._transformPoints(tempPoints);
       const rect = Rectangle.create((this.get_x() - (this.get_width() / 2)), (this.get_y() - (this.get_height() / 2)), this.get_width(), this.get_height());
       return rect.contains(tempPoints[0]);
@@ -2602,15 +2506,15 @@ const wwtlib = (() => {
     },
     pointToSelectionSpace: function (pntIn) {
       const tempPoints = new Array(1);
-      tempPoints[0] = Vector2d.create(pntIn.x, pntIn.y);
-      const mat = Matrix2d.rotateAt(-this.selectionSet[0].get_rotationAngle() / 180 * Math.PI, Vector2d.create(this.selectionSet[0].get_x(), this.selectionSet[0].get_y()));
+      tempPoints[0] = new Vector2d(pntIn.x, pntIn.y);
+      const mat = Matrix2d.rotateAt(-this.selectionSet[0].get_rotationAngle() / 180 * Math.PI, new Vector2d(this.selectionSet[0].get_x(), this.selectionSet[0].get_y()));
       mat._transformPoints(tempPoints);
       return tempPoints[0];
     },
     pointToScreenSpace: function (pntIn) {
       const tempPoints = new Array(1);
-      tempPoints[0] = Vector2d.create(pntIn.x, pntIn.y);
-      const mat = Matrix2d.rotateAt(this.selectionSet[0].get_rotationAngle() / 180 * Math.PI, Vector2d.create(this.selectionSet[0].get_x(), this.selectionSet[0].get_y()));
+      tempPoints[0] = new Vector2d(pntIn.x, pntIn.y);
+      const mat = Matrix2d.rotateAt(this.selectionSet[0].get_rotationAngle() / 180 * Math.PI, new Vector2d(this.selectionSet[0].get_x(), this.selectionSet[0].get_y()));
       mat._transformPoints(tempPoints);
       return tempPoints[0];
     },
@@ -3725,7 +3629,7 @@ const wwtlib = (() => {
         this._contextMenu.items.push(fadeInOverlays);
         this._contextMenu.items.push(trackSpaceTime);
         this._contextMenu.items.push(interpolation);
-        this._contextMenu._show(Vector2d.create(e.clientX, e.clientY));
+        this._contextMenu._show(new Vector2d(e.clientX, e.clientY));
       }
     },
     _selectAllMenu_Click: function (sender, e) {
@@ -4255,12 +4159,12 @@ const wwtlib = (() => {
       const viewWidth = (WWTControl.singleton.renderContext.width / WWTControl.singleton.renderContext.height) * 1116;
       const x = ((pnt.x) / (clientWidth) * viewWidth) - ((viewWidth - 1920) / 2);
       const y = (pnt.y) / clientHeight * 1116;
-      return Vector2d.create(x, y);
+      return new Vector2d(x, y);
     },
     mouseDown: function (sender, e) {
       this._brokeThreshold = false;
       this._needUndoFrame = true;
-      const location = this.pointToView(Vector2d.create(e.offsetX, e.offsetY));
+      const location = this.pointToView(new Vector2d(e.offsetX, e.offsetY));
       if (this._tour == null || this._tour.get_currentTourStop() == null) {
         this._needUndoFrame = false;
         return false;
@@ -4336,19 +4240,19 @@ const wwtlib = (() => {
           return true;
         }
       }
-      this._contextPoint = Vector2d.create(e.offsetX, e.offsetY);
+      this._contextPoint = new Vector2d(e.offsetX, e.offsetY);
       if (this._mouseDown) {
         this._mouseDown = false;
         if (e.button === 2) {
           if (this.get_focus() != null) {
-            this.showSelectionContextMenu(Vector2d.create(e.offsetX, e.offsetY));
+            this.showSelectionContextMenu(new Vector2d(e.offsetX, e.offsetY));
           }
         }
         return true;
       }
       if (e.button === 2) {
         if (this.get_focus() == null) {
-          this._showNoSelectionContextMenu(Vector2d.create(e.offsetX, e.offsetY));
+          this._showNoSelectionContextMenu(new Vector2d(e.offsetX, e.offsetY));
         }
         return true;
       }
@@ -4360,7 +4264,7 @@ const wwtlib = (() => {
           return true;
         }
       }
-      const location = this.pointToView(Vector2d.create(e.offsetX, e.offsetY));
+      const location = this.pointToView(new Vector2d(e.offsetX, e.offsetY));
       if (this._mouseDown && this.get_focus() != null) {
         let undoFrame = null;
         let actionText = Language.getLocalizedText(502, 'Edit');
@@ -4412,7 +4316,7 @@ const wwtlib = (() => {
           }
         }
         const aspect = this.get_focus().get_width() / this.get_focus().get_height();
-        let center = Vector2d.create(this.get_focus().get_x(), this.get_focus().get_y());
+        let center = new Vector2d(this.get_focus().get_x(), this.get_focus().get_y());
         if (e.ctrlKey) {
           actionText = Language.getLocalizedText(537, 'Resize');
           switch (this._selectionAction) {
@@ -7836,42 +7740,7 @@ const wwtlib = (() => {
   }
   const WWTElementEvent$ = {};
 
-  function Lineset(name) {
-    this._name = name;
-    this.points = [];
-  }
-  const Lineset$ = {
-    get_name: function () {
-      return this._name;
-    },
-    set_name: function (value) {
-      this._name = value;
-      return value;
-    },
-    add: function (ra, dec, pointType, name) {
-      this.points.push(new Linepoint(ra, dec, pointType, name));
-    }
-  };
 
-  function Linepoint(ra, dec, type, name) {
-    this.RA = 0;
-    this.dec = 0;
-    this.pointType = 0;
-    this.name = null;
-    this.RA = ra;
-    this.dec = dec;
-    this.pointType = type;
-    this.name = name;
-  }
-  const Linepoint$ = {
-    toString: function () {
-      if (ss.emptyString(this.name)) {
-        return Coordinates.formatDMS((((this.RA / 360) * 24 + 12) % 24)) + ', ' + Coordinates.formatDMS(this.dec) + ', ' + this.pointType.toString();
-      } else {
-        return this.name + ', ' + this.pointType.toString();
-      }
-    }
-  };
 
   function FolderBrowser() {
     this._items = [];
@@ -7931,7 +7800,7 @@ const wwtlib = (() => {
       this._mouseDown = true;
       this._lastX = ev.targetTouches[0].pageX;
       this._lastY = ev.targetTouches[0].pageY;
-      this._indexTouchDown = this._getItemIndexFromCursor(Vector2d.create(ev.targetTouches[0].pageX, ev.targetTouches[0].pageY));
+      this._indexTouchDown = this._getItemIndexFromCursor(new Vector2d(ev.targetTouches[0].pageX, ev.targetTouches[0].pageY));
     },
     onTouchMove: function (e) {
       const ev = e;
@@ -7943,7 +7812,7 @@ const wwtlib = (() => {
           this._dragging = true;
         }
         if (!this._dragging) {
-          const newHover = this._getItemIndexFromCursor(Vector2d.create(ev.targetTouches[0].pageX, ev.targetTouches[0].pageY));
+          const newHover = this._getItemIndexFromCursor(new Vector2d(ev.targetTouches[0].pageX, ev.targetTouches[0].pageY));
           if (this._hoverItem !== newHover) {
             this._hoverItem = newHover;
           }
@@ -7977,7 +7846,7 @@ const wwtlib = (() => {
     },
     onClick: function (e) {
       if (!this._ignoreClick) {
-        const index = this._getItemIndexFromCursor(Vector2d.create(e.offsetX, e.offsetY));
+        const index = this._getItemIndexFromCursor(new Vector2d(e.offsetX, e.offsetY));
         this._handleClick(index);
       } else {
         this._ignoreClick = false;
@@ -8043,7 +7912,7 @@ const wwtlib = (() => {
         this._dragging = true;
       }
       if (!this._dragging) {
-        const newHover = this._getItemIndexFromCursor(Vector2d.create(Mouse.offsetX(this.canvas, e), Mouse.offsetY(this.canvas, e)));
+        const newHover = this._getItemIndexFromCursor(new Vector2d(Mouse.offsetX(this.canvas, e), Mouse.offsetY(this.canvas, e)));
         if (this._hoverItem !== newHover) {
           this._hoverItem = newHover;
         }
@@ -8257,7 +8126,7 @@ const wwtlib = (() => {
       }
     },
     _getItemIndexFromCursor: function (testPointIn) {
-      const testPoint = Vector2d.create(testPointIn.x + this.left, testPointIn.y + this.top);
+      const testPoint = new Vector2d(testPointIn.x + this.left, testPointIn.y + this.top);
       this.imageClicked = false;
       let index = -1;
       const xpos = ss.truncate((testPoint.x / this._horzMultiple));
@@ -8404,29 +8273,32 @@ const wwtlib = (() => {
     }
   };
 
-  function ViewMoverSlew() {
-    this._upTargetTime = 0;
-    this._downTargetTime = 0;
-    this._toTargetTime = 0;
-    this._upTimeFactor = 0.6;
-    this._downTimeFactor = 0.6;
-    this._travelTimeFactor = 7;
-    this._midpointFired = false;
-    this._complete = false;
-  }
-  ViewMoverSlew.create = (from, to) => {
-    const temp = new ViewMoverSlew();
-    temp.init(from, to);
-    return temp;
-  };
-  ViewMoverSlew.createUpDown = (from, to, upDowFactor) => {
-    const temp = new ViewMoverSlew();
-    temp._upTimeFactor = temp._downTimeFactor = upDowFactor;
-    temp.init(from.copy(), to.copy());
-    return temp;
-  };
-  const ViewMoverSlew$ = {
-    init: function (from, to) {
+  /*function ViewMoverSlew() {
+
+  }*/
+  class ViewMoverSlew{
+    constructor(){
+      this._upTargetTime = 0;
+      this._downTargetTime = 0;
+      this._toTargetTime = 0;
+      this._upTimeFactor = 0.6;
+      this._downTimeFactor = 0.6;
+      this._travelTimeFactor = 7;
+      this._midpointFired = false;
+      this._complete = false;
+    }
+    static create(){
+      const temp = new ViewMoverSlew();
+      temp.init(from, to);
+      return temp;
+    }
+    static createUpDown(){
+      const temp = new ViewMoverSlew();
+      temp._upTimeFactor = temp._downTimeFactor = upDowFactor;
+      temp.init(from.copy(), to.copy());
+      return temp;
+    }
+    init(from, to) {
       if (Math.abs(from.lng - to.lng) > 180) {
         if (from.lng > to.lng) {
           from.lng -= 360;
@@ -8470,64 +8342,65 @@ const wwtlib = (() => {
       this._toTop.zoom = this._fromTop.zoom;
       this._toTop.angle = this._fromTop.angle;
       this._toTop.rotation = this._fromTop.rotation;
-    },
-    get_complete: function () {
+    }
+    get_complete() {
       return this._complete;
-    },
-    get_currentPosition: function () {
-      const elapsed = ss.now() - this._fromTime;
-      let elapsedSeconds = (elapsed) / 1000;
-      if (elapsedSeconds < this._upTargetTime) {
-        return CameraParameters.interpolate(this._from, this._fromTop, elapsedSeconds / this._upTargetTime, 3, false);
-      } else if (elapsedSeconds < this._downTargetTime) {
-        elapsedSeconds -= this._upTargetTime;
-        if (Settings.get_active().get_galacticMode() && WWTControl.singleton.renderContext.space) {
-          return CameraParameters.interpolateGreatCircle(this._fromTop, this._toTop, elapsedSeconds / (this._downTargetTime - this._upTargetTime), 3, false);
-        }
-        return CameraParameters.interpolate(this._fromTop, this._toTop, elapsedSeconds / (this._downTargetTime - this._upTargetTime), 3, false);
-      } else {
-        if (!this._midpointFired) {
-          this._midpointFired = true;
-          if (this._midpoint != null) {
-            this._midpoint();
-          }
-        }
-        elapsedSeconds -= this._downTargetTime;
-        let alpha = elapsedSeconds / (this._toTargetTime - this._downTargetTime);
-        if (alpha > 1) {
-          alpha = 1;
-          this._complete = true;
-          return this._to.copy();
-        }
-        return CameraParameters.interpolate(this._toTop, this._to, alpha, 3, false);
+    }
+    get_currentPosition(){
+    const elapsed = ss.now() - this._fromTime;
+    let elapsedSeconds = (elapsed) / 1000;
+    if (elapsedSeconds < this._upTargetTime) {
+    return CameraParameters.interpolate(this._from, this._fromTop, elapsedSeconds / this._upTargetTime, 3, false);
+  } else if (elapsedSeconds < this._downTargetTime) {
+    elapsedSeconds -= this._upTargetTime;
+    if (Settings.get_active().get_galacticMode() && WWTControl.singleton.renderContext.space) {
+      return CameraParameters.interpolateGreatCircle(this._fromTop, this._toTop, elapsedSeconds / (this._downTargetTime - this._upTargetTime), 3, false);
+    }
+    return CameraParameters.interpolate(this._fromTop, this._toTop, elapsedSeconds / (this._downTargetTime - this._upTargetTime), 3, false);
+  } else {
+    if (!this._midpointFired) {
+      this._midpointFired = true;
+      if (this._midpoint != null) {
+        this._midpoint();
       }
-    },
-    get_currentDateTime: () => {
+    }
+    elapsedSeconds -= this._downTargetTime;
+    let alpha = elapsedSeconds / (this._toTargetTime - this._downTargetTime);
+    if (alpha > 1) {
+      alpha = 1;
+      this._complete = true;
+      return this._to.copy();
+    }
+    return CameraParameters.interpolate(this._toTop, this._to, alpha, 3, false);
+  }
+}
+    static get_currentDateTime(){
       SpaceTimeController.updateClock();
       return SpaceTimeController.get_now();
-    },
-    get_midpoint: function () {
+    }
+    static get_midpoint(){
       return this._midpoint;
-    },
-    set_midpoint: function (value) {
+    }
+    static set_midpoint(value) {
       this._midpoint = value;
       return value;
-    },
-    get_moveTime: function () {
+    }
+    static get_moveTime(){
       return this._toTargetTime;
     }
   };
 
-  function MainView() {
+  class MainView {
+    static _drawTest(){
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'rgb(80,0,0)';
+      ctx.fillRect(120, 120, 165, 160);
+      ctx.fillStyle = 'rgba(0, 0, 160, 0.5)';
+      ctx.fillRect(140, 140, 165, 160);
+    }
   }
-  MainView._drawTest = () => {
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'rgb(80,0,0)';
-    ctx.fillRect(120, 120, 165, 160);
-    ctx.fillStyle = 'rgba(0, 0, 160, 0.5)';
-    ctx.fillRect(140, 140, 165, 160);
-  };
+
 
   function Class1() {}
   const Class1$ = {};
@@ -10128,7 +10001,7 @@ const wwtlib = (() => {
               if (this.get_zAxisReverse()) {
                 Zcoord = -Zcoord;
               }
-              position = Vector3d.create((Xcoord * xyzScale), (Zcoord * xyzScale), (Ycoord * xyzScale));
+              position = new Vector3d((Xcoord * xyzScale), (Zcoord * xyzScale), (Ycoord * xyzScale));
               this.positions.push(position);
             }
             switch (this.get__colorMap()) {
@@ -11966,7 +11839,7 @@ const wwtlib = (() => {
     },
     _midpoint$1: (positionNormalTextured, positionNormalTextured_2) => {
       const a1 = Vector3d.lerp(positionNormalTextured.position, positionNormalTextured_2.position, 0.5);
-      const a1uv = Vector2d.lerp(Vector2d.create(positionNormalTextured.tu, positionNormalTextured.tv), Vector2d.create(positionNormalTextured_2.tu, positionNormalTextured_2.tv), 0.5);
+      const a1uv = Vector2d.lerp(new Vector2d(positionNormalTextured.tu, positionNormalTextured.tv), new Vector2d(positionNormalTextured_2.tu, positionNormalTextured_2.tv), 0.5);
       a1.normalize();
       return PositionTexture.createPos(a1, a1uv.x, a1uv.y);
     },
@@ -12041,7 +11914,7 @@ const wwtlib = (() => {
       lng = -lng;
       const fac1 = this.dataset.get_baseTileDegrees();
       const factor = Math.tan(fac1 * Tile.RC);
-      return this.matrix.transform(Vector3d.create(1, (lat / fac1 * factor), (lng / fac1 * factor)));
+      return this.matrix.transform(new Vector3d(1, (lat / fac1 * factor), (lng / fac1 * factor)));
     },
     createGeometry: function (renderContext) {
       Tile.prototype.createGeometry.call(this, renderContext);
@@ -12221,7 +12094,7 @@ const wwtlib = (() => {
       lng = -lng;
       const fac1 = this.dataset.get_baseTileDegrees() / 2;
       const factor = Math.tan(fac1 * Tile.RC);
-      return this.dataset.get_matrix().transform(Vector3d.create(1, (lat / fac1 * factor), (lng / fac1 * factor)));
+      return this.dataset.get_matrix().transform(new Vector3d(1, (lat / fac1 * factor), (lng / fac1 * factor)));
     },
     computeBoundingSphereBottomsUp: function () {
       let tileDegrees = this.dataset.get_baseTileDegrees() / (Math.pow(2, this.level));
@@ -13519,7 +13392,7 @@ const wwtlib = (() => {
       }
       if (renderContext.gl != null) {
         if (Annotation.batchDirty || this.annotationDirty) {
-          const up = Vector3d.create(0, 1, 0);
+          const up = new Vector3d(0, 1, 0);
           const xNormal = Vector3d.cross(this.center, up);
           const yNormal = Vector3d.cross(this.center, xNormal);
           const r = this._radius$1 / 44;
@@ -13529,7 +13402,7 @@ const wwtlib = (() => {
           for (let j = 0; j <= segments; j++) {
             const x = Math.cos(j * radiansPerSegment) * r;
             const y = Math.sin(j * radiansPerSegment) * r;
-            vertexList.push(Vector3d.create(this.center.x + x * xNormal.x + y * yNormal.x, this.center.y + x * xNormal.y + y * yNormal.y, this.center.z + x * xNormal.z + y * yNormal.z));
+            vertexList.push(new Vector3d(this.center.x + x * xNormal.x + y * yNormal.x, this.center.y + x * xNormal.y + y * yNormal.y, this.center.z + x * xNormal.z + y * yNormal.z));
           }
           if (this._strokeWidth$1 > 0 && vertexList.length > 1) {
             for (let i = 0; i < (vertexList.length - 1); i++) {
@@ -14034,7 +13907,7 @@ const wwtlib = (() => {
     const relativeXIntoCell = (metersX / 256) - Math.floor(metersX / 256);
     const metersY = MercatorTile.absoluteLatToMetersAtZoom(lat, zoom);
     const relativeYIntoCell = (metersY / 256) - Math.floor(metersY / 256);
-    return Vector2d.create(relativeXIntoCell, relativeYIntoCell);
+    return new Vector2d(relativeXIntoCell, relativeYIntoCell);
   };
   MercatorTile.relativeMetersToLatAtZoom = (Y, zoom) => {
     const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
@@ -14101,12 +13974,12 @@ const wwtlib = (() => {
       this.topRight = this.geoTo3d(this._latMin$1, this._lngMax$1, false);
       this.bottomLeft = this.geoTo3d(this._latMax$1, this._lngMin$1, false);
       if (!this.tileY) {
-        this.topLeft = Vector3d.create(0, 1, 0);
-        this.topRight = Vector3d.create(0, 1, 0);
+        this.topLeft = new Vector3d(0, 1, 0);
+        this.topRight = new Vector3d(0, 1, 0);
       }
       if (this.tileY === Math.pow(2, this.level) - 1) {
-        this.bottomRight = Vector3d.create(0, -1, 0);
-        this.bottomLeft = Vector3d.create(0, -1, 0);
+        this.bottomRight = new Vector3d(0, -1, 0);
+        this.bottomLeft = new Vector3d(0, -1, 0);
       }
       let distVect = this.topLeft;
       distVect.subtract(this.sphereCenter);
@@ -14240,14 +14113,14 @@ const wwtlib = (() => {
         y1 = this._subDivisionLevel$1;
         for (x1 = 0; x1 <= this._subDivisionLevel$1; x1++) {
           index = y1 * (this._subDivisionLevel$1 + 1) + x1;
-          verts[index].position = Vector3d.create(0, 1, 0);
+          verts[index].position = new Vector3d(0, 1, 0);
         }
       }
       if (this.tileY === Math.pow(2, this.level) - 1) {
         y1 = 0;
         for (x1 = 0; x1 <= this._subDivisionLevel$1; x1++) {
           index = y1 * (this._subDivisionLevel$1 + 1) + x1;
-          verts[index].position = Vector3d.create(0, -1, 0);
+          verts[index].position = new Vector3d(0, -1, 0);
         }
       }
       this.triangleCount = this._subDivisionLevel$1 * this._subDivisionLevel$1 * 2;
@@ -14457,9 +14330,9 @@ const wwtlib = (() => {
       Triangle,
       Util,
       Wtml,
-      FolderUp: [FolderUp, {}, null, IThumbnail],
-      ViewMoverSlew: [ViewMoverSlew, ViewMoverSlew$, null, IViewMover],
-      MainView: [MainView, null, null],
+      FolderUp,
+      ViewMoverSlew,
+      MainView,
       PositionTextureVertexBuffer: [PositionTextureVertexBuffer, PositionTextureVertexBuffer$, VertexBufferBase],
       KeplerVertexBuffer: [KeplerVertexBuffer, KeplerVertexBuffer$, VertexBufferBase],
       TimeSeriesLineVertexBuffer: [TimeSeriesLineVertexBuffer, TimeSeriesLineVertexBuffer$, VertexBufferBase],
@@ -14606,7 +14479,7 @@ const wwtlib = (() => {
       SpriteShader: [SpriteShader, SpriteShader$, null],
       ShapeSpriteShader: [ShapeSpriteShader, ShapeSpriteShader$, null],
       TextShader: [TextShader, TextShader$, null],
-      Tessellator: [Tessellator, Tessellator$, null],
+      Tessellator,
       Texture: [Texture, Texture$, null, ss.IDisposable],
       Grids: [Grids, Grids$, null],
       KeplerVertex: [KeplerVertex, KeplerVertex$, null],
@@ -14707,9 +14580,7 @@ const wwtlib = (() => {
       CameraParameters: [CameraParameters, CameraParameters$, null],
       Color,
       Colors,
-      Constellations: [Constellations, Constellations$, null],
-      Lineset: [Lineset, Lineset$, null],
-      Linepoint: [Linepoint, Linepoint$, null],
+      Constellations,
       ConstellationFilter: [ConstellationFilter, ConstellationFilter$, null],
       Coordinates: [Coordinates, Coordinates$, null],
       PositionTexture: PositionTexture,
@@ -14823,7 +14694,7 @@ const wwtlib = (() => {
   ModelShader.textureLoc = 0;
   ModelShader.initialized = false;
   ModelShader._prog = null;
-  ModelShader.sunPosition = Vector3d.create(-1, -1, -1);
+  ModelShader.sunPosition = new Vector3d(-1, -1, -1);
   ModelShader.minLightingBrightness = 1;
   ModelShader.atmosphereColor = Color.fromArgb(0, 0, 0, 0);
   ModelShaderTan.vertLoc = 0;
@@ -14831,14 +14702,14 @@ const wwtlib = (() => {
   ModelShaderTan.textureLoc = 0;
   ModelShaderTan.initialized = false;
   ModelShaderTan._prog = null;
-  ModelShaderTan.sunPosition = Vector3d.create(-1, -1, -1);
+  ModelShaderTan.sunPosition = new Vector3d(-1, -1, -1);
   ModelShaderTan.minLightingBrightness = 1;
   ModelShaderTan.atmosphereColor = Color.fromArgb(0, 0, 0, 0);
   TileShader.vertLoc = 0;
   TileShader.textureLoc = 0;
   TileShader.initialized = false;
   TileShader._prog = null;
-  TileShader.sunPosition = Vector3d.create(-1, -1, -1);
+  TileShader.sunPosition = new Vector3d(-1, -1, -1);
   TileShader.minLightingBrightness = 1;
   TileShader.atmosphereColor = Color.fromArgb(0, 0, 0, 0);
   ImageShader.vertLoc = 0;
@@ -14908,7 +14779,7 @@ const wwtlib = (() => {
   LayerUI._type = null;
   Object3d.maX_VERTICES = 8000;
   Object3d.maX_POLYGONS = 8000;
-  Orbit._orbitalToWwt = Matrix3d.create(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
+  Orbit._orbitalToWwt = new Matrix3d(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
   Orbit._initBegun = false;
   PushPin._pinTextureCache = {};
   PushPin._pins = Planets.loadPlanetTexture('//cdn.worldwidetelescope.org/webclient/images/pins.png');

@@ -9,19 +9,19 @@ export function Coordinates(ascention, declination) {
   this._ascention = ascention + (Math.PI * 80) % (Math.PI * 2);
   this._declination = declination;
 }
-Coordinates.geoTo3d = (lat, lng) => Vector3d.create((Math.cos(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * 1), (Math.sin(lat * Coordinates.RC) * 1), (Math.sin(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * 1));
-Coordinates.geoTo3dDouble = (lat, lng) => Vector3d.create(Math.cos(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * 1, Math.sin(lat * Coordinates.RC) * 1, Math.sin(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * 1);
+Coordinates.geoTo3d = (lat, lng) => new Vector3d((Math.cos(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * 1), (Math.sin(lat * Coordinates.RC) * 1), (Math.sin(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * 1));
+Coordinates.geoTo3dDouble = (lat, lng) => new Vector3d(Math.cos(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * 1, Math.sin(lat * Coordinates.RC) * 1, Math.sin(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * 1);
 Coordinates.geoTo3dDoubleRad = (lat, lng, radius) => {
   lng -= 180;
-  return Vector3d.create(Math.cos(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * radius, Math.sin(lat * Coordinates.RC) * radius, Math.sin(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * radius);
+  return new Vector3d(Math.cos(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * radius, Math.sin(lat * Coordinates.RC) * radius, Math.sin(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * radius);
 };
-Coordinates.geoTo3dRad = (lat, lng, radius) => Vector3d.create((Math.cos(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * radius), (Math.sin(lat * Coordinates.RC) * radius), (Math.sin(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * radius));
-Coordinates.raDecTo3d = (ra, dec) => Vector3d.create((Math.cos(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * 1), (Math.sin(dec * Coordinates.RC) * 1), (Math.sin(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * 1));
-Coordinates.raDecTo3dAu = (ra, dec, au) => Vector3d.create((Math.cos(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * au), (Math.sin(dec * Coordinates.RC) * au), (Math.sin(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * au));
-Coordinates.raDecTo3dMat = (ra, dec, mat) => Vector3d._transformCoordinate(Vector3d.create((Math.cos(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * 1), (Math.sin(dec * Coordinates.RC) * 1), (Math.sin(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * 1)), mat);
+Coordinates.geoTo3dRad = (lat, lng, radius) => new Vector3d((Math.cos(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * radius), (Math.sin(lat * Coordinates.RC) * radius), (Math.sin(lng * Coordinates.RC) * Math.cos(lat * Coordinates.RC) * radius));
+Coordinates.raDecTo3d = (ra, dec) => new Vector3d((Math.cos(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * 1), (Math.sin(dec * Coordinates.RC) * 1), (Math.sin(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * 1));
+Coordinates.raDecTo3dAu = (ra, dec, au) => new Vector3d((Math.cos(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * au), (Math.sin(dec * Coordinates.RC) * au), (Math.sin(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * au));
+Coordinates.raDecTo3dMat = (ra, dec, mat) => Vector3d._transformCoordinate(new Vector3d((Math.cos(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * 1), (Math.sin(dec * Coordinates.RC) * 1), (Math.sin(ra * Coordinates.RCRA) * Math.cos(dec * Coordinates.RC) * 1)), mat);
 Coordinates.raDecTo3dPointRad = (point, radius) => {
   point.set_dec(-point.get_dec());
-  return Vector3d.create((Math.cos(point.get_RA() * Coordinates.RCRA) * Math.cos(point.get_dec() * Coordinates.RC) * radius), (Math.sin(point.get_dec() * Coordinates.RC) * radius), (Math.sin(point.get_RA() * Coordinates.RCRA) * Math.cos(point.get_dec() * Coordinates.RC) * radius));
+  return new Vector3d((Math.cos(point.get_RA() * Coordinates.RCRA) * Math.cos(point.get_dec() * Coordinates.RC) * radius), (Math.sin(point.get_dec() * Coordinates.RC) * radius), (Math.sin(point.get_RA() * Coordinates.RCRA) * Math.cos(point.get_dec() * Coordinates.RC) * radius));
 };
 Coordinates.sterographicTo3d = (x, y, radius, standardLat, meridean, falseEasting, falseNorthing, scale, north) => {
   let lat = 90;
@@ -96,7 +96,7 @@ Coordinates._altAzToRaDec = (Altitude, Azimuth, Latitude) => {
     hrAngle += Math.PI * 2;
   }
   dec = Math.asin(Math.sin(Latitude) * Math.sin(Altitude) - Math.cos(Latitude) * Math.cos(Altitude) * Math.cos(Azimuth));
-  return Vector2d.create(hrAngle, dec);
+  return new Vector2d(hrAngle, dec);
 };
 Coordinates.mstFromUTC2 = (utc, lng) => {
   let year = utc.getUTCFullYear();
@@ -159,13 +159,13 @@ Coordinates.cartesianToSphericalSky = vector => {
   const rho = Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
   const ra = Math.atan2(vector.z, vector.x);
   const dec = Math.asin(-vector.y / rho);
-  return Vector2d.create(ra / Math.PI * 12, dec / Math.PI * 180);
+  return new Vector2d(ra / Math.PI * 12, dec / Math.PI * 180);
 };
 Coordinates.cartesianToLatLng = vector => {
   const rho = Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
   const longitude = Math.atan2(vector.z, vector.x);
   const latitude = Math.asin(vector.y / rho);
-  return Vector2d.create(longitude * 180 / Math.PI, latitude * 180 / Math.PI);
+  return new Vector2d(longitude * 180 / Math.PI, latitude * 180 / Math.PI);
 };
 Coordinates.cartesianToSpherical3 = vector => {
   const rho = Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);

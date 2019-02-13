@@ -36,7 +36,7 @@ export function RenderContext() {
   this._targetHeight = 1;
   this.targetAltitude = 0;
   this._galactic = true;
-  this._galacticMatrix = Matrix3d.create(-0.4838350155, -0.0548755604, -0.8734370902, 0, 0.7469822445, 0.4941094279, -0.44482963, 0, 0.4559837762, -0.867666149, -0.1980763734, 0, 0, 0, 0, 1);
+  this._galacticMatrix = new Matrix3d(-0.4838350155, -0.0548755604, -0.8734370902, 0, 0.7469822445, 0.4941094279, -0.44482963, 0, 0.4559837762, -0.867666149, -0.1980763734, 0, 0, 0, 0, 1);
   this._firstTimeInit = false;
   this._useSolarSystemTilt = true;
   this.customTrackingParams = new CameraParameters();
@@ -320,10 +320,10 @@ export const RenderContext$ = {
       this._targetHeight = 1;
     }
     const rotLocal = this.viewCamera.rotation;
-    this.cameraPosition = Vector3d.create((Math.sin(rotLocal) * Math.sin(this.viewCamera.angle) * distance), (Math.cos(rotLocal) * Math.sin(this.viewCamera.angle) * distance), (-this._targetHeight - (Math.cos(this.viewCamera.angle) * distance)));
-    const cameraTarget = Vector3d.create(0, 0, -this._targetHeight);
+    this.cameraPosition = new Vector3d((Math.sin(rotLocal) * Math.sin(this.viewCamera.angle) * distance), (Math.cos(rotLocal) * Math.sin(this.viewCamera.angle) * distance), (-this._targetHeight - (Math.cos(this.viewCamera.angle) * distance)));
+    const cameraTarget = new Vector3d(0, 0, -this._targetHeight);
     const camHeight = this.cameraPosition.length();
-    const lookUp = Vector3d.create(Math.sin(rotLocal) * Math.cos(this.viewCamera.angle), Math.cos(rotLocal) * Math.cos(this.viewCamera.angle), Math.sin(this.viewCamera.angle));
+    const lookUp = new Vector3d(Math.sin(rotLocal) * Math.cos(this.viewCamera.angle), Math.cos(rotLocal) * Math.cos(this.viewCamera.angle), Math.sin(this.viewCamera.angle));
     this.set_view(Matrix3d.lookAtLH(this.cameraPosition, cameraTarget, lookUp));
     this.set_viewBase(this.get_view());
     let back = Math.sqrt((distance + 1) * (distance + 1) - 1);
@@ -390,8 +390,8 @@ export const RenderContext$ = {
     this.set_worldBase(WorldMatrix.clone());
     const localZoomFactor = this.viewCamera.zoom;
     const FovAngle = (localZoomFactor / 343.774) / Math.PI * 180;
-    this.cameraPosition = Vector3d.create(0, 0, 0);
-    this.set_view(Matrix3d.lookAtLH(this.cameraPosition, Vector3d.create(0, 0, -1), Vector3d.create(Math.sin(camLocal), Math.cos(camLocal), 0)));
+    this.cameraPosition = new Vector3d(0, 0, 0);
+    this.set_view(Matrix3d.lookAtLH(this.cameraPosition, new Vector3d(0, 0, -1), new Vector3d(Math.sin(camLocal), Math.cos(camLocal), 0)));
     this.set_viewBase(this.get_view().clone());
     const m_nearPlane = 0.1;
     this.nearPlane = 0.1;
@@ -432,9 +432,9 @@ export const RenderContext$ = {
   setupMatricesOverlays: function () {
     this.set_world(Matrix3d.get_identity());
     const lookAtAdjust = Matrix3d.get_identity();
-    const lookFrom = Vector3d.create(0, 0, 0);
-    const lookAt = Vector3d.create(0, 0, 1);
-    const lookUp = Vector3d.create(0, 1, 0);
+    const lookFrom = new Vector3d(0, 0, 0);
+    const lookAt = new Vector3d(0, 0, 1);
+    const lookUp = new Vector3d(0, 1, 0);
     let view;
     view = Matrix3d.lookAtLH(lookFrom, lookAt, lookUp);
     view._multiply(Matrix3d._scaling(1, -1, 1));
@@ -479,11 +479,11 @@ export const RenderContext$ = {
         const val = Math.min(1.903089987, Util.log10(cameraDistance) + 5) / 1.903089987;
         angle = angle * Math.max(0, 1 - val);
       }
-      this.cameraPosition = Vector3d.create((Math.sin(-this.viewCamera.rotation) * Math.sin(angle) * cameraDistance), (Math.cos(-this.viewCamera.rotation) * Math.sin(angle) * cameraDistance), (Math.cos(angle) * cameraDistance));
-      lookUp = Vector3d.create(Math.sin(-this.viewCamera.rotation), Math.cos(-this.viewCamera.rotation), 1E-05);
+      this.cameraPosition = new Vector3d((Math.sin(-this.viewCamera.rotation) * Math.sin(angle) * cameraDistance), (Math.cos(-this.viewCamera.rotation) * Math.sin(angle) * cameraDistance), (Math.cos(angle) * cameraDistance));
+      lookUp = new Vector3d(Math.sin(-this.viewCamera.rotation), Math.cos(-this.viewCamera.rotation), 1E-05);
     } else {
-      this.cameraPosition = Vector3d.create(0, 0, cameraDistance);
-      lookUp = Vector3d.create(Math.sin(-this.viewCamera.rotation), Math.cos(-this.viewCamera.rotation), 0.0001);
+      this.cameraPosition = new Vector3d(0, 0, cameraDistance);
+      lookUp = new Vector3d(Math.sin(-this.viewCamera.rotation), Math.cos(-this.viewCamera.rotation), 0.0001);
     }
     this.cameraPosition = viewAdjust.transform(this.cameraPosition);
     this._cameraOffset = this.cameraPosition.copy();
@@ -648,8 +648,8 @@ export const RenderContext$ = {
       this._frustum[i].normalize();
     }
     this._frustumDirty = false;
-    this.WVP.scale(Vector3d.create(this.width / 2, -this.height / 2, 1));
-    this.WVP.translate(Vector3d.create(this.width / 2, this.height / 2, 0));
+    this.WVP.scale(new Vector3d(this.width / 2, -this.height / 2, 1));
+    this.WVP.translate(new Vector3d(this.width / 2, this.height / 2, 0));
     this._setMatrixes();
   },
   _initGL: function () {

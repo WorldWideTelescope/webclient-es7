@@ -532,7 +532,7 @@ export const TourPlayer$ = {
   },
   mouseDown: function (sender, e) {
     let location;
-    location = this.pointToView(Vector2d.create(e.offsetX, e.offsetY));
+    location = this.pointToView(new Vector2d(e.offsetX, e.offsetY));
     if (this._tour == null || this._tour.get_currentTourStop() == null) {
       return false;
     }
@@ -551,7 +551,7 @@ export const TourPlayer$ = {
       }
     }
     if (this._playerState.get_state()) {
-      return this._hitTextPlayerControls(Vector2d.create(e.offsetX, e.offsetY), true, true);
+      return this._hitTextPlayerControls(new Vector2d(e.offsetX, e.offsetY), true, true);
     } else {
       this._playerState.set_targetState(true);
       this._lastHit = ss.now();
@@ -570,7 +570,7 @@ export const TourPlayer$ = {
   mouseMove: function (sender, e) {
     let location;
     try {
-      location = this.pointToView(Vector2d.create(e.offsetX, e.offsetY));
+      location = this.pointToView(new Vector2d(e.offsetX, e.offsetY));
     } catch ($e1) {
       return false;
     }
@@ -583,7 +583,7 @@ export const TourPlayer$ = {
       }
     }
     if (this._playerState.get_state()) {
-      return this._hitTextPlayerControls(Vector2d.create(e.offsetX, e.offsetY), false, false);
+      return this._hitTextPlayerControls(new Vector2d(e.offsetX, e.offsetY), false, false);
     }
     return false;
   },
@@ -659,6 +659,6 @@ export const TourPlayer$ = {
     const viewWidth = (clientWidth / clientHeight) * 1116;
     const x = ((pnt.x) / (clientWidth) * viewWidth) - ((viewWidth - 1920) / 2);
     const y = (pnt.y) / clientHeight * 1116;
-    return Vector2d.create(x, y);
+    return new Vector2d(x, y);
   }
 };

@@ -43,13 +43,13 @@ RenderTriangle._getMiterPoint = function(p1, p2, p3, edgeOffset) {
   const edge2 = Vector2d.subtract(p3, p1);
   edge1.normalize();
   edge2.normalize();
-  const dir = Vector2d.create(edge1.x + edge2.x, edge1.y + edge2.y);
+  const dir = new Vector2d(edge1.x + edge2.x, edge1.y + edge2.y);
   dir.normalize();
-  const delta = Vector2d.create(edge1.x - edge2.x, edge1.y - edge2.y);
+  const delta = new Vector2d(edge1.x - edge2.x, edge1.y - edge2.y);
   const sineHalfAngle = delta.get_length() / 2;
   const net = Math.min(2, edgeOffset / sineHalfAngle);
   dir.extend(net);
-  return Vector2d.create(p1.x - dir.x, p1.y - dir.y);
+  return new Vector2d(p1.x - dir.x, p1.y - dir.y);
 };
 RenderTriangle._miterPoint = function(p1x, p1y, p2x, p2y, p3x, p3y, ExpansionInPixels) {
   let e1x = p2x - p1x;
@@ -80,7 +80,7 @@ RenderTriangle._miterPoint = function(p1x, p1y, p2x, p2y, p3x, p3y, ExpansionInP
   const net = Math.min(2, ExpansionInPixels / sineHalfAngle);
   dx *= net;
   dy *= net;
-  return Vector2d.create(p1x - dx, p1y - dy);
+  return new Vector2d(p1x - dx, p1y - dy);
 };
 RenderTriangle._miterPointOut = function(pntOut, p1x, p1y, p2x, p2y, p3x, p3y, ExpansionInPixels) {
   let e1x = p2x - p1x;
@@ -125,7 +125,7 @@ export const RenderTriangle$ = {
     const x = a.x + b.x + c.x;
     const y = a.y + b.y + c.y;
     const z = a.z + b.z + c.z;
-    this.normal = Vector3d.create(x / 3, y / 3, z / 3);
+    this.normal = new Vector3d(x / 3, y / 3, z / 3);
     this.normal.normalize();
   },
   _checkBackface: function () {

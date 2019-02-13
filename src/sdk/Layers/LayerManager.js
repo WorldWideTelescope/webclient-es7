@@ -514,8 +514,8 @@ LayerManager._getFrameTarget = function(renderContext, TrackingFrame) {
     }
   }
   targetPoint = renderContext.get_world().transform(targetPoint);
-  const lookAt = renderContext.get_world().transform(Vector3d.create(0, 0, 1));
-  const lookUp = Vector3d.subtractVectors(renderContext.get_world().transform(Vector3d.create(0, 1, 0)), targetPoint);
+  const lookAt = renderContext.get_world().transform(new Vector3d(0, 0, 1));
+  const lookUp = Vector3d.subtractVectors(renderContext.get_world().transform(new Vector3d(0, 1, 0)), targetPoint);
   lookUp.normalize();
   target.matrix = Matrix3d.lookAtLH(new Vector3d(), Vector3d.subtractVectors(lookAt, targetPoint), lookUp);
   renderContext.set_nominalRadius(oldNominalRadius);
@@ -640,7 +640,7 @@ LayerManager._draw = function(renderContext, opacity, astronomical, referenceFra
           }
           const matSaved = renderContext.get_world();
           renderContext.set_world(Matrix3d.multiplyMatrix(thisMap.frame.worldMatrix, renderContext.get_worldBaseNonRotating()));
-          map.frame.get_orbit().draw3D(renderContext, 1 * 0.5, Vector3d.create(0, 0, 0));
+          map.frame.get_orbit().draw3D(renderContext, 1 * 0.5, new Vector3d(0, 0, 0));
           renderContext.set_world(matSaved);
         }
         else if (map.frame.referenceFrameType === 2) {
@@ -821,7 +821,7 @@ LayerManager.showLayerMenu = function(selected, x, y) {
   let saveMenu;
   let spacer1;
   let spacer2;
-  LayerManager._lastMenuClick = Vector2d.create(x, y);
+  LayerManager._lastMenuClick = new Vector2d(x, y);
   LayerManager._selectedLayer = selected;
   if (ss.canCast(selected, LayerMap)) {
     LayerManager.set_currentMap((selected).get_name());
@@ -904,7 +904,7 @@ LayerManager.showLayerMenu = function(selected, x, y) {
       LayerManager._contextMenu.items.push(down);
       LayerManager._contextMenu.items.push(bottom);
     }
-    LayerManager._contextMenu._show(Vector2d.create(x, y));
+    LayerManager._contextMenu._show(new Vector2d(x, y));
   }
   else if (ss.canCast(selected, LayerMap)) {
     const map = ss.safeCast(selected, LayerMap);
@@ -1018,7 +1018,7 @@ LayerManager.showLayerMenu = function(selected, x, y) {
       LayerManager._contextMenu.items.push(popertiesMenu);
     }
     LayerManager._contextMenu.items.push(spacer1);
-    LayerManager._contextMenu._show(Vector2d.create(x, y));
+    LayerManager._contextMenu._show(new Vector2d(x, y));
   }
 };
 LayerManager._publishMenu_Click = function(sender, e) {
@@ -1175,7 +1175,7 @@ LayerManager.scaleMenu_click = function(sender, e) {
     const hist = new Histogram();
     hist.image = isl.getFitsImage();
     hist.layer = isl;
-    hist.show(Vector2d.create(200, 200));
+    hist.show(new Vector2d(200, 200));
   }
 };
 LayerManager._showViewer_Click = function(sender, e) {

@@ -264,7 +264,7 @@ export const Object3d$ = {
           partials[i] = edge0;
           partials[i].normalize();
         } else {
-          partials[i] = Vector3d.create(1, 0, 0);
+          partials[i] = new Vector3d(1, 0, 0);
         }
       } else {
         const invDeterminant = 1 / determinant;
@@ -506,20 +506,20 @@ export const Object3d$ = {
           case 'v':
             vertexCount++;
             if (this.flipHandedness) {
-              vertList.push(Vector3d.create(-parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])));
+              vertList.push(new Vector3d(-parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])));
             } else {
-              vertList.push(Vector3d.create(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])));
+              vertList.push(new Vector3d(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])));
             }
             break;
           case 'vn':
             if (this.flipHandedness) {
-              normList.push(Vector3d.create(-parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])));
+              normList.push(new Vector3d(-parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])));
             } else {
-              normList.push(Vector3d.create(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])));
+              normList.push(new Vector3d(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])));
             }
             break;
           case 'vt':
-            uvList.push(Vector2d.create(parseFloat(parts[1]), (this.flipV) ? (1 - parseFloat(parts[2])) : parseFloat(parts[2])));
+            uvList.push(new Vector2d(parseFloat(parts[1]), (this.flipV) ? (1 - parseFloat(parts[2])) : parseFloat(parts[2])));
             break;
           case 'g':
           case 'o':
@@ -859,7 +859,7 @@ export const Object3d$ = {
           count = br.readUInt16();
           for (let i = 0; i < count; i++) {
             let vert = vertexList[startMapIndex + i];
-            const texCoord = Vector2d.create(br.readSingle(), (this.flipV) ? (1 - br.readSingle()) : br.readSingle());
+            const texCoord = new Vector2d(br.readSingle(), (this.flipV) ? (1 - br.readSingle()) : br.readSingle());
             vertexList[startMapIndex + i] = PositionNormalTextured.createUV(vert.get_position(), new Vector3d(), texCoord);
           }
           break;
@@ -869,7 +869,7 @@ export const Object3d$ = {
             mat[i] = br.readSingle();
           }
           if (ss.keyExists(objectTable, name)) {
-            objectTable[name].localMat = Matrix3d.create(mat[0], mat[1], mat[2], 0, mat[3], mat[4], mat[5], 0, mat[6], mat[7], mat[8], 0, mat[9], mat[10], mat[11], 1);
+            objectTable[name].localMat = new Matrix3d(mat[0], mat[1], mat[2], 0, mat[3], mat[4], mat[5], 0, mat[6], mat[7], mat[8], 0, mat[9], mat[10], mat[11], 1);
             objectTable[name].localMat.invert();
           }
           break;
@@ -1042,7 +1042,7 @@ export const Object3d$ = {
             points[i] = br.readSingle();
           }
           if (ss.keyExists(objectTable, name)) {
-            objectTable[name].pivotPoint = Vector3d.create(-points[0], -points[1], -points[2]);
+            objectTable[name].pivotPoint = new Vector3d(-points[0], -points[1], -points[2]);
           }
           break;
         case 45088:
@@ -1146,7 +1146,7 @@ export const Object3d$ = {
       const $enum7 = ss.enumerate(newVertexList);
       while ($enum7.moveNext()) {
         let v = $enum7.current;
-        const tvertex = new PositionNormalTexturedTangent(v.get_position(), v.get_normal(), Vector2d.create(v.tu, v.tv), tangents[vertexIndex]);
+        const tvertex = new PositionNormalTexturedTangent(v.get_position(), v.get_normal(), new Vector2d(v.tu, v.tv), tangents[vertexIndex]);
         vertices[vertexIndex] = tvertex;
         ++vertexIndex;
       }
@@ -1179,7 +1179,7 @@ export const Object3d$ = {
     }
   },
   setupLighting: function (renderContext) {
-    const objPosition = Vector3d.create(renderContext.get_world().get_offsetX(), renderContext.get_world().get_offsetY(), renderContext.get_world().get_offsetZ());
+    const objPosition = new Vector3d(renderContext.get_world().get_offsetX(), renderContext.get_world().get_offsetY(), renderContext.get_world().get_offsetZ());
     const objToLight = Vector3d.subtractVectors(objPosition, renderContext.get_reflectedLightPosition());
     const sunPosition = Vector3d.subtractVectors(renderContext.get_sunPosition(), renderContext.get_reflectedLightPosition());
     const cosPhaseAngle = (sunPosition.length() <= 0) ? 1 : Vector3d.dot(objToLight, sunPosition) / (objToLight.length() * sunPosition.length());
@@ -1193,7 +1193,7 @@ export const Object3d$ = {
       reflectedLightFactor *= (1 - hemiLightFactor);
       const sunToPlanet = Vector3d.subtractVectors(renderContext.get_occludingPlanetPosition(), renderContext.get_sunPosition());
       const objToPlanet = Vector3d.subtractVectors(renderContext.get_occludingPlanetPosition(), objPosition);
-      const hemiLightDirection = Vector3d.create(-objToPlanet.x, -objToPlanet.y, -objToPlanet.z);
+      const hemiLightDirection = new Vector3d(-objToPlanet.x, -objToPlanet.y, -objToPlanet.z);
       hemiLightDirection.normalize();
       renderContext.set_hemisphereLightUp(hemiLightDirection);
       const objToSun = Vector3d.subtractVectors(renderContext.get_sunPosition(), objPosition);
@@ -1237,7 +1237,7 @@ export const Object3d$ = {
     if (this._mesh.boundingSphere.radius > 0) {
       unitScale = 1 / this._mesh.boundingSphere.radius;
     }
-    renderContext.set_world(Matrix3d.multiplyMatrix(Matrix3d.multiplyMatrix(Matrix3d.translation(Vector3d.create(-offset.x, -offset.y, -offset.z)), Matrix3d._scaling(unitScale, unitScale, unitScale)), oldWorld));
+    renderContext.set_world(Matrix3d.multiplyMatrix(Matrix3d.multiplyMatrix(Matrix3d.translation(new Vector3d(-offset.x, -offset.y, -offset.z)), Matrix3d._scaling(unitScale, unitScale, unitScale)), oldWorld));
     const worldView = Matrix3d.multiplyMatrix(renderContext.get_world(), renderContext.get_view());
     const v = worldView.transform(Vector3d.get_empty());
     const scaleFactor = Math.sqrt(worldView.get_m11() * worldView.get_m11() + worldView.get_m22() * worldView.get_m22() + worldView.get_m33() * worldView.get_m33()) / unitScale;
@@ -1346,8 +1346,8 @@ export function Object3dLayer() {
   this._twoSidedGeometry$1 = false;
   this._pitch$1 = 0;
   this._roll$1 = 0;
-  this._scale$1 = Vector3d.create(1, 1, 1);
-  this._translate$1 = Vector3d.create(0, 0, 0);
+  this._scale$1 = new Vector3d(1, 1, 1);
+  this._translate$1 = new Vector3d(0, 0, 0);
   this._lightID$1 = 0;
   this._dirty$1 = false;
   this.objType = false;
@@ -1380,44 +1380,44 @@ Object3dLayer._initTranslateUI$1 = function() {
   const rad = 0.05;
   let a,pnt1,pnt2,pnt3;
   for (a = 0; a < twoPi; a += step) {
-    pnt1 = Vector3d.create(1 - rad * 4, 0, 0);
-    pnt2 = Vector3d.create(1 - rad * 4, Math.cos(a) * rad, Math.sin(a) * rad);
-    pnt3 = Vector3d.create(1 - rad * 4, Math.cos(a + step) * rad, Math.sin(a + step) * rad);
+    pnt1 = new Vector3d(1 - rad * 4, 0, 0);
+    pnt2 = new Vector3d(1 - rad * 4, Math.cos(a) * rad, Math.sin(a) * rad);
+    pnt3 = new Vector3d(1 - rad * 4, Math.cos(a + step) * rad, Math.sin(a + step) * rad);
     Object3dLayer._translateUI$1.addTriangle(pnt1, pnt2, pnt3, Colors.get_red(), Dates.empty());
   }
   for (a = 0; a < twoPi; a += step) {
-    pnt1 = Vector3d.create(1, 0, 0);
-    pnt3 = Vector3d.create(1 - rad * 4, Math.cos(a) * rad, Math.sin(a) * rad);
-    pnt2 = Vector3d.create(1 - rad * 4, Math.cos(a + step) * rad, Math.sin(a + step) * rad);
+    pnt1 = new Vector3d(1, 0, 0);
+    pnt3 = new Vector3d(1 - rad * 4, Math.cos(a) * rad, Math.sin(a) * rad);
+    pnt2 = new Vector3d(1 - rad * 4, Math.cos(a + step) * rad, Math.sin(a + step) * rad);
     Object3dLayer._translateUI$1.addTriangle(pnt1, pnt2, pnt3, Color.fromArgb(255, 255, Math.max(0, (Math.sin(a) * 128)), Math.max(0, (Math.sin(a) * 128))), Dates.empty());
   }
-  Object3dLayer._translateUILines$1.addLine(Vector3d.create(0, 0, 0), Vector3d.create(1, 0, 0), Colors.get_red(), Dates.empty());
+  Object3dLayer._translateUILines$1.addLine(new Vector3d(0, 0, 0), new Vector3d(1, 0, 0), Colors.get_red(), Dates.empty());
   for (a = 0; a < twoPi; a += step) {
-    pnt1 = Vector3d.create(0, 1 - rad * 4, 0);
-    pnt3 = Vector3d.create(Math.cos(a) * rad, 1 - rad * 4, Math.sin(a) * rad);
-    pnt2 = Vector3d.create(Math.cos(a + step) * rad, 1 - rad * 4, Math.sin(a + step) * rad);
+    pnt1 = new Vector3d(0, 1 - rad * 4, 0);
+    pnt3 = new Vector3d(Math.cos(a) * rad, 1 - rad * 4, Math.sin(a) * rad);
+    pnt2 = new Vector3d(Math.cos(a + step) * rad, 1 - rad * 4, Math.sin(a + step) * rad);
     Object3dLayer._translateUI$1.addTriangle(pnt1, pnt2, pnt3, Colors.get_green(), Dates.empty());
   }
   for (a = 0; a < twoPi; a += step) {
-    pnt1 = Vector3d.create(0, 1, 0);
-    pnt2 = Vector3d.create(Math.cos(a) * rad, 1 - rad * 4, Math.sin(a) * rad);
-    pnt3 = Vector3d.create(Math.cos(a + step) * rad, 1 - rad * 4, Math.sin(a + step) * rad);
+    pnt1 = new Vector3d(0, 1, 0);
+    pnt2 = new Vector3d(Math.cos(a) * rad, 1 - rad * 4, Math.sin(a) * rad);
+    pnt3 = new Vector3d(Math.cos(a + step) * rad, 1 - rad * 4, Math.sin(a + step) * rad);
     Object3dLayer._translateUI$1.addTriangle(pnt1, pnt2, pnt3, Color.fromArgb(255, Math.max(0, (Math.sin(a) * 128)), 255, Math.max(0, (Math.sin(a) * 128))), Dates.empty());
   }
-  Object3dLayer._translateUILines$1.addLine(Vector3d.create(0, 0, 0), Vector3d.create(0, 1, 0), Colors.get_green(), Dates.empty());
+  Object3dLayer._translateUILines$1.addLine(new Vector3d(0, 0, 0), new Vector3d(0, 1, 0), Colors.get_green(), Dates.empty());
   for (a = 0; a < twoPi; a += step) {
-    pnt1 = Vector3d.create(0, 0, 1 - rad * 4);
-    pnt2 = Vector3d.create(Math.cos(a) * rad, Math.sin(a) * rad, 1 - rad * 4);
-    pnt3 = Vector3d.create(Math.cos(a + step) * rad, Math.sin(a + step) * rad, 1 - rad * 4);
+    pnt1 = new Vector3d(0, 0, 1 - rad * 4);
+    pnt2 = new Vector3d(Math.cos(a) * rad, Math.sin(a) * rad, 1 - rad * 4);
+    pnt3 = new Vector3d(Math.cos(a + step) * rad, Math.sin(a + step) * rad, 1 - rad * 4);
     Object3dLayer._translateUI$1.addTriangle(pnt1, pnt2, pnt3, Colors.get_blue(), Dates.empty());
   }
   for (a = 0; a < twoPi; a += step) {
-    pnt1 = Vector3d.create(0, 0, 1);
-    pnt3 = Vector3d.create(Math.cos(a) * rad, Math.sin(a) * rad, 1 - rad * 4);
-    pnt2 = Vector3d.create(Math.cos(a + step) * rad, Math.sin(a + step) * rad, 1 - rad * 4);
+    pnt1 = new Vector3d(0, 0, 1);
+    pnt3 = new Vector3d(Math.cos(a) * rad, Math.sin(a) * rad, 1 - rad * 4);
+    pnt2 = new Vector3d(Math.cos(a + step) * rad, Math.sin(a + step) * rad, 1 - rad * 4);
     Object3dLayer._translateUI$1.addTriangle(pnt1, pnt2, pnt3, Color.fromArgb(255, Math.max(0, (Math.sin(a) * 128)), Math.max(0, (Math.sin(a) * 128)), 255), Dates.empty());
   }
-  Object3dLayer._translateUILines$1.addLine(Vector3d.create(0, 0, 0), Vector3d.create(0, 0, 1), Colors.get_blue(), Dates.empty());
+  Object3dLayer._translateUILines$1.addLine(new Vector3d(0, 0, 0), new Vector3d(0, 0, 1), Colors.get_blue(), Dates.empty());
   Object3dLayer._initRotateUI$1();
   Object3dLayer._initScaleUI$1();
 };
@@ -1429,19 +1429,19 @@ Object3dLayer._initScaleUI$1 = function() {
   const twoPi = Math.PI * 2;
   const step = twoPi / 45;
   const rad = 0.05;
-  Object3dLayer._makeCube$1(Object3dLayer._scaleUI$1, Vector3d.create(1 - rad * 2, 0, 0), rad * 2, Colors.get_red());
-  Object3dLayer._makeCube$1(Object3dLayer._scaleUI$1, Vector3d.create(0, 1 - rad * 2, 0), rad * 2, Colors.get_green());
-  Object3dLayer._makeCube$1(Object3dLayer._scaleUI$1, Vector3d.create(0, 0, 1 - rad * 2), rad * 2, Colors.get_blue());
+  Object3dLayer._makeCube$1(Object3dLayer._scaleUI$1, new Vector3d(1 - rad * 2, 0, 0), rad * 2, Colors.get_red());
+  Object3dLayer._makeCube$1(Object3dLayer._scaleUI$1, new Vector3d(0, 1 - rad * 2, 0), rad * 2, Colors.get_green());
+  Object3dLayer._makeCube$1(Object3dLayer._scaleUI$1, new Vector3d(0, 0, 1 - rad * 2), rad * 2, Colors.get_blue());
 };
 Object3dLayer._makeCube$1 = function(tl, center, size, color) {
   const dark = Color.fromArgb(255, ss.truncate((color.r * 0.6)), color.g, ss.truncate((color.b * 0.6)));
   const med = Color.fromArgb(255, ss.truncate((color.r * 0.8)), ss.truncate((color.g * 0.8)), ss.truncate((color.b * 0.8)));
-  tl.addQuad(Vector3d.create(center.x + size, center.y + size, center.z + size), Vector3d.create(center.x + size, center.y + size, center.z - size), Vector3d.create(center.x - size, center.y + size, center.z + size), Vector3d.create(center.x - size, center.y + size, center.z - size), color, Dates.empty());
-  tl.addQuad(Vector3d.create(center.x + size, center.y - size, center.z + size), Vector3d.create(center.x - size, center.y - size, center.z + size), Vector3d.create(center.x + size, center.y - size, center.z - size), Vector3d.create(center.x - size, center.y - size, center.z - size), color, Dates.empty());
-  tl.addQuad(Vector3d.create(center.x - size, center.y + size, center.z + size), Vector3d.create(center.x - size, center.y + size, center.z - size), Vector3d.create(center.x - size, center.y - size, center.z + size), Vector3d.create(center.x - size, center.y - size, center.z - size), dark, Dates.empty());
-  tl.addQuad(Vector3d.create(center.x + size, center.y + size, center.z + size), Vector3d.create(center.x + size, center.y - size, center.z + size), Vector3d.create(center.x + size, center.y + size, center.z - size), Vector3d.create(center.x + size, center.y - size, center.z - size), dark, Dates.empty());
-  tl.addQuad(Vector3d.create(center.x + size, center.y + size, center.z + size), Vector3d.create(center.x - size, center.y + size, center.z + size), Vector3d.create(center.x + size, center.y - size, center.z + size), Vector3d.create(center.x - size, center.y - size, center.z + size), med, Dates.empty());
-  tl.addQuad(Vector3d.create(center.x + size, center.y + size, center.z - size), Vector3d.create(center.x + size, center.y - size, center.z - size), Vector3d.create(center.x - size, center.y + size, center.z - size), Vector3d.create(center.x - size, center.y - size, center.z - size), med, Dates.empty());
+  tl.addQuad(new Vector3d(center.x + size, center.y + size, center.z + size), new Vector3d(center.x + size, center.y + size, center.z - size), new Vector3d(center.x - size, center.y + size, center.z + size), new Vector3d(center.x - size, center.y + size, center.z - size), color, Dates.empty());
+  tl.addQuad(new Vector3d(center.x + size, center.y - size, center.z + size), new Vector3d(center.x - size, center.y - size, center.z + size), new Vector3d(center.x + size, center.y - size, center.z - size), new Vector3d(center.x - size, center.y - size, center.z - size), color, Dates.empty());
+  tl.addQuad(new Vector3d(center.x - size, center.y + size, center.z + size), new Vector3d(center.x - size, center.y + size, center.z - size), new Vector3d(center.x - size, center.y - size, center.z + size), new Vector3d(center.x - size, center.y - size, center.z - size), dark, Dates.empty());
+  tl.addQuad(new Vector3d(center.x + size, center.y + size, center.z + size), new Vector3d(center.x + size, center.y - size, center.z + size), new Vector3d(center.x + size, center.y + size, center.z - size), new Vector3d(center.x + size, center.y - size, center.z - size), dark, Dates.empty());
+  tl.addQuad(new Vector3d(center.x + size, center.y + size, center.z + size), new Vector3d(center.x - size, center.y + size, center.z + size), new Vector3d(center.x + size, center.y - size, center.z + size), new Vector3d(center.x - size, center.y - size, center.z + size), med, Dates.empty());
+  tl.addQuad(new Vector3d(center.x + size, center.y + size, center.z - size), new Vector3d(center.x + size, center.y - size, center.z - size), new Vector3d(center.x - size, center.y + size, center.z - size), new Vector3d(center.x - size, center.y - size, center.z - size), med, Dates.empty());
 };
 Object3dLayer._initRotateUI$1 = function() {
   Object3dLayer._rotateUi$1 = new TriangleList();
@@ -1456,10 +1456,10 @@ Object3dLayer._initRotateUI$1 = function() {
   for (a = 0; a < twoPi; a += step) {
     start = !(index % 10);
     end = !((index + 1) % 10);
-    pnt1 = Vector3d.create(rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.cos(a), Math.sin(a));
-    pnt2 = Vector3d.create(-rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.cos(a), Math.sin(a));
-    pnt3 = Vector3d.create(rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.cos(a + step), Math.sin(a + step));
-    pnt4 = Vector3d.create(-rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.cos(a + step), Math.sin(a + step));
+    pnt1 = new Vector3d(rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.cos(a), Math.sin(a));
+    pnt2 = new Vector3d(-rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.cos(a), Math.sin(a));
+    pnt3 = new Vector3d(rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.cos(a + step), Math.sin(a + step));
+    pnt4 = new Vector3d(-rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.cos(a + step), Math.sin(a + step));
     Object3dLayer._rotateUi$1.addQuad(pnt1, pnt3, pnt2, pnt4, Color._fromArgbColor(192, Colors.get_red()), Dates.empty());
     index++;
   }
@@ -1467,10 +1467,10 @@ Object3dLayer._initRotateUI$1 = function() {
   for (a = 0; a < twoPi; a += step) {
     start = !(index % 10);
     end = !((index + 1) % 10);
-    pnt1 = Vector3d.create(Math.cos(a), Math.sin(a), rad * ((start) ? 0 : ((end) ? 1.5 : 1)));
-    pnt2 = Vector3d.create(Math.cos(a), Math.sin(a), -rad * ((start) ? 0 : ((end) ? 1.5 : 1)));
-    pnt3 = Vector3d.create(Math.cos(a + step), Math.sin(a + step), rad * ((start) ? 1.5 : ((end) ? 0 : 1)));
-    pnt4 = Vector3d.create(Math.cos(a + step), Math.sin(a + step), -rad * ((start) ? 1.5 : ((end) ? 0 : 1)));
+    pnt1 = new Vector3d(Math.cos(a), Math.sin(a), rad * ((start) ? 0 : ((end) ? 1.5 : 1)));
+    pnt2 = new Vector3d(Math.cos(a), Math.sin(a), -rad * ((start) ? 0 : ((end) ? 1.5 : 1)));
+    pnt3 = new Vector3d(Math.cos(a + step), Math.sin(a + step), rad * ((start) ? 1.5 : ((end) ? 0 : 1)));
+    pnt4 = new Vector3d(Math.cos(a + step), Math.sin(a + step), -rad * ((start) ? 1.5 : ((end) ? 0 : 1)));
     Object3dLayer._rotateUi$1.addQuad(pnt1, pnt3, pnt2, pnt4, Color._fromArgbColor(192, Colors.get_blue()), Dates.empty());
     index++;
   }
@@ -1478,10 +1478,10 @@ Object3dLayer._initRotateUI$1 = function() {
   for (a = 0; a < twoPi; a += step) {
     start = !(index % 10);
     end = !((index + 1) % 10);
-    pnt1 = Vector3d.create(Math.cos(a), rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.sin(a));
-    pnt2 = Vector3d.create(Math.cos(a), -rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.sin(a));
-    pnt3 = Vector3d.create(Math.cos(a + step), rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.sin(a + step));
-    pnt4 = Vector3d.create(Math.cos(a + step), -rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.sin(a + step));
+    pnt1 = new Vector3d(Math.cos(a), rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.sin(a));
+    pnt2 = new Vector3d(Math.cos(a), -rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.sin(a));
+    pnt3 = new Vector3d(Math.cos(a + step), rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.sin(a + step));
+    pnt4 = new Vector3d(Math.cos(a + step), -rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.sin(a + step));
     Object3dLayer._rotateUi$1.addQuad(pnt1, pnt2, pnt3, pnt4, Color._fromArgbColor(192, Colors.get_green()), Dates.empty());
     index++;
   }
@@ -1489,10 +1489,10 @@ Object3dLayer._initRotateUI$1 = function() {
   for (a = 0; a < twoPi; a += step) {
     start = !(index % 10);
     end = !((index + 1) % 10);
-    pnt1 = Vector3d.create(-rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.cos(a), Math.sin(a));
-    pnt2 = Vector3d.create(rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.cos(a), Math.sin(a));
-    pnt3 = Vector3d.create(-rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.cos(a + step), Math.sin(a + step));
-    pnt4 = Vector3d.create(rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.cos(a + step), Math.sin(a + step));
+    pnt1 = new Vector3d(-rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.cos(a), Math.sin(a));
+    pnt2 = new Vector3d(rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.cos(a), Math.sin(a));
+    pnt3 = new Vector3d(-rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.cos(a + step), Math.sin(a + step));
+    pnt4 = new Vector3d(rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.cos(a + step), Math.sin(a + step));
     Object3dLayer._rotateUi$1.addQuad(pnt1, pnt3, pnt2, pnt4, Colors.get_red(), Dates.empty());
     index++;
   }
@@ -1500,10 +1500,10 @@ Object3dLayer._initRotateUI$1 = function() {
   for (a = 0; a < twoPi; a += step) {
     start = !(index % 10);
     end = !((index + 1) % 10);
-    pnt1 = Vector3d.create(Math.cos(a), Math.sin(a), -rad * ((start) ? 0 : ((end) ? 1.5 : 1)));
-    pnt2 = Vector3d.create(Math.cos(a), Math.sin(a), rad * ((start) ? 0 : ((end) ? 1.5 : 1)));
-    pnt3 = Vector3d.create(Math.cos(a + step), Math.sin(a + step), -rad * ((start) ? 1.5 : ((end) ? 0 : 1)));
-    pnt4 = Vector3d.create(Math.cos(a + step), Math.sin(a + step), rad * ((start) ? 1.5 : ((end) ? 0 : 1)));
+    pnt1 = new Vector3d(Math.cos(a), Math.sin(a), -rad * ((start) ? 0 : ((end) ? 1.5 : 1)));
+    pnt2 = new Vector3d(Math.cos(a), Math.sin(a), rad * ((start) ? 0 : ((end) ? 1.5 : 1)));
+    pnt3 = new Vector3d(Math.cos(a + step), Math.sin(a + step), -rad * ((start) ? 1.5 : ((end) ? 0 : 1)));
+    pnt4 = new Vector3d(Math.cos(a + step), Math.sin(a + step), rad * ((start) ? 1.5 : ((end) ? 0 : 1)));
     Object3dLayer._rotateUi$1.addQuad(pnt1, pnt3, pnt2, pnt4, Colors.get_blue(), Dates.empty());
     index++;
   }
@@ -1511,10 +1511,10 @@ Object3dLayer._initRotateUI$1 = function() {
   for (a = 0; a < twoPi; a += step) {
     start = !(index % 10);
     end = !((index + 1) % 10);
-    pnt1 = Vector3d.create(Math.cos(a), -rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.sin(a));
-    pnt2 = Vector3d.create(Math.cos(a), rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.sin(a));
-    pnt3 = Vector3d.create(Math.cos(a + step), -rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.sin(a + step));
-    pnt4 = Vector3d.create(Math.cos(a + step), rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.sin(a + step));
+    pnt1 = new Vector3d(Math.cos(a), -rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.sin(a));
+    pnt2 = new Vector3d(Math.cos(a), rad * ((start) ? 0 : ((end) ? 1.5 : 1)), Math.sin(a));
+    pnt3 = new Vector3d(Math.cos(a + step), -rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.sin(a + step));
+    pnt4 = new Vector3d(Math.cos(a + step), rad * ((start) ? 1.5 : ((end) ? 0 : 1)), Math.sin(a + step));
     Object3dLayer._rotateUi$1.addQuad(pnt1, pnt2, pnt3, pnt4, Colors.get_green(), Dates.empty());
     index++;
   }
@@ -1775,7 +1775,7 @@ export const Object3dLayer$ = {
     const viewWidth = (WWTControl.singleton.renderContext.width / WWTControl.singleton.renderContext.height) * 1116;
     const x = ((pnt.x) / (clientWidth) * viewWidth) - ((viewWidth - 1920) / 2);
     const y = (pnt.y) / clientHeight * 1116;
-    return Vector2d.create(x, y);
+    return new Vector2d(x, y);
   },
   render: function (renderEngine) {
     this._showEditUi$1 = true;
@@ -1786,7 +1786,7 @@ export const Object3dLayer$ = {
     return;
   },
   mouseDown: function (sender, e) {
-    const location = this.pointToView(Vector2d.create(e.offsetX, e.offsetY));
+    const location = this.pointToView(new Vector2d(e.offsetX, e.offsetY));
     this._pntDown$1 = location;
     const pnt = location;
     if (e.shiftKey) {
@@ -1871,7 +1871,7 @@ export const Object3dLayer$ = {
     return false;
   },
   mouseMove: function (sender, e) {
-    const location = this.pointToView(Vector2d.create(e.offsetX, e.offsetY));
+    const location = this.pointToView(new Vector2d(e.offsetX, e.offsetY));
     if (!!this._dragMode$1) {
       let dist = 0;
       const distX = location.x - this._pntDown$1.x;

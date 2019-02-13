@@ -33,7 +33,7 @@ EllipseRenderer.drawEllipse = (renderContext, semiMajorAxis, eccentricity, eccen
   renderContext.set_world(worldMatrix);
   renderContext.gl.bindBuffer(34962, EllipseRenderer._ellipseWithoutStartPointVertexBuffer.vertexBuffer);
   renderContext.gl.bindBuffer(34963, null);
-  EllipseShader.use(renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, 1, savedWorld, Vector3d.create(0, 0, 0));
+  EllipseShader.use(renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, 1, savedWorld, new Vector3d(0, 0, 0));
   renderContext.gl.drawArrays(3, 0, EllipseRenderer._ellipseWithoutStartPointVertexBuffer.count - 1);
   renderContext.set_world(savedWorld);
 };
@@ -42,10 +42,10 @@ EllipseRenderer.createEllipseVertexBuffer = vertexCount => {
   const verts = vb.lock();
   let index = 0;
   for (let i = 0; i < vertexCount / 2; ++i) {
-    verts[index++] = Vector3d.create(2 * i / vertexCount * 0.05, 0, 0);
+    verts[index++] = new Vector3d(2 * i / vertexCount * 0.05, 0, 0);
   }
   for (let i = 0; i < vertexCount / 2; ++i) {
-    verts[index++] = Vector3d.create(2 * i / vertexCount * 0.95 + 0.05, 0, 0);
+    verts[index++] = new Vector3d(2 * i / vertexCount * 0.95 + 0.05, 0, 0);
   }
   vb.unlock();
   return vb;
@@ -53,9 +53,9 @@ EllipseRenderer.createEllipseVertexBuffer = vertexCount => {
 EllipseRenderer.createEllipseVertexBufferWithoutStartPoint = vertexCount => {
   const vb = new PositionVertexBuffer(vertexCount);
   const verts = vb.lock();
-  verts[0] = Vector3d.create(1E-06, 0, 0);
+  verts[0] = new Vector3d(1E-06, 0, 0);
   for (let i = 1; i < vertexCount; ++i) {
-    verts[i] = Vector3d.create(2 * i / vertexCount, 0, 0);
+    verts[i] = new Vector3d(2 * i / vertexCount, 0, 0);
   }
   vb.unlock();
   return vb;

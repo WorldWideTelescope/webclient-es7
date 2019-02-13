@@ -12,7 +12,7 @@ import {
   TimeSeriesPointVertex,
   TimeSeriesPointVertexBuffer
 } from './GIBuffer';
-import {LineShaderNormalDates, OrbitLineShader, SimpleLineShader2D} from './Shaders';
+import {LineShaderNormalDates, OrbitLineShader, SimpleLineShader, SimpleLineShader2D} from './Shaders';
 
 
 export function PointList(device) {

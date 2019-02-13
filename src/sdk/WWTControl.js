@@ -390,7 +390,7 @@ export const WWTControl$ = {
       }
       matLocal = matOld;
       const pnt = this.renderContext.viewCamera.viewTarget;
-      const vt = Vector3d.create(-pnt.x, -pnt.y, -pnt.z);
+      const vt = new Vector3d(-pnt.x, -pnt.y, -pnt.z);
       this.renderContext.cameraPosition = oldCamera;
       matLocal._multiply(Matrix3d.translation(vt));
       this.renderContext.set_world(matLocal);
@@ -829,7 +829,7 @@ export const WWTControl$ = {
         const note = $enum1.current;
         if (note.hitTest(this.renderContext, ra, dec, x, y)) {
           this._hoverText = note.get_label();
-          this._hoverTextPoint = Vector2d.create(x, y);
+          this._hoverTextPoint = new Vector2d(x, y);
           return true;
         }
         index++;
@@ -877,7 +877,7 @@ export const WWTControl$ = {
         return;
       }
     }
-    this._rect[index] = Vector2d.create(e.offsetX, e.offsetY);
+    this._rect[index] = new Vector2d(e.offsetX, e.offsetY);
   },
   onPointerMove: function (e) {
     const pe = e;
@@ -894,7 +894,7 @@ export const WWTControl$ = {
     if (!!this._pointerIds[0] && !!this._pointerIds[1]) {
       if (this._rect[0] != null) {
         const oldDist = this.getDistance(this._rect[0], this._rect[1]);
-        this._rect[index] = Vector2d.create(e.offsetX, e.offsetY);
+        this._rect[index] = new Vector2d(e.offsetX, e.offsetY);
         const newDist = this.getDistance(this._rect[0], this._rect[1]);
         const ratio = oldDist / newDist;
         this.zoom(ratio);
@@ -902,7 +902,7 @@ export const WWTControl$ = {
       e.stopPropagation();
       e.preventDefault();
     }
-    this._rect[index] = Vector2d.create(e.offsetX, e.offsetY);
+    this._rect[index] = new Vector2d(e.offsetX, e.offsetY);
   },
   onPointerUp: function (e) {
     const pe = e;
@@ -966,8 +966,8 @@ export const WWTControl$ = {
   pinchStart: function (ev) {
     const t0 = ev.touches[0];
     const t1 = ev.touches[1];
-    this._rect[0] = Vector2d.create(t0.pageX, t0.pageY);
-    this._rect[1] = Vector2d.create(t1.pageX, t1.pageY);
+    this._rect[0] = new Vector2d(t0.pageX, t0.pageY);
+    this._rect[1] = new Vector2d(t1.pageX, t1.pageY);
     ev.stopPropagation();
     ev.preventDefault();
   },
@@ -975,8 +975,8 @@ export const WWTControl$ = {
     const t0 = ev.touches[0];
     const t1 = ev.touches[1];
     const newRect = new Array(2);
-    newRect[0] = Vector2d.create(t0.pageX, t0.pageY);
-    newRect[1] = Vector2d.create(t1.pageX, t1.pageY);
+    newRect[0] = new Vector2d(t0.pageX, t0.pageY);
+    newRect[1] = new Vector2d(t1.pageX, t1.pageY);
     if (this._rect[0] != null) {
       const oldDist = this.getDistance(this._rect[0], this._rect[1]);
       const newDist = this.getDistance(newRect[0], newRect[1]);
@@ -1012,7 +1012,7 @@ export const WWTControl$ = {
   },
   onMouseMove: function (e) {
     this._lastMouseMove = ss.now();
-    this._hoverTextPoint = Vector2d.create(Mouse.offsetX(this.canvas, e), Mouse.offsetY(this.canvas, e));
+    this._hoverTextPoint = new Vector2d(Mouse.offsetX(this.canvas, e), Mouse.offsetY(this.canvas, e));
     this._hoverText = '';
     if (this._mouseDown) {
       e.preventDefault();
@@ -1068,7 +1068,7 @@ export const WWTControl$ = {
     let result;
     let PickRayOrig;
     let PickRayDir;
-    const pt = Vector2d.create(x, y);
+    const pt = new Vector2d(x, y);
     PickRayDir = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height);
     result = Coordinates.cartesianToSphericalSky(PickRayDir);
     return result;
@@ -1492,8 +1492,8 @@ export const WWTControl$ = {
         this._crossHarirs = new SimpleLineList();
         this._crossHarirs.set_depthBuffered(false);
         this._crossHarirs.pure2D = true;
-        this._crossHarirs.addLine(Vector3d.create(-0.02, 0, 0), Vector3d.create(0.02, 0, 0));
-        this._crossHarirs.addLine(Vector3d.create(0, -0.03, 0), Vector3d.create(0, 0.03, 0));
+        this._crossHarirs.addLine(new Vector3d(-0.02, 0, 0), new Vector3d(0.02, 0, 0));
+        this._crossHarirs.addLine(new Vector3d(0, -0.03, 0), new Vector3d(0, 0.03, 0));
       }
       this._crossHarirs.drawLines(context, 1, Colors.get_white());
     }

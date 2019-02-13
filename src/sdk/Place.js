@@ -12,7 +12,7 @@ import {Coordinates} from './Coordinates';
 
 export function Place() {
   this._camParams = CameraParameters.create(0, 0, -1, 0, 0, 100);
-  this._location3d = Vector3d.create(0, 0, 0);
+  this._location3d = new Vector3d(0, 0, 0);
   this.htmlDescription = '';
   this._constellation = '';
   this._classification = 1048576;

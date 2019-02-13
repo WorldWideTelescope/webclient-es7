@@ -179,8 +179,8 @@ export const Histogram$ = {
     switch (this.selectedCurveStyle) {
       case 0:
         Curve.length = 0;
-        Curve.push(Vector2d.create(this._lowPosition, 150));
-        Curve.push(Vector2d.create(this._highPosition, 0));
+        Curve.push(new Vector2d(this._lowPosition, 150));
+        Curve.push(new Vector2d(this._highPosition, 0));
         break;
       case 1:
         Curve.length = 0;
@@ -190,7 +190,7 @@ export const Histogram$ = {
         step = Math.abs(256 / ((!diff) ? 1E-06 : diff));
         val = 1E-06;
         for (i = this._lowPosition; i !== this._highPosition; i += jump) {
-          Curve.push(Vector2d.create(i, (150 - (Math.log(val) * factor))));
+          Curve.push(new Vector2d(i, (150 - (Math.log(val) * factor))));
           val += step;
         }
         break;
@@ -202,7 +202,7 @@ export const Histogram$ = {
         step = Math.abs(256 / ((!diff) ? 1E-06 : diff));
         val = 1E-06;
         for (i = this._lowPosition; i !== this._highPosition; i += jump) {
-          Curve.push(Vector2d.create(i, (150 - (Math.pow(val, 2) * factor))));
+          Curve.push(new Vector2d(i, (150 - (Math.pow(val, 2) * factor))));
           val += step;
         }
         break;
@@ -214,7 +214,7 @@ export const Histogram$ = {
         step = Math.abs(256 / ((!diff) ? 1E-06 : diff));
         val = 1E-06;
         for (i = this._lowPosition; i !== this._highPosition; i += jump) {
-          Curve.push(Vector2d.create(i, (150 - (Math.sqrt(val) * factor))));
+          Curve.push(new Vector2d(i, (150 - (Math.sqrt(val) * factor))));
           val += step;
         }
         break;

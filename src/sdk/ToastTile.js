@@ -346,7 +346,7 @@ export const ToastTile$ = {
   },
   _midpoint$1: function (positionNormalTextured, positionNormalTextured_2) {
     const a1 = Vector3d.lerp(positionNormalTextured.position, positionNormalTextured_2.position, 0.5);
-    const a1uv = Vector2d.lerp(Vector2d.create(positionNormalTextured.tu, positionNormalTextured.tv), Vector2d.create(positionNormalTextured_2.tu, positionNormalTextured_2.tv), 0.5);
+    const a1uv = Vector2d.lerp(new Vector2d(positionNormalTextured.tu, positionNormalTextured.tv), new Vector2d(positionNormalTextured_2.tu, positionNormalTextured_2.tv), 0.5);
     a1.normalize();
     return PositionTexture.createPos(a1, a1uv.x, a1uv.y);
   },
@@ -567,6 +567,6 @@ export class DistanceCalc {
     const dRight = DistanceCalc.lineToPoint(ur, lr, pnt);
     const dLeft = DistanceCalc.lineToPoint(ul, ll, pnt);
     const dHoriz = dRight + dLeft;
-    return Vector2d.create(dLeft / dHoriz, dUpper / dVert);
+    return new Vector2d(dLeft / dHoriz, dUpper / dVert);
   }
 }

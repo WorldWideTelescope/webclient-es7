@@ -3,8 +3,7 @@ import GFX from './GFX';
 import {CAASun} from './AASun';
 import {C3D, COR, CT } from './AACoordinateTransformation';
 
-
-const earthVelocity = function(JD) {
+const earthVelocity = JD => {
   const T = (JD - 2451545) / 36525;
   const L2 = 3.1761467 + 1021.3285546 * T;
   const L3 = 1.7534703 + 628.3075849 * T;
@@ -30,7 +29,7 @@ const earthVelocity = function(JD) {
   }
   return velocity;
 };
-const eclipticAberration = function(Lambda, Beta, JD) {
+const eclipticAberration = (Lambda, Beta, JD) => {
   const aberration = new COR();
   const T = (JD - 2451545) / 36525;
   const Tsquared = T * T;
@@ -46,7 +45,7 @@ const eclipticAberration = function(Lambda, Beta, JD) {
   aberration.y = -k * Math.sin(Beta) * (Math.sin(SunLongitude - Lambda) - e * Math.sin(pi - Lambda)) / 3600;
   return aberration;
 };
-const equatorialAberration = function(Alpha, Delta, JD) {
+const equatorialAberration = (Alpha, Delta, JD) => {
   Alpha = CT.d2R(Alpha * 15);
   Delta = CT.d2R(Delta);
   const cosAlpha = Math.cos(Alpha);
@@ -64,52 +63,53 @@ export const ABR = {
   eclipticAberration,
   equatorialAberration
 };
-
-export function ACFT(L2, L3, L4, L5, L6, L7, L8, Ldash, D, Mdash, F, xsin, xsint, xcos, xcost, ysin, ysint, ycos, ycost, zsin, zsint, zcos, zcost) {
-  this.l2 = 0;
-  this.l3 = 0;
-  this.l4 = 0;
-  this.l5 = 0;
-  this.l6 = 0;
-  this.l7 = 0;
-  this.l8 = 0;
-  this.ldash = 0;
-  this.d = 0;
-  this.mdash = 0;
-  this.f = 0;
-  this.xsin = 0;
-  this.xsint = 0;
-  this.xcos = 0;
-  this.xcost = 0;
-  this.ysin = 0;
-  this.ysint = 0;
-  this.ycos = 0;
-  this.ycost = 0;
-  this.zsin = 0;
-  this.zsint = 0;
-  this.zcos = 0;
-  this.zcost = 0;
-  this.l2 = L2;
-  this.l3 = L3;
-  this.l4 = L4;
-  this.l5 = L5;
-  this.l6 = L6;
-  this.l7 = L7;
-  this.l8 = L8;
-  this.ldash = Ldash;
-  this.d = D;
-  this.mdash = Mdash;
-  this.f = F;
-  this.xsin = xsin;
-  this.xsint = xsint;
-  this.xcos = xcos;
-  this.xcost = xcost;
-  this.ysin = ysin;
-  this.ysint = ysint;
-  this.ycos = ycos;
-  this.ycost = ycost;
-  this.zsin = zsin;
-  this.zsint = zsint;
-  this.zcos = zcos;
-  this.zcost = zcost;
+export  class ACFT {
+  constructor(L2, L3, L4, L5, L6, L7, L8, Ldash, D, Mdash, F, xsin, xsint, xcos, xcost, ysin, ysint, ycos, ycost, zsin, zsint, zcos, zcost) {
+    this.l2 = 0;
+    this.l3 = 0;
+    this.l4 = 0;
+    this.l5 = 0;
+    this.l6 = 0;
+    this.l7 = 0;
+    this.l8 = 0;
+    this.ldash = 0;
+    this.d = 0;
+    this.mdash = 0;
+    this.f = 0;
+    this.xsin = 0;
+    this.xsint = 0;
+    this.xcos = 0;
+    this.xcost = 0;
+    this.ysin = 0;
+    this.ysint = 0;
+    this.ycos = 0;
+    this.ycost = 0;
+    this.zsin = 0;
+    this.zsint = 0;
+    this.zcos = 0;
+    this.zcost = 0;
+    this.l2 = L2;
+    this.l3 = L3;
+    this.l4 = L4;
+    this.l5 = L5;
+    this.l6 = L6;
+    this.l7 = L7;
+    this.l8 = L8;
+    this.ldash = Ldash;
+    this.d = D;
+    this.mdash = Mdash;
+    this.f = F;
+    this.xsin = xsin;
+    this.xsint = xsint;
+    this.xcos = xcos;
+    this.xcost = xcost;
+    this.ysin = ysin;
+    this.ysint = ysint;
+    this.ycos = ycos;
+    this.ycost = ycost;
+    this.zsin = zsin;
+    this.zsint = zsint;
+    this.zcos = zcos;
+    this.zcost = zcost;
+  }
 }

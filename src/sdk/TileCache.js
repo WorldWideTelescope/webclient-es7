@@ -78,7 +78,7 @@ TileCache.processQueue = renderContext => {
         const vectTemp = Vector3d.makeCopy(t.get_sphereCenter());
         vectTemp._transformByMatrics(renderContext.get_world());
         if (renderContext.space) {
-          vectTemp.subtract(Vector3d.create(0, 0, -1));
+          vectTemp.subtract(new Vector3d(0, 0, -1));
         }
         else {
           vectTemp.subtract(renderContext.cameraPosition);

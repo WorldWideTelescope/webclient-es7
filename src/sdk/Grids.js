@@ -51,7 +51,7 @@ Grids._createGalaxyImage = renderContext => {
         lng = lngMax;
       }
       index = y1 * (subdivs + 1) + x1;
-      point = Vector3d.create(lng * scaleFactor, 0, (lat - 28) * scaleFactor);
+      point = new Vector3d(lng * scaleFactor, 0, (lat - 28) * scaleFactor);
       point.rotateY(213 / 180 * Math.PI);
       point.rotateZ((-62.87175) / 180 * Math.PI);
       point.rotateY((-192.8595083) / 180 * Math.PI);
@@ -403,7 +403,7 @@ Grids.drawEcliptic = (renderContext, opacity, drawColor) => {
           width = 0.01;
         }
         const dd = d;
-        Grids._eclipticOverviewLineList.addLine(Vector3d._transformCoordinate(Vector3d.create(Math.cos((dd * Math.PI * 2) / 360), width, Math.sin((dd * Math.PI * 2) / 360)), mat), Vector3d._transformCoordinate(Vector3d.create(Math.cos((dd * Math.PI * 2) / 360), -width, Math.sin((dd * Math.PI * 2) / 360)), mat));
+        Grids._eclipticOverviewLineList.addLine(Vector3d._transformCoordinate(new Vector3d(Math.cos((dd * Math.PI * 2) / 360), width, Math.sin((dd * Math.PI * 2) / 360)), mat), Vector3d._transformCoordinate(new Vector3d(Math.cos((dd * Math.PI * 2) / 360), -width, Math.sin((dd * Math.PI * 2) / 360)), mat));
         index++;
         jYear += 1;
       }
@@ -447,8 +447,8 @@ Grids._makeEclipticText = () => {
         d = sunEcliptic.x;
         const dd = d;
         if (i === Math.floor(daysThisMonth / 2)) {
-          const center = Vector3d._transformCoordinate(Vector3d.create(Math.cos((dd * Math.PI * 2) / 360), 0.025, Math.sin((dd * Math.PI * 2) / 360)), mat);
-          const up = Vector3d._transformCoordinate(Vector3d.create(Math.cos((dd * Math.PI * 2) / 360), 0.045, Math.sin((dd * Math.PI * 2) / 360)), mat);
+          const center = Vector3d._transformCoordinate(new Vector3d(Math.cos((dd * Math.PI * 2) / 360), 0.025, Math.sin((dd * Math.PI * 2) / 360)), mat);
+          const up = Vector3d._transformCoordinate(new Vector3d(Math.cos((dd * Math.PI * 2) / 360), 0.045, Math.sin((dd * Math.PI * 2) / 360)), mat);
           up.subtract(center);
           up.normalize();
           Grids._eclipOvTextBatch.add(new Text3d(center, up, Grids._monthNames[m], 80, 0.000159375));

@@ -122,7 +122,7 @@ export const Tile$ = {
   },
   geoTo3dWithAltitude: function (lat, lng, altitude, useLocalCenter) {
     const radius = 1 + (altitude / this.get__demScaleFactor());
-    const retVal = Vector3d.create((Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * radius), (Math.sin(lat * Tile.RC) * radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * radius));
+    const retVal = new Vector3d((Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * radius), (Math.sin(lat * Tile.RC) * radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * radius));
     if (useLocalCenter) {
       retVal.subtract(this.localCenter);
     }
@@ -466,11 +466,11 @@ export const Tile$ = {
   },
   geoTo3d: function (lat, lng, useLocalCenter) {
     if (this.dataset.get_dataSetType() === 3) {
-      var retVal = Vector3d.create(-(Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius), (Math.sin(lat * Tile.RC) * this.radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius));
+      var retVal = new Vector3d(-(Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius), (Math.sin(lat * Tile.RC) * this.radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius));
       return retVal;
     } else {
       lng -= 180;
-      var retVal = Vector3d.create((Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius), (Math.sin(lat * Tile.RC) * this.radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius));
+      var retVal = new Vector3d((Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius), (Math.sin(lat * Tile.RC) * this.radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius));
       return retVal;
     }
   },

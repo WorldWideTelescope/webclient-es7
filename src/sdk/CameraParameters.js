@@ -24,7 +24,7 @@ CameraParameters.create = function(lat, lng, zoom, rotation, angle, opactity) {
   temp.angle = angle;
   temp.raDec = false;
   temp.opacity = opactity;
-  temp.viewTarget = Vector3d.create(0, 0, 0);
+  temp.viewTarget = new Vector3d(0, 0, 0);
   temp.target = 20;
   temp.targetReferenceFrame = '';
   return temp;

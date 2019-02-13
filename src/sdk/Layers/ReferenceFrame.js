@@ -341,14 +341,14 @@ export const ReferenceFrame$ = {
     this.worldMatrix = Matrix3d.get_identity();
     this.worldMatrix.translate(this.translation);
     const localScale = (1 / renderContext.get_nominalRadius()) * this.scale * this.meanRadius;
-    this.worldMatrix.scale(Vector3d.create(localScale, localScale, localScale));
+    this.worldMatrix.scale(new Vector3d(localScale, localScale, localScale));
     this.worldMatrix._multiply(Matrix3d.rotationYawPitchRoll((this.heading / 180 * Math.PI), (this.pitch / 180 * Math.PI), (this.roll / 180 * Math.PI)));
     this.worldMatrix._multiply(Matrix3d._rotationZ(-90 / 180 * Math.PI));
     if (!!this.rotationalPeriod) {
       const rotationCurrent = (((SpaceTimeController.get_jNow() - this.zeroRotationDate) / this.rotationalPeriod) * Math.PI * 2) % (Math.PI * 2);
       this.worldMatrix._multiply(Matrix3d._rotationX(-rotationCurrent));
     }
-    this.worldMatrix.translate(Vector3d.create(1 + (this.altitude / renderContext.get_nominalRadius()), 0, 0));
+    this.worldMatrix.translate(new Vector3d(1 + (this.altitude / renderContext.get_nominalRadius()), 0, 0));
     this.worldMatrix._multiply(Matrix3d._rotationZ(this.lat / 180 * Math.PI));
     this.worldMatrix._multiply(Matrix3d._rotationY(-(this.lng + 180) / 180 * Math.PI));
   },
@@ -400,12 +400,12 @@ export const ReferenceFrame$ = {
         break;
     }
     scaleFactor *= 1 / renderContext.get_nominalRadius();
-    const look = Matrix3d.lookAtLH(Vector3d.create(0, 0, 0), direction, up);
+    const look = Matrix3d.lookAtLH(new Vector3d(0, 0, 0), direction, up);
     look.invert();
     this.worldMatrix = Matrix3d.get_identity();
     this.worldMatrix.translate(this.translation);
     const localScale = (1 / renderContext.get_nominalRadius()) * this.scale * this.meanRadius;
-    this.worldMatrix.scale(Vector3d.create(localScale, localScale, localScale));
+    this.worldMatrix.scale(new Vector3d(localScale, localScale, localScale));
     this.worldMatrix._multiply(Matrix3d.rotationYawPitchRoll((this.heading / 180 * Math.PI), (this.pitch / 180 * Math.PI), (this.roll / 180 * Math.PI)));
     if (!!this.rotationalPeriod) {
       const rotationCurrent = (((SpaceTimeController.get_jNow() - this.zeroRotationDate) / this.rotationalPeriod) * Math.PI * 2) % (Math.PI * 2);
