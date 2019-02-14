@@ -1,0 +1,14 @@
+{
+  "name": "webclient-basic-server",
+  "version": "0.1.0",
+  "description": "Use to run an optimized build",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index"
+  },
+  "author": "ron",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}

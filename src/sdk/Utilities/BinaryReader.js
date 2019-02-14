@@ -1,6 +1,6 @@
 export function BinaryReader(arraybuf) {
   this.position = 0;
-  this._data = null;
+  //this._data = null;
   this._data = arraybuf;
 }
 export const BinaryReader$ = {
