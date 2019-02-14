@@ -1,63 +1,66 @@
-import {Tile} from './Tile';
+
 import ss from './scriptsharp/ss';
 import {ConvexHull, PositionTexture, Vector2d, Vector3d} from './Double3d';
 import {Coordinates} from './Coordinates';
 import {TileCache} from './TileCache';
 import {Triangle} from './Triangle';
+import {Tile} from './Tile';
 
-export function ToastTile() {
-  this._topDown$1 = true;
-  this.backslash = false;
-  this._vertexList$1 = null;
-  this._childTriangleList$1 = null;
-  this._subDivisionLevel$1 = 4;
-  this._subDivided$1 = false;
-  Tile.call(this);
-}
-ToastTile._cloneArray$1 = function(indexArray) {
-  const count = indexArray.length;
-  const ui16array = new Uint16Array(count);
-  const indexArrayNew = ui16array;
-  for (let i = 0; i < count; i++) {
-    indexArrayNew[i] = indexArray[i];
+export class ToastTile extends Tile {
+  constructor() {
+    super();
+    this._topDown$1 = true;
+    this.backslash = false;
+    this._vertexList$1 = null;
+    this._childTriangleList$1 = null;
+    this._subDivisionLevel$1 = 4;
+    this._subDivided$1 = false;
   }
-  return indexArrayNew;
-};
-ToastTile.create = function(level, xc, yc, dataset, parent) {
-  const temp = new ToastTile();
-  temp.parent = parent;
-  temp.level = level;
-  temp.tileX = xc;
-  temp.tileY = yc;
-  temp.dataset = dataset;
-  temp._topDown$1 = !dataset.get_bottomsUp();
-  if (temp.tileX !== xc) {
-    alert('bad');
-  }
-  if (!!dataset.get_meanRadius()) {
-    temp.set__demScaleFactor(dataset.get_meanRadius());
-  }
-  else {
-    if (!dataset.get_dataSetType()) {
-      temp.set__demScaleFactor(6371000);
+
+  static _cloneArray$1(indexArray) {
+    const count = indexArray.length;
+    const ui16array = new Uint16Array(count);
+    const indexArrayNew = ui16array;
+    for (let i = 0; i < count; i++) {
+      indexArrayNew[i] = indexArray[i];
     }
-    else {
-      temp.set__demScaleFactor(3396010);
-    }
+    return indexArrayNew;
   }
-  temp.computeBoundingSphere();
-  return temp;
-};
-export const ToastTile$ = {
-  computeBoundingSphere: function () {
+
+  static create(level, xc, yc, dataset, parent) {
+    const temp = new ToastTile();
+    temp.parent = parent;
+    temp.level = level;
+    temp.tileX = xc;
+    temp.tileY = yc;
+    temp.dataset = dataset;
+    temp._topDown$1 = !dataset.get_bottomsUp();
+    if (temp.tileX !== xc) {
+      alert('bad');
+    }
+    if (!!dataset.get_meanRadius()) {
+      temp.set__demScaleFactor(dataset.get_meanRadius());
+    } else {
+      if (!dataset.get_dataSetType()) {
+        temp.set__demScaleFactor(6371000);
+      } else {
+        temp.set__demScaleFactor(3396010);
+      }
+    }
+    temp.computeBoundingSphere();
+    return temp;
+  }
+
+  computeBoundingSphere() {
     this._initializeGrids$1();
     this.topLeft = this.bounds[0 + 3 * 0].position.copy();
     this.bottomRight = this.bounds[2 + 3 * 2].position.copy();
     this.topRight = this.bounds[2 + 3 * 0].position.copy();
     this.bottomLeft = this.bounds[0 + 3 * 2].position.copy();
     this.calcSphere();
-  },
-  getIndexBuffer: function (index, accomidation) {
+  }
+
+  getIndexBuffer(index, accomidation) {
     if (!this.level) {
       return ToastTile.rootIndexBuffer[index];
     }
@@ -66,8 +69,9 @@ export const ToastTile$ = {
     } else {
       return ToastTile.slashIndexBuffer[index * 16 + accomidation];
     }
-  },
-  _processIndexBuffer$1: function (indexArray, part) {
+  }
+
+  _processIndexBuffer$1(indexArray, part) {
     if (!this.level) {
       ToastTile.rootIndexBuffer[part] = Tile.prepDevice.createBuffer();
       Tile.prepDevice.bindBuffer(34963, ToastTile.rootIndexBuffer[part]);
@@ -87,8 +91,9 @@ export const ToastTile$ = {
         Tile.prepDevice.bufferData(34963, partArray, 35044);
       }
     }
-  },
-  _processAccomindations$1: function (indexArray, a) {
+  }
+
+  _processAccomindations$1(indexArray, a) {
     const map = {};
     const gridMap = {};
     const $enum1 = ss.enumerate(indexArray);
@@ -151,13 +156,15 @@ export const ToastTile$ = {
         indexArray[i] = map[indexArray[i]];
       }
     }
-  },
-  calculateFullSphere: function (list) {
+  }
+
+  calculateFullSphere(list) {
     const result = ConvexHull.findEnclosingSphere(list);
     this.sphereCenter = result.center;
     this.sphereRadius = result.radius;
-  },
-  isPointInTile: function (lat, lng) {
+  }
+
+  isPointInTile(lat, lng) {
     if (!this.level) {
       return true;
     }
@@ -180,29 +187,31 @@ export const ToastTile$ = {
       return false;
     }
     const testPoint = Coordinates.geoTo3dDouble(-lat, lng);
-    const top = this._isLeftOfHalfSpace$1(this.topLeft.copy(), this.topRight.copy(), testPoint);
-    const right = this._isLeftOfHalfSpace$1(this.topRight.copy(), this.bottomRight.copy(), testPoint);
-    const bottom = this._isLeftOfHalfSpace$1(this.bottomRight.copy(), this.bottomLeft.copy(), testPoint);
-    const left = this._isLeftOfHalfSpace$1(this.bottomLeft.copy(), this.topLeft.copy(), testPoint);
+    const top = ToastTile._isLeftOfHalfSpace$1(this.topLeft.copy(), this.topRight.copy(), testPoint);
+    const right = ToastTile._isLeftOfHalfSpace$1(this.topRight.copy(), this.bottomRight.copy(), testPoint);
+    const bottom = ToastTile._isLeftOfHalfSpace$1(this.bottomRight.copy(), this.bottomLeft.copy(), testPoint);
+    const left = ToastTile._isLeftOfHalfSpace$1(this.bottomLeft.copy(), this.topLeft.copy(), testPoint);
     if (top && right && bottom && left) {
       return true;
     }
     return false;
-  },
-  _isLeftOfHalfSpace$1: function (pntA, pntB, pntTest) {
+  }
+
+  static _isLeftOfHalfSpace$1(pntA, pntB, pntTest) {
     pntA.normalize();
     pntB.normalize();
     const cross = Vector3d.cross(pntA, pntB);
     const dot = Vector3d.dot(cross, pntTest);
     return dot < 0;
-  },
-  getSurfacePointAltitude: function (lat, lng, meters) {
+  }
+
+  getSurfacePointAltitude(lat, lng, meters) {
     if (this.level < Tile.lastDeepestLevel) {
       for (let ii = 0; ii < 4; ii++) {
         const child = this.children[ii];
         if (child != null) {
-          if (child.isPointInTile(lat, lng)) {
-            const retVal = child.getSurfacePointAltitude(lat, lng, meters);
+          if (Tile.isPointInTile(lat, lng)) {
+            const retVal = Tile.getSurfacePointAltitude(lat, lng, meters);
             if (!!retVal) {
               return retVal;
             } else {
@@ -212,9 +221,11 @@ export const ToastTile$ = {
         }
       }
     }
+
+    /* rg:never used ?
     Tile.tileTargetLevel = this.level;
     Tile.tileTargetX = this.tileX;
-    Tile.tileTargetY = this.tileY;
+    Tile.tileTargetY = this.tileY;*/
     let testPoint = Coordinates.geoTo3dDouble(-lat, lng);
     testPoint = Vector3d.subtractVectors(new Vector3d(), testPoint);
     const uv = DistanceCalc.getUVFromInnerPoint(this.topLeft.copy(), this.topRight.copy(), this.bottomLeft.copy(), this.bottomRight.copy(), testPoint.copy());
@@ -235,8 +246,9 @@ export const ToastTile$ = {
       return val / this.get__demScaleFactor();
     }
     return this.demAverage / this.get__demScaleFactor();
-  },
-  _initializeGrids$1: function () {
+  }
+
+  _initializeGrids$1() {
     this._vertexList$1 = [];
     this._childTriangleList$1 = new Array(4);
     this._childTriangleList$1[0] = [];
@@ -257,17 +269,17 @@ export const ToastTile$ = {
         this.backslash = (xIndex === 1 ^ yIndex === 1) === 1;
       }
       this.bounds[0 + 3 * 0] = parent.bounds[xIndex + 3 * yIndex].copy();
-      this.bounds[1 + 3 * 0] = this._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * yIndex]);
+      this.bounds[1 + 3 * 0] = ToastTile._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * yIndex]);
       this.bounds[2 + 3 * 0] = parent.bounds[xIndex + 1 + 3 * yIndex].copy();
-      this.bounds[0 + 3 * 1] = this._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 3 * (yIndex + 1)]);
+      this.bounds[0 + 3 * 1] = ToastTile._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 3 * (yIndex + 1)]);
       if (this.backslash) {
-        this.bounds[1 + 3 * 1] = this._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
+        this.bounds[1 + 3 * 1] = ToastTile._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
       } else {
-        this.bounds[1 + 3 * 1] = this._midpoint$1(parent.bounds[xIndex + 1 + 3 * yIndex], parent.bounds[xIndex + 3 * (yIndex + 1)]);
+        this.bounds[1 + 3 * 1] = ToastTile._midpoint$1(parent.bounds[xIndex + 1 + 3 * yIndex], parent.bounds[xIndex + 3 * (yIndex + 1)]);
       }
-      this.bounds[2 + 3 * 1] = this._midpoint$1(parent.bounds[xIndex + 1 + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
+      this.bounds[2 + 3 * 1] = ToastTile._midpoint$1(parent.bounds[xIndex + 1 + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
       this.bounds[0 + 3 * 2] = parent.bounds[xIndex + 3 * (yIndex + 1)].copy();
-      this.bounds[1 + 3 * 2] = this._midpoint$1(parent.bounds[xIndex + 3 * (yIndex + 1)], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
+      this.bounds[1 + 3 * 2] = ToastTile._midpoint$1(parent.bounds[xIndex + 3 * (yIndex + 1)], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
       this.bounds[2 + 3 * 2] = parent.bounds[xIndex + 1 + 3 * (yIndex + 1)].copy();
       this.bounds[0 + 3 * 0].tu = 0 * Tile.uvMultiple;
       this.bounds[0 + 3 * 0].tv = 0 * Tile.uvMultiple;
@@ -343,14 +355,16 @@ export const ToastTile$ = {
       this._childTriangleList$1[3].push(Triangle.create(7, 5, 4));
       this._childTriangleList$1[3].push(Triangle.create(8, 5, 7));
     }
-  },
-  _midpoint$1: function (positionNormalTextured, positionNormalTextured_2) {
+  }
+
+  static _midpoint$1(positionNormalTextured, positionNormalTextured_2) {
     const a1 = Vector3d.lerp(positionNormalTextured.position, positionNormalTextured_2.position, 0.5);
     const a1uv = Vector2d.lerp(new Vector2d(positionNormalTextured.tu, positionNormalTextured.tv), new Vector2d(positionNormalTextured_2.tu, positionNormalTextured_2.tv), 0.5);
     a1.normalize();
     return PositionTexture.createPos(a1, a1uv.x, a1uv.y);
-  },
-  createGeometry: function (renderContext) {
+  }
+
+  createGeometry(renderContext) {
     if (this.geometryCreated) {
       return true;
     }
@@ -417,10 +431,10 @@ export const ToastTile$ = {
         while ($enum3.moveNext()) {
           const pt = $enum3.current;
           if (this.demTile) {
-            index = this.addVertex(buffer, index, this._getMappedVertex(pt));
+            index = Tile.addVertex(buffer, index, this._getMappedVertex(pt));
             this.demIndex++;
           } else {
-            index = this.addVertex(buffer, index, pt);
+            index = Tile.addVertex(buffer, index, pt);
           }
         }
         if (this.demTile) {
@@ -461,8 +475,9 @@ export const ToastTile$ = {
       this._subDivided$1 = true;
     }
     return true;
-  },
-  _getMappedVertex: function (vert) {
+  }
+
+  _getMappedVertex(vert) {
     const vertOut = new PositionTexture();
     const latLng = Coordinates.cartesianToSpherical2(vert.position);
     if (latLng.get_lng() < -180) {
@@ -493,8 +508,9 @@ export const ToastTile$ = {
     pos.subtract(this.localCenter);
     vertOut.position = pos;
     return vertOut;
-  },
-  cleanUp: function (removeFromParent) {
+  }
+
+  cleanUp(removeFromParent) {
     Tile.prototype.cleanUp.call(this, removeFromParent);
     if (this._vertexList$1 != null) {
       this._vertexList$1 = null;
@@ -504,11 +520,13 @@ export const ToastTile$ = {
     }
     this._subDivided$1 = false;
     this.demArray = null;
-  },
-  _getDemSample$1: function (xc, yc) {
+  }
+
+  _getDemSample$1(xc, yc) {
     return this.demArray[(16 - yc) * 17 + xc];
-  },
-  createDemFromParent: function () {
+  }
+
+  createDemFromParent() {
     const parent = ss.safeCast(this.parent, ToastTile);
     if (parent == null) {
       return false;
@@ -545,8 +563,7 @@ export const ToastTile$ = {
     this.demReady = true;
     return true;
   }
-};
-// wwtlib.DistanceCalc
+}
 
 export class DistanceCalc {
   static lineToPoint(l0, l1, p) {
@@ -555,7 +572,7 @@ export class DistanceCalc {
     const dist = Vector3d.cross(w, v).length() / v.length();
     return dist;
   }
-  static getUVFromInnerPoint (ul, ur, ll, lr, pnt) {
+  static getUVFromInnerPoint(ul, ur, ll, lr, pnt) {
     ul.normalize();
     ur.normalize();
     ll.normalize();

@@ -1,7 +1,7 @@
 import {CAAGlobe} from './AAGlobe';
 import {COR, CT} from './AACoordinateTransformation';
 import GFX from './GFX';
-import {CAASidereal} from './CAASidereal';
+import {CAASidereal} from './AASidereal';
 export function CAATopocentricEclipticDetails() {
   this.lambda = 0;
   this.beta = 0;

@@ -1,80 +1,85 @@
-import {Vector3d, Vector4d,ConvexHull} from './Double3d';
 import {Util} from './Util';
 import ss from './scriptsharp/ss';
 import {BlendState} from './BlendState';
 import {Texture} from './Graphics/Texture';
 import {TileCache} from './TileCache';
 import {TileShader} from './Graphics/Shaders';
+import {ConvexHull, Vector3d, Vector4d} from './Double3d';
 
-export function Tile() {
-  this._renderTriangleLists = new Array(4);
-  this._indexBuffers = new Array(4);
-  this.level = 0;
-  this.tileX = 0;
-  this.tileY = 0;
-  this.texture = null;
-  this.texture2d = null;
-  this.readyToRender = false;
-  this.inViewFrustum = true;
-  this.children = [ null, null, null, null ];
-  this.parent = null;
-  this.localCenter = new Vector3d();
-  this.renderedAtOrBelowGeneration = 0;
-  this._demScaleFactor = 6371000;
-  this.demIndex = 0;
-  this.demAverage = 0;
-  this.demReady = false;
-  this.texReady = false;
-  this.demTile = false;
-  this.demDownloading = false;
-  this.renderedGeneration = 0;
-  this.accomidation = 0;
-  this.accessCount = 0;
-  this.downloading = false;
-  this.geometryCreated = false;
-  this._isHdTile = false;
-  this.demSize = 33 * 33;
-  this._topLeftScreen = new Vector3d();
-  this._bottomRightScreen = new Vector3d();
-  this._topRightScreen = new Vector3d();
-  this._bottomLeftScreen = new Vector3d();
-  this.sphereRadius = 0;
-  this.sphereCenter = new Vector3d();
-  this.radius = 1;
-  this.triangleCount = 0;
-  this.requestHits = 0;
-  this.requestPending = false;
-  this.errored = false;
-  this._tileId = null;
-  this._vertexCount = 0;
-  this._renderChildPart = null;
-  this._renderChildPart = new Array(4);
-  for (let i = 0; i < 4; i++) {
-    this._renderChildPart[i] = BlendState.create(false, 500);
+export class Tile {
+  constructor() {
+    this._renderTriangleLists = new Array(4);
+    this._indexBuffers = new Array(4);
+    this.level = 0;
+    this.tileX = 0;
+    this.tileY = 0;
+    this.texture = null;
+    this.texture2d = null;
+    this.readyToRender = false;
+    this.inViewFrustum = true;
+    this.children = [null, null, null, null];
+    this.parent = null;
+    this.localCenter = new Vector3d();
+    this.renderedAtOrBelowGeneration = 0;
+    this._demScaleFactor = 6371000;
+    this.demIndex = 0;
+    this.demAverage = 0;
+    this.demReady = false;
+    this.texReady = false;
+    this.demTile = false;
+    this.demDownloading = false;
+    this.renderedGeneration = 0;
+    this.accomidation = 0;
+    this.accessCount = 0;
+    this.downloading = false;
+    this.geometryCreated = false;
+    this._isHdTile = false;
+    this.demSize = 33 * 33;
+    this._topLeftScreen = new Vector3d();
+    this._bottomRightScreen = new Vector3d();
+    this._topRightScreen = new Vector3d();
+    this._bottomLeftScreen = new Vector3d();
+    this.sphereRadius = 0;
+    this.sphereCenter = new Vector3d();
+    this.radius = 1;
+    this.triangleCount = 0;
+    this.requestHits = 0;
+    this.requestPending = false;
+    this.errored = false;
+    this._tileId = null;
+    this._vertexCount = 0;
+    this._renderChildPart = null;
+    this._renderChildPart = new Array(4);
+    for (let i = 0; i < 4; i++) {
+      this._renderChildPart[i] = BlendState.create(false, 500);
+    }
   }
-}
-Tile.getFrustumList = function() {
-  try {
-    return Tile.frustumList;
+
+  static getFrustumList() {
+    try {
+      return Tile.frustumList;
+    } catch ($e1) {
+      return null;
+    }
   }
-  catch ($e1) {
-    return null;
+
+  static get_subDivisions() {
+    return 32;
   }
-};
-Tile.get_subDivisions = function() {
-  return 32;
-};
-export const Tile$ = {
-  getIndexBuffer: function (index, accomidation) {
+
+  getIndexBuffer(index, accomidation) {
     return this._indexBuffers[index];
-  },
-  isPointInTile: function (lat, lng) {
+  }
+
+  static isPointInTile(lat, lng) {
     return false;
-  },
-  getSurfacePointAltitude: function (lat, lng, meters) {
+  }
+
+  static getSurfacePointAltitude(lat, lng, meters) {
     return 0;
-  },
-  makeTexture: function () {
+  }
+
+  makeTexture() {
     if (Tile.prepDevice != null) {
       try {
         this.texture2d = Tile.prepDevice.createTexture();
@@ -98,16 +103,18 @@ export const Tile$ = {
         this.errored = true;
       }
     }
-  },
-  addVertex: function (buffer, index, p) {
+  }
+
+  static addVertex(buffer, index, p) {
     buffer[index++] = p.position.x;
     buffer[index++] = p.position.y;
     buffer[index++] = p.position.z;
     buffer[index++] = p.tu;
     buffer[index++] = p.tv;
     return index;
-  },
-  geoTo3dWithAlt: function (lat, lng, useLocalCenter, rev) {
+  }
+
+  geoTo3dWithAlt(lat, lng, useLocalCenter, rev) {
     lat = Math.max(Math.min(90, lat), -90);
     lng = Math.max(Math.min(180, lng), -180);
     if (!Tile.demEnabled || this.demData == null) {
@@ -117,25 +124,28 @@ export const Tile$ = {
       lng -= 180;
     }
     const altitude = this.demData[this.demIndex];
-    const retVal = this.geoTo3dWithAltitude(lat, lng, altitude, useLocalCenter);
-    return retVal;
-  },
-  geoTo3dWithAltitude: function (lat, lng, altitude, useLocalCenter) {
+    return this.geoTo3dWithAltitude(lat, lng, altitude, useLocalCenter);
+  }
+
+  geoTo3dWithAltitude(lat, lng, altitude, useLocalCenter) {
     const radius = 1 + (altitude / this.get__demScaleFactor());
     const retVal = new Vector3d((Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * radius), (Math.sin(lat * Tile.RC) * radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * radius));
     if (useLocalCenter) {
       retVal.subtract(this.localCenter);
     }
     return retVal;
-  },
-  get__demScaleFactor: function () {
+  }
+
+  get__demScaleFactor() {
     return this._demScaleFactor;
-  },
-  set__demScaleFactor: function (value) {
+  }
+
+  set__demScaleFactor(value) {
     this._demScaleFactor = value;
     return value;
-  },
-  requestImage: function () {
+  }
+
+  requestImage() {
     const $this = this;
 
     if (this.get_dataset().get_wcsImage() != null) {
@@ -175,11 +185,13 @@ export const Tile$ = {
       xdomimg.crossOrigin = 'anonymous';
       this.texture.src = ss.replaceString(this.get_URL(), 'cdn.', 'www.');
     }
-  },
-  createDemFromParent: function () {
+  }
+
+  createDemFromParent() {
     return false;
-  },
-  _loadDemData: function () {
+  }
+
+  _loadDemData() {
     if (this.demFile == null) {
       return this.createDemFromParent();
     }
@@ -195,8 +207,9 @@ export const Tile$ = {
     }
     this.demAverage /= this.demData.length;
     return true;
-  },
-  requestDem: function () {
+  }
+
+  requestDem() {
     const $this = this;
 
     if (!this.readyToRender && !this.demDownloading) {
@@ -227,8 +240,9 @@ export const Tile$ = {
       xhr.responseType = 'arraybuffer';
       xhr.send();
     }
-  },
-  draw3D: function (renderContext, opacity) {
+  }
+
+  draw3D(renderContext, opacity) {
     this.renderedGeneration = Tile.currentRenderGeneration;
     Tile.tilesTouched++;
     this.accessCount = TileCache.accessID++;
@@ -301,8 +315,9 @@ export const Tile$ = {
       }
     }
     return true;
-  },
-  _computeAccomidation: function () {
+  }
+
+  _computeAccomidation() {
     let accVal = 0;
     if (!Tile.useAccomidation) {
       return 0;
@@ -324,8 +339,9 @@ export const Tile$ = {
       accVal += 8;
     }
     return accVal;
-  },
-  renderPart: function (renderContext, part, opacity, combine) {
+  }
+
+  renderPart(renderContext, part, opacity, combine) {
     if (Tile.prepDevice == null) {
       const lighting = renderContext.lighting && renderContext.get_sunPosition() != null;
       const $enum1 = ss.enumerate(this._renderTriangleLists[part]);
@@ -352,8 +368,9 @@ export const Tile$ = {
       TileShader.use(renderContext, this._vertexBuffer, this.getIndexBuffer(part, this.accomidation), this.texture2d, opacity, false);
       renderContext.gl.drawElements(4, this.triangleCount * 3, 5123, 0);
     }
-  },
-  cleanUp: function (removeFromParent) {
+  }
+
+  cleanUp(removeFromParent) {
     this.readyToRender = false;
     this.demData = null;
     this.demFile = null;
@@ -386,16 +403,18 @@ export const Tile$ = {
         this.texture2d = null;
       }
     }
-  },
-  removeChild: function (child) {
+  }
+
+  removeChild(child) {
     for (let i = 0; i < 4; i++) {
       if (this.children[i] === child) {
         this.children[i] = null;
         return;
       }
     }
-  },
-  createGeometry: function (renderContext) {
+  }
+
+  createGeometry(renderContext) {
     if (Tile.demEnabled && this.demReady && this.demData == null) {
       if (!this._loadDemData()) {
         return false;
@@ -406,8 +425,9 @@ export const Tile$ = {
     }
     this.readyToRender = true;
     return true;
-  },
-  calcSphere: function () {
+  }
+
+  calcSphere() {
     const corners = new Array(4);
     corners[0] = this.topLeft;
     corners[1] = this.bottomRight;
@@ -416,8 +436,9 @@ export const Tile$ = {
     const result = ConvexHull.findEnclosingSphere(corners);
     this.sphereCenter = result.center;
     this.sphereRadius = result.radius;
-  },
-  isTileBigEnough: function (renderContext) {
+  }
+
+  isTileBigEnough(renderContext) {
     if (this.level > 1) {
       const wvp = renderContext.WVP;
       wvp._transformTo(this.topLeft, this._topLeftScreen);
@@ -444,8 +465,9 @@ export const Tile$ = {
       }
     }
     return true;
-  },
-  isTileInFrustum: function (frustum) {
+  }
+
+  isTileInFrustum(frustum) {
     if (this.level < 2 && (!this.dataset.get_projection() || this.dataset.get_projection() === 3)) {
     }
     this.inViewFrustum = false;
@@ -457,14 +479,17 @@ export const Tile$ = {
     }
     this.inViewFrustum = true;
     return true;
-  },
-  get_sphereRadius: function () {
+  }
+
+  get_sphereRadius() {
     return this.sphereRadius;
-  },
-  get_sphereCenter: function () {
+  }
+
+  get_sphereCenter() {
     return this.sphereCenter;
-  },
-  geoTo3d: function (lat, lng, useLocalCenter) {
+  }
+
+  geoTo3d(lat, lng, useLocalCenter) {
     if (this.dataset.get_dataSetType() === 3) {
       var retVal = new Vector3d(-(Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius), (Math.sin(lat * Tile.RC) * this.radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius));
       return retVal;
@@ -473,20 +498,25 @@ export const Tile$ = {
       var retVal = new Vector3d((Math.cos(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius), (Math.sin(lat * Tile.RC) * this.radius), (Math.sin(lng * Tile.RC) * Math.cos(lat * Tile.RC) * this.radius));
       return retVal;
     }
-  },
-  onCreateVertexBuffer: function (sender, e) {
-  },
-  get_dataset: function () {
+  }
+
+  onCreateVertexBuffer(sender, e) {
+  }
+
+  get_dataset() {
     return this.dataset;
-  },
-  set_dataset: function (value) {
+  }
+
+  set_dataset(value) {
     this.dataset = value;
     return value;
-  },
-  get_key: function () {
+  }
+
+  get_key() {
     return this.dataset.get_imageSetID().toString() + '\\' + this.level.toString() + '\\' + this.tileY.toString() + '_' + this.tileX.toString();
-  },
-  get_URL: function () {
+  }
+
+  get_URL() {
     let returnUrl = this.dataset.get_url();
     if (this.dataset.get_url().indexOf('{1}') > -1) {
       if (!this.dataset.get_projection() && !ss.emptyString(this.dataset.get_quadTreeTileMap())) {
@@ -541,8 +571,9 @@ export const Tile$ = {
       returnUrl += '&n=z';
     }
     return returnUrl;
-  },
-  get_demURL: function () {
+  }
+
+  get_demURL() {
     if (!this.dataset.get_projection()) {
       let baseUrl = '//cdn.worldwidetelescope.org/wwtweb/demtile.aspx?q={0},{1},{2},M';
       if (!ss.emptyString(this.dataset.get_demUrl())) {
@@ -583,12 +614,13 @@ export const Tile$ = {
     returnUrl = ss.replaceString(returnUrl, '{Q}', id);
     returnUrl = ss.replaceString(returnUrl, '{S}', server);
     return returnUrl;
-  },
-  getServerID: function () {
-    const server = (this.tileX & 1) + ((this.tileY & 1) << 1);
-    return server;
-  },
-  getTileID: function () {
+  }
+
+  getServerID() {
+    return (this.tileX & 1) + ((this.tileY & 1) << 1);
+  }
+
+  getTileID() {
     if (this._tileId != null) {
       return this._tileId;
     }
@@ -618,12 +650,37 @@ export const Tile$ = {
       this._tileId = '0';
       return this._tileId;
     }
-  },
-  get_vertexCount: function () {
+  }
+
+  get_vertexCount() {
     return this._vertexCount;
-  },
-  set_vertexCount: function (value) {
+  }
+
+  set_vertexCount(value) {
     this._vertexCount = value;
     return value;
   }
-};
+}
+
+const init = (() => {
+  //console.log({Tile});
+  Tile.currentRenderGeneration = 0;
+  Tile.tileTargetX = -1;
+  Tile.tileTargetY = -1;
+  Tile.tileTargetLevel = -1;
+  Tile.tilesInView = 0;
+  Tile.trianglesRendered = 0;
+  Tile.tilesTouched = 0;
+  Tile.frustumList = null;
+  Tile.prepDevice = null;
+  Tile.uvMultiple = 256;
+  Tile.callCount = 0;
+  Tile.useAccomidation = true;
+  Tile.demEnabled = false;
+  Tile.maxLevel = 20;
+  Tile.meshComplexity = 50;
+  Tile.imageQuality = 50;
+  Tile.lastDeepestLevel = 0;
+  Tile.deepestLevel = 0;
+  Tile.RC = (3.1415927 / 180);
+})();

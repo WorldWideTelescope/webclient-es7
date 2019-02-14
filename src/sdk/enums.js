@@ -634,4 +634,3 @@ Enums.toXml = function(enumType, value) {
   }
   return enumString;
 };
-export const Enums$ = {};

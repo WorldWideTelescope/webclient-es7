@@ -32,25 +32,19 @@ import {IFR} from './astrocalc/AAIlluminatedFraction';
 import {INTP} from './astrocalc/AAInterpolate';
 import {MIFR} from './astrocalc/AAMoonIlluminatedFraction';
 import {CAAParallax,CAATopocentricEclipticDetails} from './astrocalc/AAParallax';
-import {CAASidereal} from './astrocalc/CAASidereal';
+import {CAASidereal} from './astrocalc/AASidereal';
 import {CAAPhysicalJupiter, CAAPhysicalJupiterDetails} from './astrocalc/AAPhysicalJupiter';
 import {CAAPhysicalMars, CAAPhysicalMarsDetails} from './astrocalc/AAPhysicalMars';
 import {CAAPhysicalSunDetails,CAAPhysicalSun} from './astrocalc/AAPhysicalSun';
 import {CAAPrecession} from './astrocalc/AAPrecession';
 import {CAARiseTransitSet,CAARiseTransitSetDetails} from './astrocalc/AARiseTransitSet';
-
 import {Util, Guid, Guid$, Mouse} from './Util';
-
-
+import {Tile} from './Tile';
 import {
   IFolder,
-  IPlace,
   ISettings,
   IThumbnail,
   IUiController,
-  IUIServicesCallbacks,
-  IUndoStep,
-  IViewMover
 } from './interface';
 import {
   DAY_OF_WEEK, EO, CullMode,
@@ -67,7 +61,7 @@ import {
   ColorMaps, MarkerMixes, AltTypes,
   CoordinatesTypes, ReferenceFrameTypes, ReferenceFrames,
   FadeType, AltUnits, ScaleTypes, DataTypes, PointScaleTypes,
-  Enums,Enums$
+  Enums
 } from './enums.js';
 import {AstroCalc,RiseSetDetails, AstroRaDec} from './astrocalc/AstroCalc';
 import {CAAStellarMagnitudes} from './astrocalc/AAStellarMagnitudes';
@@ -82,41 +76,29 @@ import {
   Vector2d,
   Vector3d, Vector4d, Vector4d$
 } from './Double3d';
-import {Tile, Tile$} from './Tile';
-import {TileCache, TileCache$} from './TileCache';
+
+import {TileCache} from './TileCache';
 import {Color,Colors} from './Color';
 import {Coordinates,Coordinates$} from './Coordinates';
 import {BlendState} from './BlendState';
 import {Texture, Texture$} from './Graphics/Texture';
 import {Imageset, Imageset$} from './Imageset';
-import {ToastTile, ToastTile$,DistanceCalc,DistanceCalc$} from './ToastTile';
-import {Triangle, Triangle$} from './Triangle';
+import {Triangle} from './Triangle';
 import {
   TileShader,
-  TileShader$,
   SpriteShader,
-  SpriteShader$,
-  TextShader$,
   TextShader,
-  ShapeSpriteShader$,
   ShapeSpriteShader,
-  ImageShader2$,
   ImageShader2,
-  ImageShader,ImageShader$,
-  ModelShaderTan$,
+  ImageShader,
   ModelShaderTan,
-  ModelShader$,
   ModelShader,
-  EllipseShader$,
   EllipseShader,
-  KeplerPointSpriteShader$,
   KeplerPointSpriteShader,
-  LineShaderNormalDates$,
   LineShaderNormalDates,
-  OrbitLineShader$,
   OrbitLineShader,
-  SimpleLineShader2D$,
-  SimpleLineShader2D, SimpleLineShader$, SimpleLineShader
+  SimpleLineShader2D,
+  SimpleLineShader
 } from './Graphics/Shaders';
 import {LayerManager,LayerManager$,LayerMap,LayerMap$} from './Layers/LayerManager';
 import {WWTControl,WWTControl$} from './WWTControl';
@@ -130,71 +112,65 @@ import {ImageSetLayer, ImageSetLayer$} from './ImageSetLayer';
 import {Layer,Layer$} from './Layers/Layer';
 import {Histogram,Histogram$} from './Histogram';
 import {KeplerianElements, KeplerianElements$, Planets, Planets$} from './Planets';
-import {Constellations,ConstellationFilter,ConstellationFilter$} from './Constellation';
+import {Constellations,ConstellationFilter} from './Constellation';
 import {Sprite2d} from './Graphics/Sprite2d';
 import {ScriptInterface,ScriptInterface$} from './ScriptInterface';
 import {RenderContext,RenderContext$} from './RenderContext';
 import {ReferenceFrame,ReferenceFrame$} from './Layers/ReferenceFrame';
-import {CameraParameters,CameraParameters$} from './CameraParameters';
+import {
+  CameraParameters,
+  CameraParameters$ as from,
+  CameraParameters$ as to,
+  CameraParameters$
+} from './CameraParameters';
 import {Folder} from './Folder';
 import {Object3d,Object3d$,Object3dLayer,Object3dLayer$} from './Layers/Object3d';
 import {RenderTriangle,RenderTriangle$} from './RenderTriangle';
 import {
-  PointList, PointList$,
+  PointList,
   SimpleLineList, SimpleLineList$,
   Dates, Dates$,
   LineList, LineList$,
-  TriangleList, TriangleList$, TimeSeriesLineVertex$, TimeSeriesLineVertex, OrbitLineList$, OrbitLineList
+  TriangleList, TriangleList$, TimeSeriesLineVertex, OrbitLineList$, OrbitLineList
 } from './Graphics/Primative3d';
 import {Place,Place$} from './Place';
 import {
   TimeSeriesPointVertex,
-  TimeSeriesPointVertex$,
   IndexBuffer,
-  IndexBuffer$,
   PositionColoredTexturedVertexBuffer,
-  PositionColoredTexturedVertexBuffer$,
   PositionColoredVertexBuffer,
-  PositionColoredVertexBuffer$,
   ShortIndexBuffer,
-  ShortIndexBuffer$,
   TimeSeriesPointVertexBuffer,
-  TimeSeriesPointVertexBuffer$,
-  VertexBufferBase,
-  VertexBufferBase$,
   TimeSeriesPointSpriteShader,
-  TimeSeriesPointSpriteShader$,
-  PositionNormalTexturedTangentVertexBuffer$,
   PositionNormalTexturedTangentVertexBuffer,
-  PositionNormalTexturedVertexBuffer$,
   PositionNormalTexturedVertexBuffer,
-  PositionVertexBuffer$,
   PositionVertexBuffer,
-  TimeSeriesLineVertexBuffer$,
   TimeSeriesLineVertexBuffer,
-  KeplerVertexBuffer$,
   KeplerVertexBuffer,
-  PositionTextureVertexBuffer$, PositionTextureVertexBuffer
+  PositionTextureVertexBuffer
 } from './Graphics/GIBuffer';
 import {Annotation, Annotation$} from './Annotation';
-import {Wtml,Wtml$} from './WTML';
+import {Wtml} from './WTML';
 import {TourPlayer, TourPlayer$} from './Tours/TourPlayer';
 import {Grids,Grids$} from './Grids';
-import {MinorPlanets,MinorPlanets$} from './MinorPlanets';
+import {MinorPlanets} from './MinorPlanets';
 import {UiTools, UiTools$} from './UITools';
-import {EllipseRenderer, EllipseRenderer$, Orbit, Orbit$} from './Orbit';
+import {EllipseRenderer, Orbit} from './Orbit';
 import {BinaryReader,BinaryReader$} from './Utilities/BinaryReader';
 import {Star, Star$} from './Star';
 import {KeplerVertex, KeplerVertex$} from './KeplerVertex';
 import {Tessellator} from './Graphics/Tessellator';
+import {FitsImage} from './Layers/FitsImage';
+import {WcsImage} from './Layers/WcsImage';
+import {Bitmap} from './Utilities/Bitmap';
+import {TangentTile} from './TangentTile';
+import {MercatorTile} from './MercatorTile';
+import {EquirectangularTile} from './EquirectangularTile';
+import {SkyImageTile} from './SkyImageTile';
+import {PlotTile} from './PlotTile';
+import {ToastTile, DistanceCalc} from './ToastTile';
+let wwtlib = (() => {
 
-const wwtlib = (() => {
-
-
-
-
-  function ScaleMap() {}
-  const ScaleMap$ = {};
 
   function DomainValue(text, markerIndex) {
     this.markerIndex = 4;
@@ -1019,199 +995,7 @@ const wwtlib = (() => {
     }
   };
 
-  function WcsImage() {
-    this.copyright = '';
-    this.creditsUrl = '';
-    this._validWcs = false;
-    this.keywords = [];
-    this.description = '';
-    this.scaleX = 0;
-    this.scaleY = 0;
-    this.centerX = 0;
-    this.centerY = 0;
-    this.rotation = 0;
-    this.referenceX = 0;
-    this.referenceY = 0;
-    this.sizeX = 0;
-    this.sizeY = 0;
-    this.cd1_1 = 0;
-    this.cd1_2 = 0;
-    this.cd2_1 = 0;
-    this.cd2_2 = 0;
-    this.hasRotation = false;
-    this.hasSize = false;
-    this.hasScale = false;
-    this.hasLocation = false;
-    this.hasPixel = false;
-    this.filename = '';
-    this._colorCombine = false;
-  }
-  const WcsImage$ = {
-    get_copyright: function () {
-      return this.copyright;
-    },
-    set_copyright: function (value) {
-      this.copyright = value;
-      return value;
-    },
-    get_creditsUrl: function () {
-      return this.creditsUrl;
-    },
-    set_creditsUrl: function (value) {
-      this.creditsUrl = value;
-      return value;
-    },
-    get_validWcs: function () {
-      return this._validWcs;
-    },
-    set_validWcs: function (value) {
-      this._validWcs = value;
-      return value;
-    },
-    get_keywords: function () {
-      if (!this.keywords.length) {
-        this.keywords.push('Image File');
-      }
-      return this.keywords;
-    },
-    set_keywords: function (value) {
-      this.keywords = value;
-      return value;
-    },
-    get_description: function () {
-      return this.description;
-    },
-    set_description: function (value) {
-      this.description = value;
-      return value;
-    },
-    get_scaleX: function () {
-      return this.scaleX;
-    },
-    set_scaleX: function (value) {
-      this.scaleX = value;
-      return value;
-    },
-    get_scaleY: function () {
-      return this.scaleY;
-    },
-    set_scaleY: function (value) {
-      this.scaleY = value;
-      return value;
-    },
-    get_centerX: function () {
-      return this.centerX;
-    },
-    set_centerX: function (value) {
-      this.centerX = value;
-      return value;
-    },
-    get_centerY: function () {
-      return this.centerY;
-    },
-    set_centerY: function (value) {
-      this.centerY = value;
-      return value;
-    },
-    get_rotation: function () {
-      return this.rotation;
-    },
-    set_rotation: function (value) {
-      this.rotation = value;
-      return value;
-    },
-    get_referenceX: function () {
-      return this.referenceX;
-    },
-    set_referenceX: function (value) {
-      this.referenceX = value;
-      return value;
-    },
-    get_referenceY: function () {
-      return this.referenceY;
-    },
-    set_referenceY: function (value) {
-      this.referenceY = value;
-      return value;
-    },
-    get_sizeX: function () {
-      return this.sizeX;
-    },
-    set_sizeX: function (value) {
-      this.sizeX = value;
-      return value;
-    },
-    get_sizeY: function () {
-      return this.sizeY;
-    },
-    set_sizeY: function (value) {
-      this.sizeY = value;
-      return value;
-    },
-    get_cd1_1: function () {
-      return this.cd1_1;
-    },
-    set_cd1_1: function (value) {
-      this.cd1_1 = value;
-      return value;
-    },
-    get_cd1_2: function () {
-      return this.cd1_2;
-    },
-    set_cd1_2: function (value) {
-      this.cd1_2 = value;
-      return value;
-    },
-    get_cd2_1: function () {
-      return this.cd2_1;
-    },
-    set_cd2_1: function (value) {
-      this.cd2_1 = value;
-      return value;
-    },
-    get_cd2_2: function () {
-      return this.cd2_2;
-    },
-    set_cd2_2: function (value) {
-      this.cd2_2 = value;
-      return value;
-    },
-    adjustScale: function (width, height) {
-      if (width !== this.sizeX) {
-        this.scaleX *= (this.sizeX / width);
-        this.referenceX /= (this.sizeX / width);
-        this.sizeX = width;
-      }
-      if (height !== this.sizeY) {
-        this.scaleY *= (this.sizeY / height);
-        this.referenceY /= (this.sizeY / height);
-        this.sizeY = height;
-      }
-    },
-    calculateScaleFromCD: function () {
-      this.scaleX = (Math.sqrt(this.cd1_1 * this.cd1_1 + this.cd2_1 * this.cd2_1) * (this.cd1_1 * this.cd2_2 - this.cd1_2 * this.cd2_1) < 0) ? -1 : 1;
-      this.scaleY = Math.sqrt(this.cd1_2 * this.cd1_2 + this.cd2_2 * this.cd2_2);
-    },
-    calculateRotationFromCD: function () {
-      const sign = ((this.cd1_1 * this.cd2_2 - this.cd1_2 * this.cd2_1) < 0) ? -1 : 1;
-      const rot2 = Math.atan2((-sign * this.cd1_2), this.cd2_2);
-      this.rotation = rot2 / Math.PI * 180;
-    },
-    get_filename: function () {
-      return this.filename;
-    },
-    set_filename: function (value) {
-      this.filename = value;
-      return value;
-    },
-    get_colorCombine: function () {
-      return this._colorCombine;
-    },
-    set_colorCombine: function (value) {
-      this._colorCombine = value;
-      return value;
-    }
-  };
+
 
   function BodyAngles(poleRa, poleDec, primeMeridian, rotationRate) {
     this.poleDec = 0;
@@ -7296,41 +7080,6 @@ const wwtlib = (() => {
     showDialog: () => 1
   };
 
-
-  function Bitmap() {
-    this.width = 0;
-    this.height = 0;
-  }
-  Bitmap.create = (width, height) => {
-    height = Texture.fitPowerOfTwo(height);
-    width = Texture.fitPowerOfTwo(width);
-    const bmp = new Bitmap();
-    bmp.height = height;
-    bmp.width = width;
-    bmp._buffer = new Uint8Array(width * height * 4);
-    return bmp;
-  };
-  const Bitmap$ = {
-    setPixel: function (x, y, r, g, b, a) {
-      let index = (x + y * this.width) * 4;
-      this._buffer[index++] = r;
-      this._buffer[index++] = g;
-      this._buffer[index++] = b;
-      this._buffer[index++] = a;
-    },
-    getTexture: function () {
-      const tex = Tile.prepDevice.createTexture();
-      Tile.prepDevice.bindTexture(3553, tex);
-      Tile.prepDevice.texParameteri(3553, 10242, 33071);
-      Tile.prepDevice.texParameteri(3553, 10243, 33071);
-      Tile.prepDevice.texImage2D(3553, 0, 6408, this.width, this.height, 0, 6408, 5121, this._buffer);
-      Tile.prepDevice.texParameteri(3553, 10241, 9985);
-      Tile.prepDevice.generateMipmap(3553);
-      Tile.prepDevice.bindTexture(3553, null);
-      return tex;
-    }
-  };
-
   function ColorPicker() {
     this.callBack = null;
     this.color = Colors.get_white();
@@ -7731,7 +7480,6 @@ const wwtlib = (() => {
     getColor: () => 'Red'
   };
 
-
   function WWTElementEvent(x, y) {
     this.offsetX = 0;
     this.offsetY = 0;
@@ -7739,8 +7487,6 @@ const wwtlib = (() => {
     this.offsetY = y;
   }
   const WWTElementEvent$ = {};
-
-
 
   function FolderBrowser() {
     this._items = [];
@@ -8204,7 +7950,6 @@ const wwtlib = (() => {
     }
   }
 
-
   function ViewMoverKenBurnsStyle(from, to, time, fromDateTime, toDateTime, type) {
     this.interpolationType = 0;
     this.fastDirectionMove = false;
@@ -8387,774 +8132,6 @@ const wwtlib = (() => {
     }
     static get_moveTime(){
       return this._toTargetTime;
-    }
-  };
-
-  class MainView {
-    static _drawTest(){
-      const canvas = document.getElementById('canvas');
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'rgb(80,0,0)';
-      ctx.fillRect(120, 120, 165, 160);
-      ctx.fillStyle = 'rgba(0, 0, 160, 0.5)';
-      ctx.fillRect(140, 140, 165, 160);
-    }
-  }
-
-
-  function Class1() {}
-  const Class1$ = {};
-
-  function FitsImage(file, blob, callMeBack) {
-    this._header$1 = {};
-    this.sourceBlob = null;
-    this.histogramMaxCount = 0;
-    this.width = 0;
-    this.height = 0;
-    this.numAxis = 0;
-    this.bZero = 0;
-    this.dataType = 5;
-    this.containsBlanks = false;
-    this.blankValue = Number.MIN_VALUE;
-    this.maxVal = Number.MIN_VALUE;
-    this.minVal = Number.MAX_VALUE;
-    this.transparentBlack = true;
-    this.lastMin = 0;
-    this.lastMax = 255;
-    this._color$1 = false;
-    this._sizeZ$1 = 1;
-    this.depth = 1;
-    this._bufferSize$1 = 1;
-    this.lastScale = 0;
-    this.lastBitmapMin = 0;
-    this.lastBitmapMax = 0;
-    this.lastBitmapZ = 0;
-    WcsImage.call(this);
-    FitsImage.last = this;
-    this._callBack$1 = callMeBack;
-    this.filename = file;
-    if (blob != null) {
-      this._readFromBlob$1(blob);
-    }
-    else {
-      this.getFile(file);
-    }
-  }
-  FitsImage.isGzip = br => {
-    const line = br.readBytes(2);
-    br.seek(0);
-    if (line[0] === 31 && line[1] === 139) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  };
-  const FitsImage$ = {
-    getFile: function (url) {
-      this._webFile$1 = new WebFile(url);
-      this._webFile$1.responseType = 'blob';
-      this._webFile$1.onStateChange = ss.bind('fileStateChange', this);
-      this._webFile$1.send();
-    },
-    fileStateChange: function () {
-      if (this._webFile$1.get_state() === 2) {
-        alert(this._webFile$1.get_message());
-      } else if (this._webFile$1.get_state() === 1) {
-        const mainBlob = this._webFile$1.getBlob();
-        this._readFromBlob$1(mainBlob);
-      }
-    },
-    _readFromBlob$1: function (blob) {
-      const $this = this;
-
-      this.sourceBlob = blob;
-      const chunck = new FileReader();
-      chunck.onloadend = e => {
-        $this._readFromBin$1(new BinaryReader(new Uint8Array(chunck.result)));
-        if ($this._callBack$1 != null) {
-          $this._callBack$1($this);
-        }
-      };
-      chunck.readAsArrayBuffer(blob);
-    },
-    _readFromBin$1: function (br) {
-      this.parseHeader(br);
-    },
-    parseHeader: function (br) {
-      let foundEnd = false;
-      while (!foundEnd) {
-        for (let i = 0; i < 36; i++) {
-          let data = br.readByteString(80);
-          if (!foundEnd) {
-            let keyword = ss.trimEnd(data.substring(0, 8));
-            let values = data.substring(10).split('/');
-            if (keyword.toUpperCase() === 'END') {
-              foundEnd = true;
-              i++;
-              data = br.readByteString(80);
-              while (ss.whitespace(data)) {
-                i++;
-                data = br.readByteString(80);
-              }
-              keyword = ss.trimEnd(data.substring(0, 8));
-              values = data.substring(10).split('/');
-              if (keyword.toUpperCase() === 'XTENSION') {
-                foundEnd = false;
-              } else {
-                br.seekRelative(-80);
-              }
-            } else {
-              this._addKeyword$1(keyword, values);
-            }
-          }
-        }
-      }
-      this.numAxis = parseInt(this._header$1['NAXIS']);
-      this.containsBlanks = ss.keyExists(this._header$1, 'BLANK');
-      if (this.containsBlanks) {
-        this.blankValue = parseFloat(this._header$1['BLANK']);
-      }
-      if (ss.keyExists(this._header$1, 'BZERO')) {
-        this.bZero = parseFloat(this._header$1['BZERO']);
-      }
-      this.axisSize = new Array(this.numAxis);
-      for (let axis = 0; axis < this.numAxis; axis++) {
-        this.axisSize[axis] = parseInt(this._header$1[ss.format('NAXIS{0}', axis + 1)]);
-        this._bufferSize$1 *= this.axisSize[axis];
-      }
-      const bitsPix = parseInt(this._header$1['BITPIX']);
-      switch (bitsPix) {
-        case 8:
-          this.dataType = 0;
-          this._initDataBytes$1(br);
-          break;
-        case 16:
-          this.dataType = 1;
-          this._initDataShort$1(br);
-          break;
-        case 32:
-          this.dataType = 2;
-          this._initDataInt$1(br);
-          break;
-        case -32:
-          this.dataType = 3;
-          this._initDataFloat$1(br);
-          break;
-        case -64:
-          this.dataType = 4;
-          this._initDataDouble$1(br);
-          break;
-        default:
-          this.dataType = 5;
-          break;
-      }
-      if (this.numAxis > 1) {
-        if (this.numAxis === 3) {
-          if (this.axisSize[2] === 3) {
-            this._color$1 = true;
-          }
-        }
-        if (this.numAxis > 2) {
-          this._sizeZ$1 = this.depth = this.axisSize[2];
-          this.lastBitmapZ = ss.truncate((this._sizeZ$1 / 2));
-        }
-        this.sizeX = this.width = this.axisSize[0];
-        this.sizeY = this.height = this.axisSize[1];
-        this._computeWcs$1();
-        this.histogram = this.computeHistogram(256);
-        this.histogramMaxCount = this.histogram[256];
-      }
-    },
-    getZDescription: function () {
-      let description = '';
-      if (this._header$1['RESTFREQ'] != null && this._header$1['CRPIX3'] != null && this._header$1['CDELT3'] != null && this._header$1['CRVAL3'] != null) {
-        const c = 299792.458;
-        const f0 = parseFloat(this._header$1['RESTFREQ']);
-        const crpix3 = parseFloat(this._header$1['CRPIX3']);
-        const cdelt3 = parseFloat(this._header$1['CDELT3']);
-        const crval3 = parseFloat(this._header$1['CRVAL3']);
-        const f = ((this.lastBitmapZ + 1) - crpix3) * cdelt3 + crval3;
-        const fval = ((f0 - f) / f0) * c;
-        description = ss.format('Velocity {0} km/s', ss.truncate(fval));
-      }
-      return description;
-    },
-    _addKeyword$1: function (keyword, values) {
-      if (keyword !== 'CONTINUE' && keyword !== 'COMMENT' && keyword !== 'HISTORY' && !ss.emptyString(keyword)) {
-        try {
-          if (ss.keyExists(this._header$1, keyword)) {
-            this._header$1[keyword] = ss.trim(values[0]);
-          } else {
-            this._header$1[keyword.toUpperCase()] = ss.trim(values[0]);
-          }
-        } catch ($e1) {
-        }
-      }
-    },
-    _computeWcs$1: function () {
-      if (ss.keyExists(this._header$1, 'CROTA2')) {
-        this.rotation = parseFloat(ss.trim(this._header$1['CROTA2']));
-        this.hasRotation = true;
-      }
-      if (ss.keyExists(this._header$1, 'CDELT1')) {
-        this.scaleX = parseFloat(ss.trim(this._header$1['CDELT1']));
-        if (ss.keyExists(this._header$1, 'CDELT2')) {
-          this.scaleY = parseFloat(ss.trim(this._header$1['CDELT2']));
-          this.hasScale = true;
-        }
-      }
-      if (ss.keyExists(this._header$1, 'CRPIX1')) {
-        this.referenceX = parseFloat(ss.trim(this._header$1['CRPIX1'])) - 1;
-        if (ss.keyExists(this._header$1, 'CRPIX2')) {
-          this.referenceY = parseFloat(ss.trim(this._header$1['CRPIX2'])) - 1;
-          this.hasPixel = true;
-        }
-      }
-      let galactic = false;
-      let tan = false;
-      if (ss.keyExists(this._header$1, 'CTYPE1')) {
-        if (this._header$1['CTYPE1'].indexOf('GLON-') > -1) {
-          galactic = true;
-          tan = true;
-        }
-        if (this._header$1['CTYPE2'].indexOf('GLAT-') > -1) {
-          galactic = true;
-          tan = true;
-        }
-        if (this._header$1['CTYPE1'].indexOf('-TAN') > -1) {
-          tan = true;
-        }
-        if (this._header$1['CTYPE1'].indexOf('-SIN') > -1) {
-          tan = true;
-        }
-      }
-      if (!tan) {
-        throw new Error('Only TAN projected images are supported: ');
-      }
-      this.hasSize = true;
-      if (ss.keyExists(this._header$1, 'CRVAL1')) {
-        this.centerX = parseFloat(ss.trim(this._header$1['CRVAL1']));
-        if (ss.keyExists(this._header$1, 'CRVAL2')) {
-          this.centerY = parseFloat(ss.trim(this._header$1['CRVAL2']));
-          this.hasLocation = true;
-        }
-      }
-      if (galactic) {
-        const result = Coordinates.galactictoJ2000(this.centerX, this.centerY);
-        this.centerX = result[0];
-        this.centerY = result[1];
-      }
-      if (ss.keyExists(this._header$1, 'CD1_1') && ss.keyExists(this._header$1, 'CD1_2') && ss.keyExists(this._header$1, 'CD2_1') && ss.keyExists(this._header$1, 'CD2_2')) {
-        this.cd1_1 = parseFloat(ss.trim(this._header$1['CD1_1']));
-        this.cd1_2 = parseFloat(ss.trim(this._header$1['CD1_2']));
-        this.cd2_1 = parseFloat(ss.trim(this._header$1['CD2_1']));
-        this.cd2_2 = parseFloat(ss.trim(this._header$1['CD2_2']));
-        if (!this.hasRotation) {
-          this.calculateRotationFromCD();
-        }
-        if (!this.hasScale) {
-          this.calculateScaleFromCD();
-        }
-        this.hasScale = true;
-        this.hasRotation = true;
-      }
-      this.set_validWcs(this.hasScale && this.hasRotation && this.hasPixel && this.hasLocation);
-    },
-    getHistogramBitmap: function (max) {
-      const bmp = Bitmap.create(this.histogram.length, 150);
-      return bmp;
-    },
-    drawHistogram: function (ctx) {
-      ctx.clearRect(0, 0, 255, 150);
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(255,255,255,255)';
-      const logMax = Math.log(this.histogramMaxCount);
-      for (let i = 0; i < this.histogram.length; i++) {
-        let height = Math.log(this.histogram[i]) / logMax;
-        if (height < 0) {
-          height = 0;
-        }
-        ctx.moveTo(i, 150);
-        ctx.lineTo(i, 150 - (height * 150));
-        ctx.stroke();
-      }
-    },
-    computeHistogram: function (count) {
-      const histogram = new Array(count + 1);
-      for (let i = 0; i < count + 1; i++) {
-        histogram[i] = 0;
-      }
-      switch (this.dataType) {
-        case 0:
-          this._computeHistogramByte$1(histogram);
-          break;
-        case 1:
-          this._computeHistogramInt16$1(histogram);
-          break;
-        case 2:
-          this._computeHistogramInt32$1(histogram);
-          break;
-        case 3:
-          this._computeHistogramFloat$1(histogram);
-          break;
-        case 4:
-          this._computeHistogramDouble$1(histogram);
-          break;
-        case 5:
-        default:
-          break;
-      }
-      let maxCounter = 1;
-      const $enum1 = ss.enumerate(histogram);
-      while ($enum1.moveNext()) {
-        const val = $enum1.current;
-        if (val > maxCounter) {
-          maxCounter = val;
-        }
-      }
-      histogram[count] = maxCounter;
-      return histogram;
-    },
-    _computeHistogramDouble$1: function (histogram) {
-      const buckets = histogram.length;
-      const buf = this.dataBuffer;
-      const factor = (this.maxVal - this.minVal) / buckets;
-      const $enum1 = ss.enumerate(buf);
-      while ($enum1.moveNext()) {
-        const val = $enum1.current;
-        if (!(val === Number.NaN)) {
-          histogram[Math.min(buckets - 1, ss.truncate(((val - this.minVal) / factor)))]++;
-        }
-      }
-    },
-    _computeHistogramFloat$1: function (histogram) {
-      const buckets = histogram.length;
-      const buf = this.dataBuffer;
-      const factor = (this.maxVal - this.minVal) / buckets;
-      const $enum1 = ss.enumerate(buf);
-      while ($enum1.moveNext()) {
-        const val = $enum1.current;
-        if (!(val === FitsImage._naN$1)) {
-          histogram[Math.min(buckets - 1, ss.truncate(((val - this.minVal) / factor)))]++;
-        }
-      }
-    },
-    _computeHistogramInt32$1: function (histogram) {
-      const buckets = histogram.length;
-      const buf = this.dataBuffer;
-      const factor = (this.maxVal - this.minVal) / buckets;
-      const $enum1 = ss.enumerate(buf);
-      while ($enum1.moveNext()) {
-        const val = $enum1.current;
-        histogram[Math.min(buckets - 1, ss.truncate(((val - this.minVal) / factor)))]++;
-      }
-    },
-    _computeHistogramInt16$1: function (histogram) {
-      const buckets = histogram.length;
-      const buf = this.dataBuffer;
-      const factor = (this.maxVal - this.minVal) / buckets;
-      const $enum1 = ss.enumerate(buf);
-      while ($enum1.moveNext()) {
-        const val = $enum1.current;
-        histogram[Math.min(buckets - 1, ss.truncate(((val - this.minVal) / factor)))]++;
-      }
-    },
-    _computeHistogramByte$1: function (histogram) {
-      const buckets = histogram.length;
-      const buf = this.dataBuffer;
-      const factor = (this.maxVal - this.minVal) / buckets;
-      const $enum1 = ss.enumerate(buf);
-      while ($enum1.moveNext()) {
-        const val = $enum1.current;
-        histogram[Math.min(buckets - 1, ss.truncate(((val - this.minVal) / factor)))]++;
-      }
-    },
-    _initDataBytes$1: function (br) {
-      const buffer = new Array(this._bufferSize$1);
-      this.dataBuffer = buffer;
-      for (let i = 0; i < this._bufferSize$1; i++) {
-        buffer[i] = br.readByte();
-        if (this.minVal > buffer[i]) {
-          this.minVal = buffer[i];
-        }
-        if (this.maxVal < buffer[i]) {
-          this.maxVal = buffer[i];
-        }
-      }
-    },
-    _initDataShort$1: function (br) {
-      const buffer = new Array(this._bufferSize$1);
-      this.dataBuffer = buffer;
-      for (let i = 0; i < this._bufferSize$1; i++) {
-        buffer[i] = ((br.readSByte() * 256) + br.readByte());
-        if (this.minVal > buffer[i]) {
-          this.minVal = buffer[i];
-        }
-        if (this.maxVal < buffer[i]) {
-          this.maxVal = buffer[i];
-        }
-      }
-    },
-    _initDataUnsignedShort$1: function (br) {
-      const buffer = new Array(this._bufferSize$1);
-      this.dataBuffer = buffer;
-      for (let i = 0; i < this._bufferSize$1; i++) {
-        buffer[i] = (((br.readSByte() * 256) + br.readByte()) + 32768);
-        if (this.minVal > buffer[i]) {
-          this.minVal = buffer[i];
-        }
-        if (this.maxVal < buffer[i]) {
-          this.maxVal = buffer[i];
-        }
-      }
-    },
-    _initDataInt$1: function (br) {
-      const buffer = new Array(this._bufferSize$1);
-      this.dataBuffer = buffer;
-      for (let i = 0; i < this._bufferSize$1; i++) {
-        buffer[i] = (br.readSByte() << 24) + (br.readSByte() << 16) + (br.readSByte() << 8) + br.readByte();
-        if (this.minVal > buffer[i]) {
-          this.minVal = buffer[i];
-        }
-        if (this.maxVal < buffer[i]) {
-          this.maxVal = buffer[i];
-        }
-      }
-    },
-    _initDataFloat$1: function (br) {
-      const buffer = new Array(this._bufferSize$1);
-      this.dataBuffer = buffer;
-      const part = new Uint8Array(4);
-      for (let i = 0; i < this._bufferSize$1; i++) {
-        part[3] = br.readByte();
-        part[2] = br.readByte();
-        part[1] = br.readByte();
-        part[0] = br.readByte();
-        buffer[i] = new Float32Array(part.buffer, 0, 1)[0];
-        if (this.minVal > buffer[i]) {
-          this.minVal = buffer[i];
-        }
-        if (this.maxVal < buffer[i]) {
-          this.maxVal = buffer[i];
-        }
-      }
-    },
-    _initDataDouble$1: br => {
-    },
-    getBitmap: function () {
-      if (!this.lastBitmapMax && !this.lastBitmapMin) {
-        this.lastBitmapMin = this.minVal;
-        this.lastBitmapMax = this.maxVal;
-      }
-      return this.getScaledBitmap(this.lastBitmapMin, this.lastBitmapMax, this.lastScale, this.lastBitmapZ);
-    },
-    getScaledBitmap: function (min, max, scaleType, z) {
-      z = Math.min(z, this._sizeZ$1);
-      let scale;
-      this.lastScale = scaleType;
-      this.lastBitmapMin = min;
-      this.lastBitmapMax = max;
-      this.lastBitmapZ = z;
-      switch (scaleType) {
-        case 0:
-        default:
-          scale = new ScaleLinear(min, max);
-          break;
-        case 1:
-          scale = new ScaleLog(min, max);
-          break;
-        case 2:
-          scale = new ScalePow(min, max);
-          break;
-        case 3:
-          scale = new ScaleSqrt(min, max);
-          break;
-        case 4:
-          scale = new HistogramEqualization(this, min, max);
-          break;
-      }
-      try {
-        switch (this.dataType) {
-          case 0:
-            return this._getBitmapByte$1(min, max, scale, this.lastBitmapZ);
-          case 1:
-            return this.getBitmapShort(min, max, scale, this.lastBitmapZ);
-          case 2:
-            return this._getBitmapInt$1(min, max, scale, this.lastBitmapZ);
-          case 3:
-            return this._getBitmapFloat$1(min, max, scale, this.lastBitmapZ);
-          case 4:
-            return this._getBitmapDouble$1(min, max, scale, this.lastBitmapZ);
-          case 5:
-          default:
-            return Bitmap.create(100, 100);
-        }
-      } catch ($e1) {
-        return Bitmap.create(10, 10);
-      }
-    },
-    _getBitmapByte$1: function (min, max, scale, z) {
-      const buf = this.dataBuffer;
-      const factor = max - min;
-      const stride = this.axisSize[0];
-      const page = this.axisSize[0] * this.axisSize[1] * z;
-      const bmp = Bitmap.create(this.axisSize[0], this.axisSize[1]);
-      for (let y = 0; y < this.axisSize[1]; y++) {
-        const indexY = ((this.axisSize[1] - 1) - y);
-        for (let x = 0; x < this.axisSize[0]; x++) {
-          if (this._color$1) {
-            const datR = buf[(x + indexY * stride)];
-            const datG = buf[(x + indexY * stride) + page];
-            const datB = buf[(x + indexY * stride) + page * 2];
-            if (this.containsBlanks && datR === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const r = scale.map(datR);
-              const g = scale.map(datG);
-              const b = scale.map(datB);
-              bmp.setPixel(x, y, r, g, b, 255);
-            }
-          } else {
-            const dataValue = buf[x + indexY * stride + page];
-            if (this.containsBlanks && dataValue === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const val = scale.map(dataValue);
-              bmp.setPixel(x, y, val, val, val, (this.transparentBlack && !val) ? 0 : 255);
-            }
-          }
-        }
-      }
-      return bmp;
-    },
-    _getBitmapDouble$1: function (min, max, scale, z) {
-      const buf = this.dataBuffer;
-      const factor = max - min;
-      const stride = this.axisSize[0];
-      const page = this.axisSize[0] * this.axisSize[1] * z;
-      const bmp = Bitmap.create(this.axisSize[0], this.axisSize[1]);
-      for (let y = 0; y < this.axisSize[1]; y++) {
-        const indexY = ((this.axisSize[1] - 1) - y);
-        for (let x = 0; x < this.axisSize[0]; x++) {
-          if (this._color$1) {
-            const datR = buf[(x + indexY * stride)];
-            const datG = buf[(x + indexY * stride) + page];
-            const datB = buf[(x + indexY * stride) + page * 2];
-            if (this.containsBlanks && datR === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const r = scale.map(datR);
-              const g = scale.map(datG);
-              const b = scale.map(datB);
-              bmp.setPixel(x, y, r, g, b, 255);
-            }
-          } else {
-            const dataValue = buf[x + indexY * stride + page];
-            if (this.containsBlanks && dataValue === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const val = scale.map(dataValue);
-              bmp.setPixel(x, y, val, val, val, (this.transparentBlack && !val) ? 0 : 255);
-            }
-          }
-        }
-      }
-      return bmp;
-    },
-    _getBitmapFloat$1: function (min, max, scale, z) {
-      const buf = this.dataBuffer;
-      const factor = max - min;
-      const stride = this.axisSize[0];
-      const page = this.axisSize[0] * this.axisSize[1] * z;
-      const bmp = Bitmap.create(this.axisSize[0], this.axisSize[1]);
-      for (let y = 0; y < this.axisSize[1]; y++) {
-        const indexY = ((this.axisSize[1] - 1) - y);
-        for (let x = 0; x < this.axisSize[0]; x++) {
-          if (this._color$1) {
-            const datR = buf[(x + indexY * stride)];
-            const datG = buf[(x + indexY * stride) + page];
-            const datB = buf[(x + indexY * stride) + page * 2];
-            if (this.containsBlanks && datR === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const r = scale.map(datR);
-              const g = scale.map(datG);
-              const b = scale.map(datB);
-              bmp.setPixel(x, y, r, g, b, 255);
-            }
-          } else {
-            const dataValue = buf[x + indexY * stride + page];
-            if (this.containsBlanks && dataValue === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const val = scale.map(dataValue);
-              bmp.setPixel(x, y, val, val, val, (this.transparentBlack && !val) ? 0 : 255);
-            }
-          }
-        }
-      }
-      return bmp;
-    },
-    _getBitmapInt$1: function (min, max, scale, z) {
-      const buf = this.dataBuffer;
-      const factor = max - min;
-      const stride = this.axisSize[0];
-      const page = this.axisSize[0] * this.axisSize[1] * z;
-      const bmp = Bitmap.create(this.axisSize[0], this.axisSize[1]);
-      for (let y = 0; y < this.axisSize[1]; y++) {
-        const indexY = ((this.axisSize[1] - 1) - y);
-        for (let x = 0; x < this.axisSize[0]; x++) {
-          if (this._color$1) {
-            const datR = buf[(x + indexY * stride)];
-            const datG = buf[(x + indexY * stride) + page];
-            const datB = buf[(x + indexY * stride) + page * 2];
-            if (this.containsBlanks && datR === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const r = scale.map(datR);
-              const g = scale.map(datG);
-              const b = scale.map(datB);
-              bmp.setPixel(x, y, r, g, b, 255);
-            }
-          } else {
-            const dataValue = buf[x + indexY * stride + page];
-            if (this.containsBlanks && dataValue === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const val = scale.map(dataValue);
-              bmp.setPixel(x, y, val, val, val, (this.transparentBlack && !val) ? 0 : 255);
-            }
-          }
-        }
-      }
-      return bmp;
-    },
-    getBitmapShort: function (min, max, scale, z) {
-      const buf = this.dataBuffer;
-      const factor = max - min;
-      const stride = this.axisSize[0];
-      const page = this.axisSize[0] * this.axisSize[1] * z;
-      const bmp = Bitmap.create(this.axisSize[0], this.axisSize[1]);
-      for (let y = 0; y < this.axisSize[1]; y++) {
-        const indexY = ((this.axisSize[1] - 1) - y);
-        for (let x = 0; x < this.axisSize[0]; x++) {
-          if (this._color$1) {
-            const datR = buf[(x + indexY * stride)];
-            const datG = buf[(x + indexY * stride) + page];
-            const datB = buf[(x + indexY * stride) + page * 2];
-            if (this.containsBlanks && datR === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const r = scale.map(datR);
-              const g = scale.map(datG);
-              const b = scale.map(datB);
-              bmp.setPixel(x, y, r, g, b, 255);
-            }
-          } else {
-            const dataValue = buf[x + indexY * stride + page];
-            if (this.containsBlanks && dataValue === this.blankValue) {
-              bmp.setPixel(x, y, 0, 0, 0, 0);
-            } else {
-              const val = scale.map(dataValue);
-              bmp.setPixel(x, y, val, val, val, (this.transparentBlack && !val) ? 0 : 255);
-            }
-          }
-        }
-      }
-      return bmp;
-    }
-  };
-
-  function ScaleLinear(min, max) {
-    this._min$1 = 0;
-    this._max$1 = 0;
-    this._factor$1 = 0;
-    this._logFactor$1 = 0;
-    ScaleMap.call(this);
-    this._min$1 = min;
-    this._max$1 = max;
-    this._factor$1 = max - min;
-  }
-  const ScaleLinear$ = {
-    map: function (val) {
-      return Math.min(255, Math.max(0, ss.truncate(((val - this._min$1) / this._factor$1 * 255))));
-    }
-  };
-
-  function ScaleLog(min, max) {
-    this._min$1 = 0;
-    this._max$1 = 0;
-    this._factor$1 = 0;
-    this._logFactor$1 = 0;
-    ScaleMap.call(this);
-    this._min$1 = min;
-    this._max$1 = max;
-    this._factor$1 = max - min;
-    this._logFactor$1 = 255 / Math.log(255);
-  }
-  const ScaleLog$ = {
-    map: function (val) {
-      return Math.min(255, Math.max(0, ss.truncate((Math.log((val - this._min$1) / this._factor$1 * 255) * this._logFactor$1))));
-    }
-  };
-
-  function ScalePow(min, max) {
-    this._min$1 = 0;
-    this._max$1 = 0;
-    this._factor$1 = 0;
-    this._powFactor$1 = 0;
-    ScaleMap.call(this);
-    this._min$1 = min;
-    this._max$1 = max;
-    this._factor$1 = max - min;
-    this._powFactor$1 = 255 / Math.pow(255, 2);
-  }
-  const ScalePow$ = {
-    map: function (val) {
-      return Math.min(255, Math.max(0, ss.truncate((Math.pow((val - this._min$1) / this._factor$1 * 255, 2) * this._powFactor$1))));
-    }
-  };
-
-  function ScaleSqrt(min, max) {
-    this._min$1 = 0;
-    this._max$1 = 0;
-    this._factor$1 = 0;
-    this._sqrtFactor$1 = 0;
-    ScaleMap.call(this);
-    this._min$1 = min;
-    this._max$1 = max;
-    this._factor$1 = max - min;
-    this._sqrtFactor$1 = 255 / Math.sqrt(255);
-  }
-  const ScaleSqrt$ = {
-    map: function (val) {
-      return Math.min(255, Math.max(0, ss.truncate((Math.sqrt((val - this._min$1) / this._factor$1 * 255) * this._sqrtFactor$1))));
-    }
-  };
-
-  function HistogramEqualization(image, min, max) {
-    this._min$1 = 0;
-    this._max$1 = 0;
-    this._factor$1 = 0;
-    this._maxHistogramValue$1 = 1;
-    ScaleMap.call(this);
-    this._min$1 = min;
-    this._max$1 = max;
-    this._factor$1 = max - min;
-    this._histogram$1 = image.computeHistogram(10000);
-    this._maxHistogramValue$1 = this._histogram$1[10000];
-    this._lookup$1 = new Array(10000);
-    const totalCounts = image.width * image.height;
-    let sum = 0;
-    for (let i = 0; i < 10000; i++) {
-      sum += this._histogram$1[i];
-      this._lookup$1[i] = (Math.min(255, (sum * 255) / totalCounts) + 0.5);
-    }
-  }
-  const HistogramEqualization$ = {
-    map: function (val) {
-      return this._lookup$1[Math.min(10000 - 1, Math.max(0, ss.truncate(((val - this._min$1) / this._factor$1 * (10000 - 1)))))];
     }
   };
 
@@ -11634,582 +10611,7 @@ const wwtlib = (() => {
     dynamicUpdate: () => false
   };
 
-  function PlotTile() {
-    this._topDown$1 = true;
-    this.backslash = false;
-    this._vertexList$1 = null;
-    this._childTriangleList$1 = null;
-    this._stars$1 = [];
-    this._subDivisionLevel$1 = 4;
-    this._subDivided$1 = false;
-    Tile.call(this);
-  }
-  PlotTile.create = (level, xc, yc, dataset, parent) => {
-    const temp = new PlotTile();
-    temp.parent = parent;
-    temp.level = level;
-    temp.tileX = xc;
-    temp.tileY = yc;
-    temp.dataset = dataset;
-    temp._topDown$1 = !dataset.get_bottomsUp();
-    if (temp.tileX !== xc) {
-      alert('bad');
-    }
-    if (!!dataset.get_meanRadius()) {
-      temp.set__demScaleFactor(dataset.get_meanRadius());
-    }
-    else {
-      if (!dataset.get_dataSetType()) {
-        temp.set__demScaleFactor(6371000);
-      }
-      else {
-        temp.set__demScaleFactor(3396010);
-      }
-    }
-    temp.computeBoundingSphere();
-    return temp;
-  };
-  const PlotTile$ = {
-    computeBoundingSphere: function () {
-      this._initializeGrids$1();
-      this.topLeft = this.bounds[0 + 3 * 0].position.copy();
-      this.bottomRight = this.bounds[2 + 3 * 2].position.copy();
-      this.topRight = this.bounds[2 + 3 * 0].position.copy();
-      this.bottomLeft = this.bounds[0 + 3 * 2].position.copy();
-      this.calcSphere();
-    },
-    renderPart: function (renderContext, part, opacity, combine) {
-      if (renderContext.gl != null) {
-      } else {
-        if (!part) {
-          const $enum1 = ss.enumerate(this._stars$1);
-          while ($enum1.moveNext()) {
-            const star = $enum1.current;
-            const radDec = 25 / Math.pow(1.6, star.magnitude);
-            Planets.drawPointPlanet(renderContext, star.position, radDec, star.col, false);
-          }
-        }
-      }
-    },
-    requestImage: function () {
-      if (!this.downloading && !this.readyToRender) {
-        this.downloading = true;
-        this._webFile$1 = new WebFile(Util.getProxiedUrl(this.get_URL()));
-        this._webFile$1.onStateChange = ss.bind('fileStateChange', this);
-        this._webFile$1.send();
-      }
-    },
-    fileStateChange: function () {
-      if (this._webFile$1.get_state() === 2) {
-        this.downloading = false;
-        this.readyToRender = false;
-        this.errored = true;
-        this.requestPending = false;
-        TileCache.removeFromQueue(this.get_key(), true);
-      } else if (this._webFile$1.get_state() === 1) {
-        this.texReady = true;
-        this.downloading = false;
-        this.errored = false;
-        this.readyToRender = this.texReady && (this.demReady || !this.demTile);
-        this.requestPending = false;
-        TileCache.removeFromQueue(this.get_key(), true);
-        this._loadData$1(this._webFile$1.getText());
-      }
-    },
-    _loadData$1: function (data) {
-      const rows = ss.replaceString(data, '\r\n', '\n').split('\n');
-      let firstRow = true;
-      const type = 0;
-      let star = null;
-      const $enum1 = ss.enumerate(rows);
-      while ($enum1.moveNext()) {
-        const row = $enum1.current;
-        if (firstRow) {
-          firstRow = false;
-          continue;
-        }
-        if (ss.trim(row).length > 5) {
-          star = new Star(row);
-          star.position = Coordinates.raDecTo3dAu(star.RA, star.dec, 1);
-          this._stars$1.push(star);
-        }
-      }
-    },
-    isPointInTile: function (lat, lng) {
-      if (!this.level) {
-        return true;
-      }
-      if (this.level === 1) {
-        if ((lng >= 0 && lng <= 90) && (!this.tileX && this.tileY === 1)) {
-          return true;
-        }
-        if ((lng > 90 && lng <= 180) && (this.tileX === 1 && this.tileY === 1)) {
-          return true;
-        }
-        if ((lng < 0 && lng >= -90) && (!this.tileX && !this.tileY)) {
-          return true;
-        }
-        if ((lng < -90 && lng >= -180) && (this.tileX === 1 && !this.tileY)) {
-          return true;
-        }
-        return false;
-      }
-      if (!this.demReady || this.demData == null) {
-        return false;
-      }
-      const testPoint = Coordinates.geoTo3dDouble(-lat, lng);
-      const top = this._isLeftOfHalfSpace$1(this.topLeft.copy(), this.topRight.copy(), testPoint);
-      const right = this._isLeftOfHalfSpace$1(this.topRight.copy(), this.bottomRight.copy(), testPoint);
-      const bottom = this._isLeftOfHalfSpace$1(this.bottomRight.copy(), this.bottomLeft.copy(), testPoint);
-      const left = this._isLeftOfHalfSpace$1(this.bottomLeft.copy(), this.topLeft.copy(), testPoint);
-      if (top && right && bottom && left) {
-        return true;
-      }
-      return false;
-    },
-    _isLeftOfHalfSpace$1: (pntA, pntB, pntTest) => {
-      pntA.normalize();
-      pntB.normalize();
-      const cross = Vector3d.cross(pntA, pntB);
-      const dot = Vector3d.dot(cross, pntTest);
-      return dot < 0;
-    },
-    _initializeGrids$1: function () {
-      this._vertexList$1 = [];
-      this._childTriangleList$1 = new Array(4);
-      this._childTriangleList$1[0] = [];
-      this._childTriangleList$1[1] = [];
-      this._childTriangleList$1[2] = [];
-      this._childTriangleList$1[3] = [];
-      this.bounds = new Array(9);
-      if (this.level > 0) {
-        if (this.parent == null) {
-          this.parent = TileCache.getTile(this.level - 1, this.tileX / 2, this.tileY / 2, this.dataset, null);
-        }
-        const parent = this.parent;
-        const xIndex = this.tileX % 2;
-        const yIndex = this.tileY % 2;
-        if (this.level > 1) {
-          this.backslash = parent.backslash;
-        } else {
-          this.backslash = (xIndex === 1 ^ yIndex === 1) === 1;
-        }
-        this.bounds[0 + 3 * 0] = parent.bounds[xIndex + 3 * yIndex].copy();
-        this.bounds[1 + 3 * 0] = this._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * yIndex]);
-        this.bounds[2 + 3 * 0] = parent.bounds[xIndex + 1 + 3 * yIndex].copy();
-        this.bounds[0 + 3 * 1] = this._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 3 * (yIndex + 1)]);
-        if (this.backslash) {
-          this.bounds[1 + 3 * 1] = this._midpoint$1(parent.bounds[xIndex + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
-        } else {
-          this.bounds[1 + 3 * 1] = this._midpoint$1(parent.bounds[xIndex + 1 + 3 * yIndex], parent.bounds[xIndex + 3 * (yIndex + 1)]);
-        }
-        this.bounds[2 + 3 * 1] = this._midpoint$1(parent.bounds[xIndex + 1 + 3 * yIndex], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
-        this.bounds[0 + 3 * 2] = parent.bounds[xIndex + 3 * (yIndex + 1)].copy();
-        this.bounds[1 + 3 * 2] = this._midpoint$1(parent.bounds[xIndex + 3 * (yIndex + 1)], parent.bounds[xIndex + 1 + 3 * (yIndex + 1)]);
-        this.bounds[2 + 3 * 2] = parent.bounds[xIndex + 1 + 3 * (yIndex + 1)].copy();
-        this.bounds[0 + 3 * 0].tu = 0 * Tile.uvMultiple;
-        this.bounds[0 + 3 * 0].tv = 0 * Tile.uvMultiple;
-        this.bounds[1 + 3 * 0].tu = 0.5 * Tile.uvMultiple;
-        this.bounds[1 + 3 * 0].tv = 0 * Tile.uvMultiple;
-        this.bounds[2 + 3 * 0].tu = 1 * Tile.uvMultiple;
-        this.bounds[2 + 3 * 0].tv = 0 * Tile.uvMultiple;
-        this.bounds[0 + 3 * 1].tu = 0 * Tile.uvMultiple;
-        this.bounds[0 + 3 * 1].tv = 0.5 * Tile.uvMultiple;
-        this.bounds[1 + 3 * 1].tu = 0.5 * Tile.uvMultiple;
-        this.bounds[1 + 3 * 1].tv = 0.5 * Tile.uvMultiple;
-        this.bounds[2 + 3 * 1].tu = 1 * Tile.uvMultiple;
-        this.bounds[2 + 3 * 1].tv = 0.5 * Tile.uvMultiple;
-        this.bounds[0 + 3 * 2].tu = 0 * Tile.uvMultiple;
-        this.bounds[0 + 3 * 2].tv = 1 * Tile.uvMultiple;
-        this.bounds[1 + 3 * 2].tu = 0.5 * Tile.uvMultiple;
-        this.bounds[1 + 3 * 2].tv = 1 * Tile.uvMultiple;
-        this.bounds[2 + 3 * 2].tu = 1 * Tile.uvMultiple;
-        this.bounds[2 + 3 * 2].tv = 1 * Tile.uvMultiple;
-      } else {
-        this.bounds[0 + 3 * 0] = PositionTexture.create(0, -1, 0, 0, 0);
-        this.bounds[1 + 3 * 0] = PositionTexture.create(0, 0, 1, 0.5, 0);
-        this.bounds[2 + 3 * 0] = PositionTexture.create(0, -1, 0, 1, 0);
-        this.bounds[0 + 3 * 1] = PositionTexture.create(-1, 0, 0, 0, 0.5);
-        this.bounds[1 + 3 * 1] = PositionTexture.create(0, 1, 0, 0.5, 0.5);
-        this.bounds[2 + 3 * 1] = PositionTexture.create(1, 0, 0, 1, 0.5);
-        this.bounds[0 + 3 * 2] = PositionTexture.create(0, -1, 0, 0, 1);
-        this.bounds[1 + 3 * 2] = PositionTexture.create(0, 0, -1, 0.5, 1);
-        this.bounds[2 + 3 * 2] = PositionTexture.create(0, -1, 0, 1, 1);
-      }
-    },
-    _midpoint$1: (positionNormalTextured, positionNormalTextured_2) => {
-      const a1 = Vector3d.lerp(positionNormalTextured.position, positionNormalTextured_2.position, 0.5);
-      const a1uv = Vector2d.lerp(new Vector2d(positionNormalTextured.tu, positionNormalTextured.tv), new Vector2d(positionNormalTextured_2.tu, positionNormalTextured_2.tv), 0.5);
-      a1.normalize();
-      return PositionTexture.createPos(a1, a1uv.x, a1uv.y);
-    },
-    createGeometry: function (renderContext) {
-      if (this.geometryCreated) {
-        return true;
-      }
-      this.geometryCreated = true;
-      Tile.prototype.createGeometry.call(this, renderContext);
-      return true;
-    },
-    cleanUp: function (removeFromParent) {
-      Tile.prototype.cleanUp.call(this, removeFromParent);
-      if (this._vertexList$1 != null) {
-        this._vertexList$1 = null;
-      }
-      if (this._childTriangleList$1 != null) {
-        this._childTriangleList$1 = null;
-      }
-      this._subDivided$1 = false;
-      this.demArray = null;
-    }
-  };
 
-  function SkyImageTile() {
-    this.pixelCenterX = 0;
-    this.pixelCenterY = 0;
-    this.latCenter = 0;
-    this.lngCenter = 0;
-    this.rotation = 0;
-    this.scaleX = 0.01;
-    this.scaleY = 0.01;
-    this.height = 0;
-    this.width = 0;
-    this._vertexList$1 = null;
-    this._childTriangleList$1 = null;
-    Tile.call(this);
-  }
-  SkyImageTile.create = (level, x, y, dataset, parent) => {
-    const temp = new SkyImageTile();
-    temp.parent = parent;
-    temp.level = level;
-    temp.tileX = x;
-    temp.tileY = y;
-    temp.dataset = dataset;
-    temp._getParameters$1();
-    temp.computeMatrix();
-    temp.sphereCenter = temp.geoTo3dTan(0, 0);
-    temp.radius = 1.25;
-    return temp;
-  };
-  const SkyImageTile$ = {
-    computeMatrix: function () {
-      this.matrix = Matrix3d.get_identity();
-      this.matrix._multiply(Matrix3d._rotationX((this.rotation / 180 * Math.PI)));
-      this.matrix._multiply(Matrix3d._rotationZ((this.latCenter / 180 * Math.PI)));
-      this.matrix._multiply(Matrix3d._rotationY(((360 - this.lngCenter) / 180 * Math.PI)));
-    },
-    _getParameters$1: function () {
-      this.pixelCenterX = this.dataset.get_offsetX();
-      this.pixelCenterY = this.dataset.get_offsetY();
-      this.latCenter = this.dataset.get_centerY();
-      this.lngCenter = this.dataset.get_centerX();
-      this.rotation = this.dataset.get_rotation();
-      this.scaleX = -(this.scaleY = this.dataset.get_baseTileDegrees());
-      if (this.dataset.get_bottomsUp()) {
-        this.scaleX = -this.scaleX;
-        this.rotation = 360 - this.rotation;
-      }
-    },
-    geoTo3dTan: function (lat, lng) {
-      lng = -lng;
-      const fac1 = this.dataset.get_baseTileDegrees();
-      const factor = Math.tan(fac1 * Tile.RC);
-      return this.matrix.transform(new Vector3d(1, (lat / fac1 * factor), (lng / fac1 * factor)));
-    },
-    createGeometry: function (renderContext) {
-      Tile.prototype.createGeometry.call(this, renderContext);
-      if (this.geometryCreated) {
-        return true;
-      }
-      let bmp = null;
-      if (this.dataset.get_wcsImage() != null) {
-        const wcsImage = ss.safeCast(this.dataset.get_wcsImage(), WcsImage);
-        bmp = wcsImage.getBitmap();
-        this.texture2d = bmp.getTexture();
-        if (bmp.height !== wcsImage.get_sizeY()) {
-          this.pixelCenterY += bmp.height - wcsImage.get_sizeY();
-        }
-      }
-      this.geometryCreated = true;
-      for (let i = 0; i < 4; i++) {
-        this._renderTriangleLists[i] = [];
-      }
-      this.computeMatrix();
-      if (bmp != null && renderContext.gl != null) {
-        this.height = bmp.height;
-        this.width = bmp.width;
-      } else {
-        this.height = this.texture.naturalHeight;
-        this.width = this.texture.naturalWidth;
-      }
-      const latMin = 0 + (this.scaleY * (this.height - this.pixelCenterY));
-      const latMax = 0 - (this.scaleY * this.pixelCenterY);
-      const lngMin = 0 + (this.scaleX * this.pixelCenterX);
-      const lngMax = 0 - (this.scaleX * (this.width - this.pixelCenterX));
-      this.topLeft = this.geoTo3dTan(latMin, lngMin);
-      this.bottomRight = this.geoTo3dTan(latMax, lngMax);
-      this.topRight = this.geoTo3dTan(latMin, lngMax);
-      this.bottomLeft = this.geoTo3dTan(latMax, lngMin);
-      const topCenter = Vector3d.lerp(this.topLeft, this.topRight, 0.5);
-      const bottomCenter = Vector3d.lerp(this.bottomLeft, this.bottomRight, 0.5);
-      const center = Vector3d.lerp(topCenter, bottomCenter, 0.5);
-      const rightCenter = Vector3d.lerp(this.topRight, this.bottomRight, 0.5);
-      const leftCenter = Vector3d.lerp(this.topLeft, this.bottomLeft, 0.5);
-      if (renderContext.gl == null) {
-        this._vertexList$1 = [];
-        this._vertexList$1.push(PositionTexture.createPosSize(this.topLeft, 0, 0, this.width, this.height));
-        this._vertexList$1.push(PositionTexture.createPosSize(this.topRight, 1, 0, this.width, this.height));
-        this._vertexList$1.push(PositionTexture.createPosSize(this.bottomLeft, 0, 1, this.width, this.height));
-        this._vertexList$1.push(PositionTexture.createPosSize(this.bottomRight, 1, 1, this.width, this.height));
-        this._childTriangleList$1 = [];
-        if (this.dataset.get_bottomsUp()) {
-          this._childTriangleList$1.push(Triangle.create(0, 1, 2));
-          this._childTriangleList$1.push(Triangle.create(2, 1, 3));
-        } else {
-          this._childTriangleList$1.push(Triangle.create(0, 2, 1));
-          this._childTriangleList$1.push(Triangle.create(2, 3, 1));
-        }
-        let count = 3;
-        while (count-- > 1) {
-          const newList = [];
-          const $enum1 = ss.enumerate(this._childTriangleList$1);
-          while ($enum1.moveNext()) {
-            var tri = $enum1.current;
-            tri.subDivide(newList, this._vertexList$1);
-          }
-          this._childTriangleList$1 = newList;
-        }
-        const miter = 0.6 / (this.width / 256);
-        const $enum2 = ss.enumerate(this._childTriangleList$1);
-        while ($enum2.moveNext()) {
-          var tri = $enum2.current;
-          const p1 = this._vertexList$1[tri.a];
-          const p2 = this._vertexList$1[tri.b];
-          const p3 = this._vertexList$1[tri.c];
-          this._renderTriangleLists[0].push(RenderTriangle.createWithMiter(p1, p2, p3, this.texture, this.level, miter));
-        }
-      } else {
-        this._vertexBuffer = Tile.prepDevice.createBuffer();
-        Tile.prepDevice.bindBuffer(34962, this._vertexBuffer);
-        const f32array = new Float32Array(9 * 5);
-        const buffer = f32array;
-        let index = 0;
-        index = this.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
-        Tile.prepDevice.bufferData(34962, f32array, 35044);
-        for (let i = 0; i < 4; i++) {
-          index = 0;
-          this.triangleCount = 2;
-          const ui16array = new Uint16Array(this.triangleCount * 3);
-          const indexArray = ui16array;
-          switch (i) {
-            case 0:
-              indexArray[index++] = 7;
-              indexArray[index++] = 4;
-              indexArray[index++] = 6;
-              indexArray[index++] = 4;
-              indexArray[index++] = 3;
-              indexArray[index++] = 6;
-              break;
-            case 1:
-              indexArray[index++] = 6;
-              indexArray[index++] = 5;
-              indexArray[index++] = 8;
-              indexArray[index++] = 6;
-              indexArray[index++] = 3;
-              indexArray[index++] = 5;
-              break;
-            case 2:
-              indexArray[index++] = 4;
-              indexArray[index++] = 0;
-              indexArray[index++] = 3;
-              indexArray[index++] = 4;
-              indexArray[index++] = 1;
-              indexArray[index++] = 0;
-              break;
-            case 3:
-              indexArray[index++] = 3;
-              indexArray[index++] = 2;
-              indexArray[index++] = 5;
-              indexArray[index++] = 3;
-              indexArray[index++] = 0;
-              indexArray[index++] = 2;
-              break;
-          }
-          this._indexBuffers[i] = Tile.prepDevice.createBuffer();
-          Tile.prepDevice.bindBuffer(34963, this._indexBuffers[i]);
-          Tile.prepDevice.bufferData(34963, ui16array, 35044);
-        }
-      }
-      return true;
-    }
-  };
-
-  function TangentTile() {
-    this._topDown$1 = true;
-    Tile.call(this);
-  }
-  TangentTile.create = (level, x, y, dataset, parent) => {
-    const temp = new TangentTile();
-    temp.parent = parent;
-    temp.level = level;
-    temp.tileX = x;
-    temp.tileY = y;
-    temp.dataset = dataset;
-    temp._topDown$1 = !dataset.get_bottomsUp();
-    temp.computeBoundingSphere();
-    return temp;
-  };
-  const TangentTile$ = {
-    computeBoundingSphere: function () {
-      if (!this._topDown$1) {
-        this.computeBoundingSphereBottomsUp();
-        return;
-      }
-      let tileDegrees = this.dataset.get_baseTileDegrees() / Math.pow(2, this.level);
-      const latMin = ((this.dataset.get_baseTileDegrees() / 2 - ((this.tileY) * tileDegrees)) + this.dataset.get_offsetY());
-      const latMax = ((this.dataset.get_baseTileDegrees() / 2 - (((this.tileY + 1)) * tileDegrees)) + this.dataset.get_offsetY());
-      const lngMin = (((this.tileX * tileDegrees) - this.dataset.get_baseTileDegrees() / this.dataset.get_widthFactor()) + this.dataset.get_offsetX());
-      const lngMax = (((((this.tileX + 1)) * tileDegrees) - this.dataset.get_baseTileDegrees() / this.dataset.get_widthFactor()) + this.dataset.get_offsetX());
-      const latCenter = (latMin + latMax) / 2;
-      const lngCenter = (lngMin + lngMax) / 2;
-      this.sphereCenter = this.geoTo3dTan(latCenter, lngCenter);
-      this.topLeft = this.geoTo3dTan(latMin, lngMin);
-      this.bottomRight = this.geoTo3dTan(latMax, lngMax);
-      this.topRight = this.geoTo3dTan(latMin, lngMax);
-      this.bottomLeft = this.geoTo3dTan(latMax, lngMin);
-      const distVect = this.geoTo3dTan(latMin, lngMin);
-      tileDegrees = lngMax - lngMin;
-      distVect.subtract(this.sphereCenter);
-      this.sphereRadius = distVect.length();
-    },
-    geoTo3dTan: function (lat, lng) {
-      lng = -lng;
-      const fac1 = this.dataset.get_baseTileDegrees() / 2;
-      const factor = Math.tan(fac1 * Tile.RC);
-      return this.dataset.get_matrix().transform(new Vector3d(1, (lat / fac1 * factor), (lng / fac1 * factor)));
-    },
-    computeBoundingSphereBottomsUp: function () {
-      let tileDegrees = this.dataset.get_baseTileDegrees() / (Math.pow(2, this.level));
-      const latMin = (this.dataset.get_baseTileDegrees() / 2 + (((this.tileY + 1)) * tileDegrees)) + this.dataset.get_offsetY();
-      const latMax = (this.dataset.get_baseTileDegrees() / 2 + ((this.tileY) * tileDegrees)) + this.dataset.get_offsetY();
-      const lngMin = ((this.tileX * tileDegrees) - this.dataset.get_baseTileDegrees() / this.dataset.get_widthFactor()) + this.dataset.get_offsetX();
-      const lngMax = ((((this.tileX + 1)) * tileDegrees) - this.dataset.get_baseTileDegrees() / this.dataset.get_widthFactor()) + this.dataset.get_offsetX();
-      const latCenter = (latMin + latMax) / 2;
-      const lngCenter = (lngMin + lngMax) / 2;
-      this.topLeft = this.geoTo3dTan(latMin, lngMin);
-      this.bottomRight = this.geoTo3dTan(latMax, lngMax);
-      this.topRight = this.geoTo3dTan(latMin, lngMax);
-      this.bottomLeft = this.geoTo3dTan(latMax, lngMin);
-      const distVect = this.topLeft;
-      tileDegrees = lngMax - lngMin;
-    },
-    createGeometry: function (renderContext) {
-      Tile.prototype.createGeometry.call(this, renderContext);
-      if (this.geometryCreated) {
-        return true;
-      }
-      this.geometryCreated = true;
-      for (let i = 0; i < 4; i++) {
-        this._renderTriangleLists[i] = [];
-      }
-      const tileDegrees = this.dataset.get_baseTileDegrees() / Math.pow(2, this.level);
-      const latMin = ((this.dataset.get_baseTileDegrees() / 2 - ((this.tileY) * tileDegrees)) + this.dataset.get_offsetY());
-      const latMax = ((this.dataset.get_baseTileDegrees() / 2 - (((this.tileY + 1)) * tileDegrees)) + this.dataset.get_offsetY());
-      const lngMin = (((this.tileX * tileDegrees) - this.dataset.get_baseTileDegrees() / this.dataset.get_widthFactor()) + this.dataset.get_offsetX());
-      const lngMax = (((((this.tileX + 1)) * tileDegrees) - this.dataset.get_baseTileDegrees() / this.dataset.get_widthFactor()) + this.dataset.get_offsetX());
-      const tileDegreesX = lngMax - lngMin;
-      const tileDegreesY = latMax - latMin;
-      this.topLeft = this.geoTo3dTan(latMin, lngMin);
-      this.bottomRight = this.geoTo3dTan(latMax, lngMax);
-      this.topRight = this.geoTo3dTan(latMin, lngMax);
-      this.bottomLeft = this.geoTo3dTan(latMax, lngMin);
-      const latCenter = (latMin + latMax) / 2;
-      const lngCenter = (lngMin + lngMax) / 2;
-      const center = Vector3d.midPoint(this.topLeft, this.bottomRight);
-      const leftCenter = Vector3d.midPoint(this.topLeft, this.bottomLeft);
-      const rightCenter = Vector3d.midPoint(this.topRight, this.bottomRight);
-      const topCenter = Vector3d.midPoint(this.topLeft, this.topRight);
-      const bottomCenter = Vector3d.midPoint(this.bottomLeft, this.bottomRight);
-      if (renderContext.gl == null) {
-        this._renderTriangleLists[0].push(RenderTriangle.create(PositionTexture.createPos(this.topLeft, 0, 0), PositionTexture.createPos(leftCenter, 0, 0.5), PositionTexture.createPos(topCenter, 0.5, 0), this.texture, this.level));
-        this._renderTriangleLists[0].push(RenderTriangle.create(PositionTexture.createPos(leftCenter, 0, 0.5), PositionTexture.createPos(center, 0.5, 0.5), PositionTexture.createPos(topCenter, 0.5, 0), this.texture, this.level));
-        this._renderTriangleLists[1].push(RenderTriangle.create(PositionTexture.createPos(topCenter, 0.5, 0), PositionTexture.createPos(rightCenter, 1, 0.5), PositionTexture.createPos(this.topRight, 1, 0), this.texture, this.level));
-        this._renderTriangleLists[1].push(RenderTriangle.create(PositionTexture.createPos(topCenter, 0.5, 0), PositionTexture.createPos(center, 0.5, 0.5), PositionTexture.createPos(rightCenter, 1, 0.5), this.texture, this.level));
-        this._renderTriangleLists[2].push(RenderTriangle.create(PositionTexture.createPos(leftCenter, 0, 0.5), PositionTexture.createPos(bottomCenter, 0.5, 1), PositionTexture.createPos(center, 0.5, 0.5), this.texture, this.level));
-        this._renderTriangleLists[2].push(RenderTriangle.create(PositionTexture.createPos(leftCenter, 0, 0.5), PositionTexture.createPos(this.bottomLeft, 0, 1), PositionTexture.createPos(bottomCenter, 0.5, 1), this.texture, this.level));
-        this._renderTriangleLists[3].push(RenderTriangle.create(PositionTexture.createPos(center, 0.5, 0.5), PositionTexture.createPos(this.bottomRight, 1, 1), PositionTexture.createPos(rightCenter, 1, 0.5), this.texture, this.level));
-        this._renderTriangleLists[3].push(RenderTriangle.create(PositionTexture.createPos(center, 0.5, 0.5), PositionTexture.createPos(bottomCenter, 0.5, 1), PositionTexture.createPos(this.bottomRight, 1, 1), this.texture, this.level));
-      } else {
-        this._vertexBuffer = Tile.prepDevice.createBuffer();
-        Tile.prepDevice.bindBuffer(34962, this._vertexBuffer);
-        const f32array = new Float32Array(9 * 5);
-        const buffer = f32array;
-        let index = 0;
-        index = this.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
-        Tile.prepDevice.bufferData(34962, f32array, 35044);
-        for (let i = 0; i < 4; i++) {
-          index = 0;
-          this.triangleCount = 2;
-          const ui16array = new Uint16Array(this.triangleCount * 3);
-          const indexArray = ui16array;
-          switch (i) {
-            case 0:
-              indexArray[index++] = 7;
-              indexArray[index++] = 4;
-              indexArray[index++] = 6;
-              indexArray[index++] = 4;
-              indexArray[index++] = 3;
-              indexArray[index++] = 6;
-              break;
-            case 1:
-              indexArray[index++] = 6;
-              indexArray[index++] = 5;
-              indexArray[index++] = 8;
-              indexArray[index++] = 6;
-              indexArray[index++] = 3;
-              indexArray[index++] = 5;
-              break;
-            case 2:
-              indexArray[index++] = 4;
-              indexArray[index++] = 0;
-              indexArray[index++] = 3;
-              indexArray[index++] = 4;
-              indexArray[index++] = 1;
-              indexArray[index++] = 0;
-              break;
-            case 3:
-              indexArray[index++] = 3;
-              indexArray[index++] = 2;
-              indexArray[index++] = 5;
-              indexArray[index++] = 3;
-              indexArray[index++] = 0;
-              indexArray[index++] = 2;
-              break;
-          }
-          this._indexBuffers[i] = Tile.prepDevice.createBuffer();
-          Tile.prepDevice.bindBuffer(34963, this._indexBuffers[i]);
-          Tile.prepDevice.bufferData(34963, ui16array, 35044);
-        }
-      }
-      return true;
-    }
-  };
 
   function BitmapOverlay() {
     this._textureReady$1 = false;
@@ -13622,608 +12024,6 @@ const wwtlib = (() => {
     }
   };
 
-  function EquirectangularTile() {
-    this._tileDegrees$1 = 0;
-    this._topDown$1 = true;
-    this._subDivisionLevel$1 = 1;
-    Tile.call(this);
-  }
-  EquirectangularTile.create = (level, x, y, dataset, parent) => {
-    const temp = new EquirectangularTile();
-    temp.parent = parent;
-    temp.level = level;
-    temp.tileX = x;
-    temp.tileY = y;
-    temp.dataset = dataset;
-    temp._topDown$1 = !dataset.get_bottomsUp();
-    temp.computeBoundingSphere();
-    return temp;
-  };
-  const EquirectangularTile$ = {
-    computeBoundingSphere: function () {
-      if (!this._topDown$1) {
-        this.computeBoundingSphereBottomsUp();
-        return;
-      }
-      this._tileDegrees$1 = this.dataset.get_baseTileDegrees() / Math.pow(2, this.level);
-      const latMin = (90 - ((this.tileY) * this._tileDegrees$1));
-      const latMax = (90 - (((this.tileY + 1)) * this._tileDegrees$1));
-      const lngMin = ((this.tileX * this._tileDegrees$1) - 180);
-      const lngMax = ((((this.tileX + 1)) * this._tileDegrees$1) - 180);
-      const latCenter = (latMin + latMax) / 2;
-      const lngCenter = (lngMin + lngMax) / 2;
-      this.sphereCenter = this.geoTo3d(latCenter, lngCenter, false);
-      this.topLeft = this.geoTo3d(latMin, lngMin, false);
-      this.bottomRight = this.geoTo3d(latMax, lngMax, false);
-      this.topRight = this.geoTo3d(latMin, lngMax, false);
-      this.bottomLeft = this.geoTo3d(latMax, lngMin, false);
-      const distVect = this.geoTo3d(latMin, lngMin, false);
-      distVect.subtract(this.sphereCenter);
-      this.sphereRadius = distVect.length();
-      this._tileDegrees$1 = lngMax - lngMin;
-    },
-    computeBoundingSphereBottomsUp: function () {
-      let tileDegrees = this.dataset.get_baseTileDegrees() / (Math.pow(2, this.level));
-      const latMin = (-90 + (((this.tileY + 1)) * tileDegrees));
-      const latMax = (-90 + ((this.tileY) * tileDegrees));
-      const lngMin = ((this.tileX * tileDegrees) - 180);
-      const lngMax = ((((this.tileX + 1)) * tileDegrees) - 180);
-      const latCenter = (latMin + latMax) / 2;
-      const lngCenter = (lngMin + lngMax) / 2;
-      this.sphereCenter = this.geoTo3d(latCenter, lngCenter, false);
-      this.topLeft = this.geoTo3d(latMin, lngMin, false);
-      this.bottomRight = this.geoTo3d(latMax, lngMax, false);
-      this.topRight = this.geoTo3d(latMin, lngMax, false);
-      this.bottomLeft = this.geoTo3d(latMax, lngMin, false);
-      const distVect = this.topLeft;
-      distVect.subtract(this.sphereCenter);
-      this.sphereRadius = distVect.length();
-      tileDegrees = lngMax - lngMin;
-    },
-    createGeometry: function (renderContext) {
-      Tile.prototype.createGeometry.call(this, renderContext);
-      if (renderContext.gl == null) {
-        if (!this.dataset.get_dataSetType() || this.dataset.get_dataSetType() === 1) {
-          this._subDivisionLevel$1 = Math.max(2, (4 - this.level) * 2);
-        }
-      } else {
-        this._subDivisionLevel$1 = 32;
-      }
-      try {
-        for (let i = 0; i < 4; i++) {
-          this._renderTriangleLists[i] = [];
-        }
-        if (!this._topDown$1) {
-          return this._createGeometryBottomsUp$1(renderContext);
-        }
-        let lat, lng;
-        let index = 0;
-        const tileDegrees = this.dataset.get_baseTileDegrees() / Math.pow(2, this.level);
-        const latMin = (90 - ((this.tileY) * tileDegrees));
-        const latMax = (90 - (((this.tileY + 1)) * tileDegrees));
-        const lngMin = ((this.tileX * tileDegrees) - 180);
-        const lngMax = ((((this.tileX + 1)) * tileDegrees) - 180);
-        const tileDegreesX = lngMax - lngMin;
-        const tileDegreesY = latMax - latMin;
-        this.topLeft = this.geoTo3d(latMin, lngMin, false);
-        this.bottomRight = this.geoTo3d(latMax, lngMax, false);
-        this.topRight = this.geoTo3d(latMin, lngMax, false);
-        this.bottomLeft = this.geoTo3d(latMax, lngMin, false);
-        const verts = new Array((this._subDivisionLevel$1 + 1) * (this._subDivisionLevel$1 + 1));
-        let x, y;
-        const textureStep = 1 / this._subDivisionLevel$1;
-        for (y = 0; y <= this._subDivisionLevel$1; y++) {
-          if (y !== this._subDivisionLevel$1) {
-            lat = latMin + (textureStep * tileDegreesY * y);
-          } else {
-            lat = latMax;
-          }
-          for (x = 0; x <= this._subDivisionLevel$1; x++) {
-            if (x !== this._subDivisionLevel$1) {
-              lng = lngMin + (textureStep * tileDegreesX * x);
-            } else {
-              lng = lngMax;
-            }
-            index = y * (this._subDivisionLevel$1 + 1) + x;
-            verts[index] = PositionTexture.createPos(this.geoTo3d(lat, lng, false), x * textureStep, y * textureStep);
-          }
-        }
-        this.triangleCount = this._subDivisionLevel$1 * this._subDivisionLevel$1 * 2;
-        const quarterDivisions = this._subDivisionLevel$1 / 2;
-        let part = 0;
-        if (renderContext.gl == null) {
-          for (let y2 = 0; y2 < 2; y2++) {
-            for (let x2 = 0; x2 < 2; x2++) {
-              index = 0;
-              for (let y1 = (quarterDivisions * y2); y1 < (quarterDivisions * (y2 + 1)); y1++) {
-                for (let x1 = (quarterDivisions * x2); x1 < (quarterDivisions * (x2 + 1)); x1++) {
-                  let p1;
-                  let p2;
-                  let p3;
-                  p1 = verts[(y1 * (this._subDivisionLevel$1 + 1) + x1)];
-                  p2 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1)];
-                  p3 = verts[(y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                  this._renderTriangleLists[part].push(RenderTriangle.create(p1, p3, p2, this.texture, this.level));
-                  p1 = verts[(y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                  p2 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1)];
-                  p3 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                  this._renderTriangleLists[part].push(RenderTriangle.create(p1, p3, p2, this.texture, this.level));
-                }
-              }
-              part++;
-            }
-          }
-        } else {
-          this._vertexBuffer = Tile.prepDevice.createBuffer();
-          Tile.prepDevice.bindBuffer(34962, this._vertexBuffer);
-          const f32array = new Float32Array(verts.length * 5);
-          const buffer = f32array;
-          index = 0;
-          const $enum1 = ss.enumerate(verts);
-          while ($enum1.moveNext()) {
-            const pt = $enum1.current;
-            index = this.addVertex(buffer, index, pt);
-          }
-          Tile.prepDevice.bufferData(34962, f32array, 35044);
-          for (let y2 = 0; y2 < 2; y2++) {
-            for (let x2 = 0; x2 < 2; x2++) {
-              const ui16array = new Uint16Array(this.triangleCount * 3);
-              const indexArray = ui16array;
-              index = 0;
-              for (let y1 = (quarterDivisions * y2); y1 < (quarterDivisions * (y2 + 1)); y1++) {
-                for (let x1 = (quarterDivisions * x2); x1 < (quarterDivisions * (x2 + 1)); x1++) {
-                  indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + x1);
-                  indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1);
-                  indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-                  indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-                  indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1);
-                  indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-                }
-              }
-              this._indexBuffers[part] = Tile.prepDevice.createBuffer();
-              Tile.prepDevice.bindBuffer(34963, this._indexBuffers[part]);
-              Tile.prepDevice.bufferData(34963, ui16array, 35044);
-              part++;
-            }
-          }
-        }
-      } catch ($e2) {
-      }
-      return true;
-    },
-    _createGeometryBottomsUp$1: function (renderContext) {
-      let lat, lng;
-      let index = 0;
-      const tileDegrees = this.dataset.get_baseTileDegrees() / Math.pow(2, this.level);
-      const latMin = (-90 + (((this.tileY + 1)) * tileDegrees));
-      const latMax = (-90 + ((this.tileY) * tileDegrees));
-      const lngMin = ((this.tileX * tileDegrees) - 180);
-      const lngMax = ((((this.tileX + 1)) * tileDegrees) - 180);
-      const tileDegreesX = lngMax - lngMin;
-      const tileDegreesY = latMax - latMin;
-      const verts = new Array((this._subDivisionLevel$1 + 1) * (this._subDivisionLevel$1 + 1));
-      let x, y;
-      const textureStep = 1 / this._subDivisionLevel$1;
-      for (y = 0; y <= this._subDivisionLevel$1; y++) {
-        if (y !== this._subDivisionLevel$1) {
-          lat = latMin + (textureStep * tileDegreesY * y);
-        } else {
-          lat = latMax;
-        }
-        for (x = 0; x <= this._subDivisionLevel$1; x++) {
-          if (x !== this._subDivisionLevel$1) {
-            lng = lngMin + (textureStep * tileDegreesX * x);
-          } else {
-            lng = lngMax;
-          }
-          index = y * (this._subDivisionLevel$1 + 1) + x;
-          verts[index] = PositionTexture.createPos(this.geoTo3d(lat, lng, false), x * textureStep, y * textureStep);
-        }
-      }
-      this.triangleCount = this._subDivisionLevel$1 * this._subDivisionLevel$1 * 2;
-      const quarterDivisions = this._subDivisionLevel$1 / 2;
-      let part = 0;
-      if (renderContext.gl == null) {
-        for (let y2 = 0; y2 < 2; y2++) {
-          for (let x2 = 0; x2 < 2; x2++) {
-            index = 0;
-            for (let y1 = (quarterDivisions * y2); y1 < (quarterDivisions * (y2 + 1)); y1++) {
-              for (let x1 = (quarterDivisions * x2); x1 < (quarterDivisions * (x2 + 1)); x1++) {
-                let p1;
-                let p2;
-                let p3;
-                p1 = verts[(y1 * (this._subDivisionLevel$1 + 1) + x1)];
-                p2 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1)];
-                p3 = verts[(y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                this._renderTriangleLists[part].push(RenderTriangle.create(p1, p3, p2, this.texture, this.level));
-                p1 = verts[(y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                p2 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1)];
-                p3 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                this._renderTriangleLists[part].push(RenderTriangle.create(p1, p3, p2, this.texture, this.level));
-              }
-            }
-            part++;
-          }
-        }
-      } else {
-        this._vertexBuffer = Tile.prepDevice.createBuffer();
-        Tile.prepDevice.bindBuffer(34962, this._vertexBuffer);
-        const f32array = new Float32Array(verts.length * 5);
-        const buffer = f32array;
-        index = 0;
-        const $enum1 = ss.enumerate(verts);
-        while ($enum1.moveNext()) {
-          const pt = $enum1.current;
-          index = this.addVertex(buffer, index, pt);
-        }
-        Tile.prepDevice.bufferData(34962, f32array, 35044);
-        for (let y2 = 0; y2 < 2; y2++) {
-          for (let x2 = 0; x2 < 2; x2++) {
-            const ui16array = new Uint16Array(this.triangleCount * 3);
-            const indexArray = ui16array;
-            index = 0;
-            for (let y1 = (quarterDivisions * y2); y1 < (quarterDivisions * (y2 + 1)); y1++) {
-              for (let x1 = (quarterDivisions * x2); x1 < (quarterDivisions * (x2 + 1)); x1++) {
-                indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + x1);
-                indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1);
-                indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-                indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-                indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1);
-                indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-              }
-            }
-            this._indexBuffers[part] = Tile.prepDevice.createBuffer();
-            Tile.prepDevice.bindBuffer(34963, this._indexBuffers[part]);
-            Tile.prepDevice.bufferData(34963, ui16array, 35044);
-            part++;
-          }
-        }
-      }
-      return true;
-    }
-  };
-
-  function MercatorTile() {
-    this._tileDegrees$1 = 0;
-    this._latMin$1 = 0;
-    this._latMax$1 = 0;
-    this._lngMin$1 = 0;
-    this._lngMax$1 = 0;
-    this._subDivisionLevel$1 = 32;
-    Tile.call(this);
-  }
-  MercatorTile.create = (level, X, Y, dataset, parent) => {
-    const temp = new MercatorTile();
-    temp.parent = parent;
-    temp.level = level;
-    temp.tileX = X;
-    temp.tileY = Y;
-    temp.dataset = dataset;
-    temp.computeBoundingSphere();
-    return temp;
-  };
-  MercatorTile.getCentrePointOffsetAsTileRatio = (lat, lon, zoom) => {
-    const metersX = MercatorTile.absoluteLonToMetersAtZoom(lon, zoom);
-    const relativeXIntoCell = (metersX / 256) - Math.floor(metersX / 256);
-    const metersY = MercatorTile.absoluteLatToMetersAtZoom(lat, zoom);
-    const relativeYIntoCell = (metersY / 256) - Math.floor(metersY / 256);
-    return new Vector2d(relativeXIntoCell, relativeYIntoCell);
-  };
-  MercatorTile.relativeMetersToLatAtZoom = (Y, zoom) => {
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    const metersY = Y * metersPerPixel;
-    return MercatorTile._radToDeg$1(Math.PI / 2 - 2 * Math.atan(Math.exp(0 - metersY / 6378137)));
-  };
-  MercatorTile.relativeMetersToLonAtZoom = (X, zoom) => {
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    const metersX = X * metersPerPixel;
-    return MercatorTile._radToDeg$1(metersX / 6378137);
-  };
-  MercatorTile.absoluteLatToMetersAtZoom = (latitude, zoom) => {
-    const sinLat = Math.sin(MercatorTile._degToRad$1(latitude));
-    const metersY = 6378137 / 2 * Math.log((1 + sinLat) / (1 - sinLat));
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    return ss.truncate((Math.round(20037508 - metersY) / metersPerPixel));
-  };
-  MercatorTile.absoluteMetersToLatAtZoom = (Y, zoom) => {
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    const metersY = 20037508 - Y * metersPerPixel;
-    return MercatorTile._radToDeg$1(Math.PI / 2 - 2 * Math.atan(Math.exp(0 - metersY / 6378137)));
-  };
-  MercatorTile.absoluteLonToMetersAtZoom = (longitude, zoom) => {
-    const metersX = 6378137 * MercatorTile._degToRad$1(longitude);
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    return ss.truncate(((metersX + 20037508) / metersPerPixel));
-  };
-  MercatorTile.absoluteMetersToLonAtZoom = (X, zoom) => {
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    const metersX = X * metersPerPixel - 20037508;
-    return MercatorTile._radToDeg$1(metersX / 6378137);
-  };
-  MercatorTile.absoluteLonToMetersAtZoomTile = (longitude, zoom, tileX) => {
-    const metersX = 6378137 * MercatorTile._degToRad$1(longitude);
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    return ss.truncate(((metersX + 20037508) / metersPerPixel));
-  };
-  MercatorTile.absoluteLatToMetersAtZoomTile = (latitude, zoom, tileX) => {
-    const sinLat = Math.sin(MercatorTile._degToRad$1(latitude));
-    const metersY = 6378137 / 2 * Math.log((1 + sinLat) / (1 - sinLat));
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    return ss.truncate((Math.round(20037508 - metersY) / metersPerPixel));
-  };
-  MercatorTile.absoluteMetersToLonAtZoomByTileY = (X, zoom, tileY) => {
-    const metersPerPixel = MercatorTile.metersPerPixel2(zoom);
-    const metersX = X * metersPerPixel - 20037508;
-    return MercatorTile._radToDeg$1(metersX / 6378137);
-  };
-  MercatorTile._degToRad$1 = deg => (deg * Math.PI / 180);
-  MercatorTile.metersPerPixel2 = zoom => (156543 / (1 << zoom));
-  MercatorTile._radToDeg$1 = rad => (rad * 180 / Math.PI);
-  const MercatorTile$ = {
-    computeBoundingSphere: function () {
-      this._tileDegrees$1 = 360 / Math.pow(2, this.level);
-      this._latMin$1 = MercatorTile.absoluteMetersToLatAtZoom(this.tileY * 256, this.level);
-      this._latMax$1 = MercatorTile.absoluteMetersToLatAtZoom((this.tileY + 1) * 256, this.level);
-      this._lngMin$1 = ((this.tileX * this._tileDegrees$1) - 180);
-      this._lngMax$1 = ((((this.tileX + 1)) * this._tileDegrees$1) - 180);
-      const latCenter = (this._latMin$1 + this._latMax$1) / 2;
-      const lngCenter = (this._lngMin$1 + this._lngMax$1) / 2;
-      this.sphereCenter = this.geoTo3d(latCenter, lngCenter, false);
-      this.topLeft = this.geoTo3d(this._latMin$1, this._lngMin$1, false);
-      this.bottomRight = this.geoTo3d(this._latMax$1, this._lngMax$1, false);
-      this.topRight = this.geoTo3d(this._latMin$1, this._lngMax$1, false);
-      this.bottomLeft = this.geoTo3d(this._latMax$1, this._lngMin$1, false);
-      if (!this.tileY) {
-        this.topLeft = new Vector3d(0, 1, 0);
-        this.topRight = new Vector3d(0, 1, 0);
-      }
-      if (this.tileY === Math.pow(2, this.level) - 1) {
-        this.bottomRight = new Vector3d(0, -1, 0);
-        this.bottomLeft = new Vector3d(0, -1, 0);
-      }
-      let distVect = this.topLeft;
-      distVect.subtract(this.sphereCenter);
-      this.sphereRadius = distVect.length();
-      distVect = this.bottomRight;
-      distVect.subtract(this.sphereCenter);
-      const len = distVect.length();
-      if (this.sphereRadius < len) {
-        this.sphereRadius = len;
-      }
-      this._tileDegrees$1 = Math.abs(this._latMax$1 - this._latMin$1);
-    },
-    isPointInTile: function (lat, lng) {
-      if (!this.demReady || this.demData == null || lat < Math.min(this._latMin$1, this._latMax$1) || lat > Math.max(this._latMax$1, this._latMin$1) || lng < Math.min(this._lngMin$1, this._lngMax$1) || lng > Math.max(this._lngMin$1, this._lngMax$1)) {
-        return false;
-      }
-      return true;
-    },
-    getSurfacePointAltitude: function (lat, lng, meters) {
-      if (this.level < Tile.lastDeepestLevel) {
-        const $enum1 = ss.enumerate(this.children);
-        while ($enum1.moveNext()) {
-          const child = $enum1.current;
-          if (child != null) {
-            if (child.isPointInTile(lat, lng)) {
-              const retVal = child.getSurfacePointAltitude(lat, lng, meters);
-              if (!!retVal) {
-                return retVal;
-              } else {
-                break;
-              }
-            }
-          }
-        }
-      }
-      const alt = this._getAltitudeAtLatLng$1(lat, lng, (meters) ? 1 : this.get__demScaleFactor());
-      return alt;
-    },
-    _getAltitudeAtLatLng$1: function (lat, lng, scaleFactor) {
-      const height = Math.abs(this._latMax$1 - this._latMin$1);
-      const width = Math.abs(this._lngMax$1 - this._lngMin$1);
-      const yy = ((lat - Math.min(this._latMax$1, this._latMin$1)) / height * 32);
-      const xx = ((lng - Math.min(this._lngMax$1, this._lngMin$1)) / width * 32);
-      const indexY = Math.min(31, ss.truncate(yy));
-      const indexX = Math.min(31, ss.truncate(xx));
-      const ha = xx - indexX;
-      const va = yy - indexY;
-      const ul = this.demData[indexY * 33 + indexX];
-      const ur = this.demData[indexY * 33 + (indexX + 1)];
-      const ll = this.demData[(indexY + 1) * 33 + indexX];
-      const lr = this.demData[(indexY + 1) * 33 + (indexX + 1)];
-      const top = ul * (1 - ha) + ha * ur;
-      const bottom = ll * (1 - ha) + ha * lr;
-      const val = top * (1 - va) + va * bottom;
-      return val / scaleFactor;
-    },
-    createGeometry: function (renderContext) {
-      Tile.prototype.createGeometry.call(this, renderContext);
-      if (this.geometryCreated) {
-        return true;
-      }
-      this.geometryCreated = true;
-      if (Tile.uvMultiple === 256) {
-        if (!this.dataset.get_dataSetType() || this.dataset.get_dataSetType() === 1) {
-          this._subDivisionLevel$1 = Math.max(2, (6 - this.level) * 2);
-        }
-      }
-      for (let i = 0; i < 4; i++) {
-        this._renderTriangleLists[i] = [];
-      }
-      let lat, lng;
-      let index = 0;
-      let tileDegrees = 360 / Math.pow(2, this.level);
-      this._latMin$1 = MercatorTile.absoluteMetersToLatAtZoom(this.tileY * 256, this.level);
-      this._latMax$1 = MercatorTile.absoluteMetersToLatAtZoom((this.tileY + 1) * 256, this.level);
-      this._lngMin$1 = ((this.tileX * tileDegrees) - 180);
-      this._lngMax$1 = ((((this.tileX + 1)) * tileDegrees) - 180);
-      const latCenter = MercatorTile.absoluteMetersToLatAtZoom(((this.tileY * 2) + 1) * 256, this.level + 1);
-      this.topLeft = this.geoTo3d(this._latMin$1, this._lngMin$1, false);
-      this.bottomRight = this.geoTo3d(this._latMax$1, this._lngMax$1, false);
-      this.topRight = this.geoTo3d(this._latMin$1, this._lngMax$1, false);
-      this.bottomLeft = this.geoTo3d(this._latMax$1, this._lngMin$1, false);
-      const verts = new Array((this._subDivisionLevel$1 + 1) * (this._subDivisionLevel$1 + 1));
-      tileDegrees = this._lngMax$1 - this._lngMin$1;
-      const dGrid = (tileDegrees / this._subDivisionLevel$1);
-      let x1, y1;
-      const textureStep = 1 / this._subDivisionLevel$1;
-      let latDegrees = this._latMax$1 - latCenter;
-      for (y1 = 0; y1 < this._subDivisionLevel$1 / 2; y1++) {
-        if (y1 !== this._subDivisionLevel$1 / 2) {
-          lat = this._latMax$1 - (2 * textureStep * latDegrees * y1);
-        } else {
-          lat = latCenter;
-        }
-        for (x1 = 0; x1 <= this._subDivisionLevel$1; x1++) {
-          if (x1 !== this._subDivisionLevel$1) {
-            lng = this._lngMin$1 + (textureStep * tileDegrees * x1);
-          } else {
-            lng = this._lngMax$1;
-          }
-          index = y1 * (this._subDivisionLevel$1 + 1) + x1;
-          verts[index] = new PositionTexture();
-          verts[index].position = this.geoTo3dWithAlt(lat, lng, false, true);
-          verts[index].tu = (x1 * textureStep) * Tile.uvMultiple;
-          verts[index].tv = ((MercatorTile.absoluteLatToMetersAtZoom(lat, this.level) - (this.tileY * 256)) / 256) * Tile.uvMultiple;
-          this.demIndex++;
-        }
-      }
-      latDegrees = this._latMin$1 - latCenter;
-      for (y1 = this._subDivisionLevel$1 / 2; y1 <= this._subDivisionLevel$1; y1++) {
-        if (y1 !== this._subDivisionLevel$1) {
-          lat = latCenter + (2 * textureStep * latDegrees * (y1 - (this._subDivisionLevel$1 / 2)));
-        } else {
-          lat = this._latMin$1;
-        }
-        for (x1 = 0; x1 <= this._subDivisionLevel$1; x1++) {
-          if (x1 !== this._subDivisionLevel$1) {
-            lng = this._lngMin$1 + (textureStep * tileDegrees * x1);
-          } else {
-            lng = this._lngMax$1;
-          }
-          index = y1 * (this._subDivisionLevel$1 + 1) + x1;
-          verts[index] = new PositionTexture();
-          verts[index].position = this.geoTo3dWithAlt(lat, lng, false, true);
-          verts[index].tu = (x1 * textureStep) * Tile.uvMultiple;
-          verts[index].tv = ((MercatorTile.absoluteLatToMetersAtZoom(lat, this.level) - (this.tileY * 256)) / 256) * Tile.uvMultiple;
-          this.demIndex++;
-        }
-      }
-      if (!this.tileY) {
-        y1 = this._subDivisionLevel$1;
-        for (x1 = 0; x1 <= this._subDivisionLevel$1; x1++) {
-          index = y1 * (this._subDivisionLevel$1 + 1) + x1;
-          verts[index].position = new Vector3d(0, 1, 0);
-        }
-      }
-      if (this.tileY === Math.pow(2, this.level) - 1) {
-        y1 = 0;
-        for (x1 = 0; x1 <= this._subDivisionLevel$1; x1++) {
-          index = y1 * (this._subDivisionLevel$1 + 1) + x1;
-          verts[index].position = new Vector3d(0, -1, 0);
-        }
-      }
-      this.triangleCount = this._subDivisionLevel$1 * this._subDivisionLevel$1 * 2;
-      const quarterDivisions = this._subDivisionLevel$1 / 2;
-      let part = 0;
-      if (renderContext.gl == null) {
-        for (let y2 = 0; y2 < 2; y2++) {
-          for (let x2 = 0; x2 < 2; x2++) {
-            index = 0;
-            for (y1 = (quarterDivisions * y2); y1 < (quarterDivisions * (y2 + 1)); y1++) {
-              for (x1 = (quarterDivisions * x2); x1 < (quarterDivisions * (x2 + 1)); x1++) {
-                let p1;
-                let p2;
-                let p3;
-                p1 = verts[(y1 * (this._subDivisionLevel$1 + 1) + x1)];
-                p2 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1)];
-                p3 = verts[(y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                let tri = RenderTriangle.create(p1, p2, p3, this.texture, this.level);
-                this._renderTriangleLists[part].push(tri);
-                p1 = verts[(y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                p2 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1)];
-                p3 = verts[((y1 + 1) * (this._subDivisionLevel$1 + 1) + (x1 + 1))];
-                tri = RenderTriangle.create(p1, p2, p3, this.texture, this.level);
-                this._renderTriangleLists[part].push(tri);
-              }
-            }
-            part++;
-          }
-        }
-      } else {
-        this._vertexBuffer = Tile.prepDevice.createBuffer();
-        Tile.prepDevice.bindBuffer(34962, this._vertexBuffer);
-        const f32array = new Float32Array(verts.length * 5);
-        const buffer = f32array;
-        index = 0;
-        const $enum1 = ss.enumerate(verts);
-        while ($enum1.moveNext()) {
-          const pt = $enum1.current;
-          index = this.addVertex(buffer, index, pt);
-        }
-        Tile.prepDevice.bufferData(34962, f32array, 35044);
-        for (let y2 = 0; y2 < 2; y2++) {
-          for (let x2 = 0; x2 < 2; x2++) {
-            const ui16array = new Uint16Array(this.triangleCount * 3);
-            const indexArray = ui16array;
-            index = 0;
-            for (y1 = (quarterDivisions * y2); y1 < (quarterDivisions * (y2 + 1)); y1++) {
-              for (x1 = (quarterDivisions * x2); x1 < (quarterDivisions * (x2 + 1)); x1++) {
-                indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + x1);
-                indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1);
-                indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-                indexArray[index++] = (y1 * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-                indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + x1);
-                indexArray[index++] = ((y1 + 1) * (this._subDivisionLevel$1 + 1) + (x1 + 1));
-              }
-            }
-            this._indexBuffers[part] = Tile.prepDevice.createBuffer();
-            Tile.prepDevice.bindBuffer(34963, this._indexBuffers[part]);
-            Tile.prepDevice.bufferData(34963, ui16array, 35044);
-            part++;
-          }
-        }
-      }
-      return true;
-    },
-    _getDemSample$1: function (x, y) {
-      return this.demData[(32 - y) * 33 + x];
-    },
-    createDemFromParent: function () {
-      const parent = ss.safeCast(this.parent, MercatorTile);
-      if (parent == null || parent.demData == null) {
-        return false;
-      }
-      const offsetX = (((this.tileX % 2) === 1) ? 16 : 0);
-      const offsetY = (((this.tileY % 2) === 1) ? 16 : 0);
-      this.demData = new Array(this.demSize);
-      for (let y = 0; y < 33; y += 2) {
-        let copy = true;
-        for (let x = 0; x < 33; x++) {
-          if (copy) {
-            this.demData[(32 - y) * 33 + x] = parent._getDemSample$1((x / 2) + offsetX, (y / 2) + offsetY);
-          } else {
-            this.demData[(32 - y) * 33 + x] = ((parent._getDemSample$1((x / 2) + offsetX, (y / 2) + offsetY) + parent._getDemSample$1(((x / 2) + offsetX) + 1, (y / 2) + offsetY)) / 2);
-          }
-          copy = !copy;
-        }
-      }
-      for (let y = 1; y < 33; y += 2) {
-        for (let x = 0; x < 33; x++) {
-          this.demData[(32 - y) * 33 + x] = ((this._getDemSample$1(x, y - 1) + this._getDemSample$1(x, y + 1)) / 2);
-        }
-      }
-      const $enum1 = ss.enumerate(this.demData);
-      while ($enum1.moveNext()) {
-        const sample = $enum1.current;
-        this.demAverage += sample;
-      }
-      this.demAverage /= this.demData.length;
-      this.demReady = true;
-      return true;
-    }
-  };
-
   function SlideChangedEventArgs(caption) {
     ss.EventArgs.call(this);
     this.set_caption(caption);
@@ -14332,13 +12132,12 @@ const wwtlib = (() => {
       Wtml,
       FolderUp,
       ViewMoverSlew,
-      MainView,
-      PositionTextureVertexBuffer: [PositionTextureVertexBuffer, PositionTextureVertexBuffer$, VertexBufferBase],
-      KeplerVertexBuffer: [KeplerVertexBuffer, KeplerVertexBuffer$, VertexBufferBase],
-      TimeSeriesLineVertexBuffer: [TimeSeriesLineVertexBuffer, TimeSeriesLineVertexBuffer$, VertexBufferBase],
-      TimeSeriesPointVertexBuffer: [TimeSeriesPointVertexBuffer, TimeSeriesPointVertexBuffer$, VertexBufferBase],
-      PositionColoredVertexBuffer: [PositionColoredVertexBuffer, PositionColoredVertexBuffer$, VertexBufferBase],
-      PositionColoredTexturedVertexBuffer: [PositionColoredTexturedVertexBuffer, PositionColoredTexturedVertexBuffer$, VertexBufferBase],
+      PositionTextureVertexBuffer,
+      KeplerVertexBuffer,
+      TimeSeriesLineVertexBuffer,
+      TimeSeriesPointVertexBuffer,
+      PositionColoredVertexBuffer,
+      PositionColoredTexturedVertexBuffer,
       LayerCollection: [LayerCollection, LayerCollection$, Layer]
     },
     {
@@ -14453,37 +12252,35 @@ const wwtlib = (() => {
       AstroRaDec: [AstroRaDec, {}, null],
       RiseSetDetails: [RiseSetDetails, {}, null],
       AstroCalc: [AstroCalc, {}, null],
-      ShortIndexBuffer: [ShortIndexBuffer, ShortIndexBuffer$, null],
-      IndexBuffer: [IndexBuffer, IndexBuffer$, null, ss.IDisposable],
-      VertexBufferBase: [VertexBufferBase, VertexBufferBase$, null, ss.IDisposable],
+      ShortIndexBuffer,
+      IndexBuffer,
       Dates: [Dates, Dates$, null],
       SimpleLineList: [SimpleLineList, SimpleLineList$, null],
       OrbitLineList: [OrbitLineList, OrbitLineList$, null],
       LineList: [LineList, LineList$, null],
       TriangleList: [TriangleList, TriangleList$, null],
-      PointList: [PointList, PointList$, null],
-      TimeSeriesLineVertex: [TimeSeriesLineVertex, TimeSeriesLineVertex$, null],
-      TimeSeriesPointVertex: [TimeSeriesPointVertex, TimeSeriesPointVertex$, null],
-      SimpleLineShader: [SimpleLineShader, SimpleLineShader$, null],
-      SimpleLineShader2D: [SimpleLineShader2D, SimpleLineShader2D$, null],
-      OrbitLineShader: [OrbitLineShader, OrbitLineShader$, null],
-      LineShaderNormalDates: [LineShaderNormalDates, LineShaderNormalDates$, null],
-      TimeSeriesPointSpriteShader: [TimeSeriesPointSpriteShader, TimeSeriesPointSpriteShader$, null],
-      KeplerPointSpriteShader: [KeplerPointSpriteShader, KeplerPointSpriteShader$, null],
-      EllipseShader: [EllipseShader, EllipseShader$, null],
-      ModelShader: [ModelShader, ModelShader$, null],
-      ModelShaderTan: [ModelShaderTan, ModelShaderTan$, null],
-      TileShader: [TileShader, TileShader$, null],
-      ImageShader: [ImageShader, ImageShader$, null],
-      ImageShader2: [ImageShader2, ImageShader2$, null],
-      SpriteShader: [SpriteShader, SpriteShader$, null],
-      ShapeSpriteShader: [ShapeSpriteShader, ShapeSpriteShader$, null],
-      TextShader: [TextShader, TextShader$, null],
+      PointList,
+      TimeSeriesLineVertex,
+      TimeSeriesPointVertex,
+      SimpleLineShader,
+      SimpleLineShader2D,
+      OrbitLineShader,
+      LineShaderNormalDates,
+      TimeSeriesPointSpriteShader,
+      KeplerPointSpriteShader,
+      EllipseShader,
+      ModelShader,
+      ModelShaderTan,
+      TileShader,
+      ImageShader,
+      ImageShader2,
+      SpriteShader,
+      ShapeSpriteShader,
+      TextShader,
       Tessellator,
       Texture: [Texture, Texture$, null, ss.IDisposable],
       Grids: [Grids, Grids$, null],
       KeplerVertex: [KeplerVertex, KeplerVertex$, null],
-      ScaleMap: [ScaleMap, ScaleMap$, null],
       Layer: [Layer, Layer$, null],
       DomainValue: [DomainValue, DomainValue$, null],
       LayerManager: [LayerManager, LayerManager$, null],
@@ -14498,8 +12295,8 @@ const wwtlib = (() => {
       Mesh: [Mesh, Mesh$, null, ss.IDisposable],
       Object3d: [Object3d, Object3d$, null],
       ObjectNode: [ObjectNode, ObjectNode$, null],
-      Orbit: [Orbit, Orbit$, null],
-      EllipseRenderer: [EllipseRenderer, EllipseRenderer$, null],
+      Orbit,
+      EllipseRenderer,
       ReferenceFrame: [ReferenceFrame, ReferenceFrame$, null],
       KmlCoordinate: [KmlCoordinate, KmlCoordinate$, null],
       KmlLineList: [KmlLineList, KmlLineList$, null],
@@ -14507,7 +12304,7 @@ const wwtlib = (() => {
       VoTable: [VoTable, VoTable$, null],
       VoRow: [VoRow, VoRow$, null],
       VoColumn: [VoColumn, VoColumn$, null],
-      WcsImage: [WcsImage, WcsImage$, null],
+      WcsImage,
       KeplerianElements: [KeplerianElements, KeplerianElements$, null],
       BodyAngles: [BodyAngles, BodyAngles$, null],
       Planets: [Planets, Planets$, null],
@@ -14523,7 +12320,6 @@ const wwtlib = (() => {
       SpaceTimeController: [SpaceTimeController, SpaceTimeController$, null],
       Star: [Star, Star$, null],
       Galaxy: [Galaxy, Galaxy$, null],
-      Tile: [Tile, Tile$, null],
       Tour: [Tour, Tour$, null, IThumbnail],
       FileEntry: [FileEntry, FileEntry$, null],
       FileCabinet: [FileCabinet, FileCabinet$, null],
@@ -14551,7 +12347,7 @@ const wwtlib = (() => {
       UiTools: [UiTools, UiTools$, null],
       Rectangle: [Rectangle, Rectangle$, null],
       Guid: [Guid, Guid$, null],
-      Enums: [Enums, Enums$, null],
+      Enums,
       Mouse: [Mouse, null, null],
       Language,
       Cursor: [Cursor, Cursor$, null],
@@ -14561,7 +12357,7 @@ const wwtlib = (() => {
       PopupColorPicker: [PopupColorPicker, PopupColorPicker$, null],
       OverlayProperties: [OverlayProperties, OverlayProperties$, null],
       BinaryReader: [BinaryReader, BinaryReader$, null],
-      Bitmap: [Bitmap, Bitmap$, null],
+      Bitmap,
       ColorPicker: [ColorPicker, ColorPicker$, null],
       ContextMenuStrip: [ContextMenuStrip, ContextMenuStrip$, null],
       ToolStripMenuItem: [ToolStripMenuItem, ToolStripMenuItem$, null],
@@ -14581,7 +12377,7 @@ const wwtlib = (() => {
       Color,
       Colors,
       Constellations,
-      ConstellationFilter: [ConstellationFilter, ConstellationFilter$, null],
+      ConstellationFilter,
       Coordinates: [Coordinates, Coordinates$, null],
       PositionTexture: PositionTexture,
       PositionColoredTextured: PositionColoredTextured,
@@ -14603,17 +12399,10 @@ const wwtlib = (() => {
       Imageset: [Imageset, Imageset$, null],
       ViewMoverKenBurnsStyle: [ViewMoverKenBurnsStyle, ViewMoverKenBurnsStyle$, null],
       Place: [Place, Place$, null],
-      Class1: [Class1, Class1$, null],
-      PositionVertexBuffer: [PositionVertexBuffer, PositionVertexBuffer$, VertexBufferBase],
-      PositionNormalTexturedVertexBuffer: [PositionNormalTexturedVertexBuffer, PositionNormalTexturedVertexBuffer$, VertexBufferBase],
-      PositionNormalTexturedTangentVertexBuffer: [PositionNormalTexturedTangentVertexBuffer, PositionNormalTexturedTangentVertexBuffer$, VertexBufferBase],
-      FitsImage: [FitsImage, FitsImage$, WcsImage],
-      ScaleLinear: [ScaleLinear, ScaleLinear$, ScaleMap],
-      ScaleLog: [ScaleLog, ScaleLog$, ScaleMap],
-      ScalePow: [ScalePow, ScalePow$, ScaleMap],
-      ScaleSqrt: [ScaleSqrt, ScaleSqrt$, ScaleMap],
-      HistogramEqualization: [HistogramEqualization, HistogramEqualization$, ScaleMap],
-      GreatCirlceRouteLayer: [GreatCirlceRouteLayer, GreatCirlceRouteLayer$, Layer],
+      PositionVertexBuffer,
+      PositionNormalTexturedVertexBuffer,
+      PositionNormalTexturedTangentVertexBuffer,
+      FitsImage,
       GridLayer: [GridLayer, GridLayer$, Layer],
       ImageSetLayer: [ImageSetLayer, ImageSetLayer$, Layer],
       Object3dLayer: [Object3dLayer, Object3dLayer$, Layer],
@@ -14623,10 +12412,11 @@ const wwtlib = (() => {
       SpreadSheetLayer: [SpreadSheetLayer, SpreadSheetLayer$, Layer],
       TimeSeriesLayer: [TimeSeriesLayer, TimeSeriesLayer$, Layer],
       VoTableLayer: [VoTableLayer, VoTableLayer$, Layer],
-      PlotTile: [PlotTile, PlotTile$, Tile],
-      SkyImageTile: [SkyImageTile, SkyImageTile$, Tile],
-      TangentTile: [TangentTile, TangentTile$, Tile],
-      ToastTile: [ToastTile, ToastTile$, Tile],
+      Tile,
+      PlotTile,
+      SkyImageTile,
+      TangentTile,
+      ToastTile,
       BitmapOverlay: [BitmapOverlay, BitmapOverlay$, Overlay],
       TextOverlay: [TextOverlay, TextOverlay$, Overlay],
       ShapeOverlay: [ShapeOverlay, ShapeOverlay$, Overlay],
@@ -14640,8 +12430,8 @@ const wwtlib = (() => {
       Circle: [Circle, Circle$, Annotation],
       Poly: [Poly, Poly$, Annotation],
       PolyLine: [PolyLine, PolyLine$, Annotation],
-      EquirectangularTile: [EquirectangularTile, EquirectangularTile$, Tile],
-      MercatorTile: [MercatorTile, MercatorTile$, Tile],
+      EquirectangularTile,
+      MercatorTile,
       ISSLayer: [ISSLayer, ISSLayer$, Object3dLayer],
       SlideChangedEventArgs: [SlideChangedEventArgs, SlideChangedEventArgs$, ss.EventArgs],
       ArrivedEventArgs: [ArrivedEventArgs, ArrivedEventArgs$, ss.EventArgs],
@@ -14832,25 +12622,7 @@ const wwtlib = (() => {
   SpaceTimeController._timeRate = 1;
   SpaceTimeController._altitude = 0;
   Galaxy._eTypeBuckets = [ -3, -0.186, -0.168, -0.158, -0.15, -0.143, -0.137, -0.13, -0.123, -0.115, -0.104, -0.089, -0.068, -0.042, -0.011, 0.024, 0.064, 0.111, 0.169, 0.252, 3 ];
-  Tile.currentRenderGeneration = 0;
-  Tile.tileTargetX = -1;
-  Tile.tileTargetY = -1;
-  Tile.tileTargetLevel = -1;
-  Tile.tilesInView = 0;
-  Tile.trianglesRendered = 0;
-  Tile.tilesTouched = 0;
-  Tile.frustumList = null;
-  Tile.prepDevice = null;
-  Tile.uvMultiple = 256;
-  Tile.callCount = 0;
-  Tile.useAccomidation = true;
-  Tile.demEnabled = false;
-  Tile.maxLevel = 20;
-  Tile.meshComplexity = 50;
-  Tile.imageQuality = 50;
-  Tile.lastDeepestLevel = 0;
-  Tile.deepestLevel = 0;
-  Tile.RC = (3.1415927 / 180);
+
   TileCache._queue = {};
   TileCache._tiles = {};
   TileCache.openThreads = 8;
@@ -14945,5 +12717,11 @@ const wwtlib = (() => {
   //endregion
   return $exports;
 })();
-window.wwtlib = wwtlib;
+/*wwtlib = Object.assign(wwtlib,
+  {Tile,
+  PlotTile,
+  SkyImageTile,
+  TangentTile,
+  ToastTile});*/
+window.wwtlib=wwtlib;
 export default wwtlib;

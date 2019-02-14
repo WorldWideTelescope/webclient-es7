@@ -1,6 +1,6 @@
 // CAARiseTransitSetDetails
 
-import {CAASidereal} from './CAASidereal';
+import {CAASidereal} from './AASidereal';
 import {DYT} from './AADynamicalTime';
 import {CT} from './AACoordinateTransformation';
 import {INTP} from './AAInterpolate';

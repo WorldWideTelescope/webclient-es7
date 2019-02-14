@@ -1,4 +1,3 @@
-import wwtlib from './wwtsdk';
 import ss from './scriptsharp/ss';
 import {Tile} from './Tile';
 import {Color} from './Color';

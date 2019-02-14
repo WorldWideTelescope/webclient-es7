@@ -281,8 +281,8 @@ export const RenderContext$ = {
       for (let y = 0; y < maxY; y++) {
         const tile = TileCache.getTile(layer.get_baseLevel(), x, y, layer, null);
         if (tile != null) {
-          if (tile.isPointInTile(viewLat, viewLong)) {
-            return tile.getSurfacePointAltitude(viewLat, viewLong, false);
+          if (Tile.isPointInTile(viewLat, viewLong)) {
+            return Tile.getSurfacePointAltitude(viewLat, viewLong, false);
           }
         }
       }

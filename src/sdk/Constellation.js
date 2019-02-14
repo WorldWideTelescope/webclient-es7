@@ -9,7 +9,6 @@ import {WebFile} from './WebFile';
 import {Color} from './Color';
 import {Place} from './Place';
 import {SimpleLineList} from './Graphics/Primative3d';
-import {SimpleLineShader} from './Graphics/Shaders';
 
 
 export class Constellations {
@@ -23,7 +22,7 @@ export class Constellations {
     this._constellationVertexBuffers = {};
   }
 
-  createBasic(name) {
+  static createBasic(name) {
     const temp = new Constellations();
     temp._name = name;
     temp._url = null;
@@ -401,221 +400,238 @@ export class Constellations {
 }
 
 
-export function ConstellationFilter() {
-  this.bits = new Array(3);
-  this.oldBits = new Array(3);
-  this.blendState = BlendState.create(false, 1000);
-  this.internal = false;
-  this.settingsOwned = false;
-  for (let i = 0; i < 3; i++) {
-    this.bits[i] = ~this.bits[i];
-    this.oldBits[i] = this.bits[i];
-  }
-}
-
-ConstellationFilter.buildConstellationFilters = function () {
-  const all = ConstellationFilter.get_allConstellation();
-  all.internal = true;
-  ConstellationFilter.families['AllConstellation'] = all;
-  ConstellationFilter.families['Zodiacal'] = ConstellationFilter.get_zodiacal();
-  ConstellationFilter.families['Ursa Major Family'] = ConstellationFilter.get_ursaMajorFamily();
-  ConstellationFilter.families['Perseus Family'] = ConstellationFilter.get_perseusFamily();
-  ConstellationFilter.families['Hercules Family'] = ConstellationFilter.get_herculesFamily();
-  ConstellationFilter.families['Orion Family'] = ConstellationFilter.get_orionFamily();
-  ConstellationFilter.families['Heavenly Waters'] = ConstellationFilter.get_heavenlyWaters();
-  ConstellationFilter.families['Bayer Family'] = ConstellationFilter.get_bayerFamily();
-  ConstellationFilter.families['La Caille Family'] = ConstellationFilter.get_laCaileFamily();
-};
-ConstellationFilter.saveCustomFilters = function () {
-  const sb = new ss.StringBuilder();
-  const $dict1 = ConstellationFilter.families;
-  for (let $key2 in $dict1) {
-    const kv = {key: $key2, value: $dict1[$key2]};
-    if (!kv.value.internal) {
-      sb.append(kv.key);
-      sb.append(';');
-      sb.appendLine(kv.value.toString());
-    }
-  }
-};
-ConstellationFilter.get_allConstellation = function () {
-  const all = new ConstellationFilter();
-  all.setAll(true);
-  return all;
-};
-ConstellationFilter.get_zodiacal = function () {
-  const zodiacal = new ConstellationFilter();
-  zodiacal.set('ARI', true);
-  zodiacal.set('TAU', true);
-  zodiacal.set('GEM', true);
-  zodiacal.set('CNC', true);
-  zodiacal.set('LEO', true);
-  zodiacal.set('VIR', true);
-  zodiacal.set('LIB', true);
-  zodiacal.set('SCO', true);
-  zodiacal.set('SGR', true);
-  zodiacal.set('CAP', true);
-  zodiacal.set('AQR', true);
-  zodiacal.set('PSC', true);
-  zodiacal.internal = true;
-  return zodiacal;
-};
-ConstellationFilter.get_ursaMajorFamily = function () {
-  const uma = new ConstellationFilter();
-  uma.set('UMA', true);
-  uma.set('UMI', true);
-  uma.set('DRA', true);
-  uma.set('CVN', true);
-  uma.set('BOO', true);
-  uma.set('COM', true);
-  uma.set('CRB', true);
-  uma.set('CAM', true);
-  uma.set('LYN', true);
-  uma.set('LMI', true);
-  uma.internal = true;
-  return uma;
-};
-ConstellationFilter.get_perseusFamily = function () {
-  const Perseus = new ConstellationFilter();
-  Perseus.set('CAS', true);
-  Perseus.set('CEP', true);
-  Perseus.set('AND', true);
-  Perseus.set('PER', true);
-  Perseus.set('PEG', true);
-  Perseus.set('CET', true);
-  Perseus.set('AUR', true);
-  Perseus.set('LAC', true);
-  Perseus.set('TRI', true);
-  Perseus.internal = true;
-  return Perseus;
-};
-ConstellationFilter.get_herculesFamily = function () {
-  const hercules = new ConstellationFilter();
-  hercules.set('HER', true);
-  hercules.set('SGE', true);
-  hercules.set('AQL', true);
-  hercules.set('LYR', true);
-  hercules.set('CYG', true);
-  hercules.set('VUL', true);
-  hercules.set('HYA', true);
-  hercules.set('SEX', true);
-  hercules.set('CRT', true);
-  hercules.set('CRV', true);
-  hercules.set('OPH', true);
-  hercules.set('SER1', true);
-  hercules.set('SER2', true);
-  hercules.set('SCT', true);
-  hercules.set('CEN', true);
-  hercules.set('LUP', true);
-  hercules.set('CRA', true);
-  hercules.set('ARA', true);
-  hercules.set('TRA', true);
-  hercules.set('CRU', true);
-  hercules.internal = true;
-  return hercules;
-};
-ConstellationFilter.get_orionFamily = function () {
-  const orion = new ConstellationFilter();
-  orion.set('ORI', true);
-  orion.set('CMA', true);
-  orion.set('CMI', true);
-  orion.set('MON', true);
-  orion.set('LEP', true);
-  orion.internal = true;
-  return orion;
-};
-ConstellationFilter.get_heavenlyWaters = function () {
-  const waters = new ConstellationFilter();
-  waters.set('DEL', true);
-  waters.set('EQU', true);
-  waters.set('ERI', true);
-  waters.set('PSA', true);
-  waters.set('CAR', true);
-  waters.set('PUP', true);
-  waters.set('VEL', true);
-  waters.set('PYX', true);
-  waters.set('COL', true);
-  waters.internal = true;
-  return waters;
-};
-ConstellationFilter.get_bayerFamily = function () {
-  const bayer = new ConstellationFilter();
-  bayer.set('HYA', true);
-  bayer.set('DOR', true);
-  bayer.set('VOL', true);
-  bayer.set('APS', true);
-  bayer.set('PAV', true);
-  bayer.set('GRU', true);
-  bayer.set('PHE', true);
-  bayer.set('TUC', true);
-  bayer.set('IND', true);
-  bayer.set('CHA', true);
-  bayer.set('MUS', true);
-  bayer.internal = true;
-  return bayer;
-};
-ConstellationFilter.get_laCaileFamily = function () {
-  const LaCaile = new ConstellationFilter();
-  LaCaile.set('NOR', true);
-  LaCaile.set('CIR', true);
-  LaCaile.set('TEL', true);
-  LaCaile.set('MIC', true);
-  LaCaile.set('SCL', true);
-  LaCaile.set('FOR', true);
-  LaCaile.set('CAE', true);
-  LaCaile.set('HOR', true);
-  LaCaile.set('OCT', true);
-  LaCaile.set('MEN', true);
-  LaCaile.set('RET', true);
-  LaCaile.set('PIC', true);
-  LaCaile.set('ANT', true);
-  LaCaile.internal = true;
-  return LaCaile;
-};
-ConstellationFilter.parse = function (val) {
-  const parts = (val).split(',');
-  const cf = new ConstellationFilter();
-  try {
+export class ConstellationFilter {
+  constructor() {
+    this.bits = new Array(3);
+    this.oldBits = new Array(3);
+    this.blendState = BlendState.create(false, 1000);
+    this.internal = false;
+    this.settingsOwned = false;
     for (let i = 0; i < 3; i++) {
-      cf.bits[i] = parseInt(parts[i]);
+      this.bits[i] = ~this.bits[i];
+      this.oldBits[i] = this.bits[i];
     }
-  } catch ($e1) {
   }
-  return cf;
-};
-export const ConstellationFilter$ = {
-  _saveBits: function () {
+
+  static buildConstellationFilters() {
+    const all = ConstellationFilter.get_allConstellation();
+    all.internal = true;
+    ConstellationFilter.families['AllConstellation'] = all;
+    ConstellationFilter.families['Zodiacal'] = ConstellationFilter.get_zodiacal();
+    ConstellationFilter.families['Ursa Major Family'] = ConstellationFilter.get_ursaMajorFamily();
+    ConstellationFilter.families['Perseus Family'] = ConstellationFilter.get_perseusFamily();
+    ConstellationFilter.families['Hercules Family'] = ConstellationFilter.get_herculesFamily();
+    ConstellationFilter.families['Orion Family'] = ConstellationFilter.get_orionFamily();
+    ConstellationFilter.families['Heavenly Waters'] = ConstellationFilter.get_heavenlyWaters();
+    ConstellationFilter.families['Bayer Family'] = ConstellationFilter.get_bayerFamily();
+    ConstellationFilter.families['La Caille Family'] = ConstellationFilter.get_laCaileFamily();
+  }
+
+  static saveCustomFilters() {
+    const sb = new ss.StringBuilder();
+    const $dict1 = ConstellationFilter.families;
+    for (let $key2 in $dict1) {
+      const kv = {key: $key2, value: $dict1[$key2]};
+      if (!kv.value.internal) {
+        sb.append(kv.key);
+        sb.append(';');
+        sb.appendLine(kv.value.toString());
+      }
+    }
+  }
+
+  static get_allConstellation() {
+    const all = new ConstellationFilter();
+    all.setAll(true);
+    return all;
+  }
+
+  static get_zodiacal() {
+    const zodiacal = new ConstellationFilter();
+    zodiacal.set('ARI', true);
+    zodiacal.set('TAU', true);
+    zodiacal.set('GEM', true);
+    zodiacal.set('CNC', true);
+    zodiacal.set('LEO', true);
+    zodiacal.set('VIR', true);
+    zodiacal.set('LIB', true);
+    zodiacal.set('SCO', true);
+    zodiacal.set('SGR', true);
+    zodiacal.set('CAP', true);
+    zodiacal.set('AQR', true);
+    zodiacal.set('PSC', true);
+    zodiacal.internal = true;
+    return zodiacal;
+  }
+
+  static get_ursaMajorFamily() {
+    const uma = new ConstellationFilter();
+    uma.set('UMA', true);
+    uma.set('UMI', true);
+    uma.set('DRA', true);
+    uma.set('CVN', true);
+    uma.set('BOO', true);
+    uma.set('COM', true);
+    uma.set('CRB', true);
+    uma.set('CAM', true);
+    uma.set('LYN', true);
+    uma.set('LMI', true);
+    uma.internal = true;
+    return uma;
+  }
+
+  static get_perseusFamily() {
+    const Perseus = new ConstellationFilter();
+    Perseus.set('CAS', true);
+    Perseus.set('CEP', true);
+    Perseus.set('AND', true);
+    Perseus.set('PER', true);
+    Perseus.set('PEG', true);
+    Perseus.set('CET', true);
+    Perseus.set('AUR', true);
+    Perseus.set('LAC', true);
+    Perseus.set('TRI', true);
+    Perseus.internal = true;
+    return Perseus;
+  }
+
+  static get_herculesFamily() {
+    const hercules = new ConstellationFilter();
+    hercules.set('HER', true);
+    hercules.set('SGE', true);
+    hercules.set('AQL', true);
+    hercules.set('LYR', true);
+    hercules.set('CYG', true);
+    hercules.set('VUL', true);
+    hercules.set('HYA', true);
+    hercules.set('SEX', true);
+    hercules.set('CRT', true);
+    hercules.set('CRV', true);
+    hercules.set('OPH', true);
+    hercules.set('SER1', true);
+    hercules.set('SER2', true);
+    hercules.set('SCT', true);
+    hercules.set('CEN', true);
+    hercules.set('LUP', true);
+    hercules.set('CRA', true);
+    hercules.set('ARA', true);
+    hercules.set('TRA', true);
+    hercules.set('CRU', true);
+    hercules.internal = true;
+    return hercules;
+  }
+
+  static get_orionFamily() {
+    const orion = new ConstellationFilter();
+    orion.set('ORI', true);
+    orion.set('CMA', true);
+    orion.set('CMI', true);
+    orion.set('MON', true);
+    orion.set('LEP', true);
+    orion.internal = true;
+    return orion;
+  }
+
+  static get_heavenlyWaters() {
+    const waters = new ConstellationFilter();
+    waters.set('DEL', true);
+    waters.set('EQU', true);
+    waters.set('ERI', true);
+    waters.set('PSA', true);
+    waters.set('CAR', true);
+    waters.set('PUP', true);
+    waters.set('VEL', true);
+    waters.set('PYX', true);
+    waters.set('COL', true);
+    waters.internal = true;
+    return waters;
+  }
+
+  static get_bayerFamily() {
+    const bayer = new ConstellationFilter();
+    bayer.set('HYA', true);
+    bayer.set('DOR', true);
+    bayer.set('VOL', true);
+    bayer.set('APS', true);
+    bayer.set('PAV', true);
+    bayer.set('GRU', true);
+    bayer.set('PHE', true);
+    bayer.set('TUC', true);
+    bayer.set('IND', true);
+    bayer.set('CHA', true);
+    bayer.set('MUS', true);
+    bayer.internal = true;
+    return bayer;
+  }
+
+  static get_laCaileFamily() {
+    const LaCaile = new ConstellationFilter();
+    LaCaile.set('NOR', true);
+    LaCaile.set('CIR', true);
+    LaCaile.set('TEL', true);
+    LaCaile.set('MIC', true);
+    LaCaile.set('SCL', true);
+    LaCaile.set('FOR', true);
+    LaCaile.set('CAE', true);
+    LaCaile.set('HOR', true);
+    LaCaile.set('OCT', true);
+    LaCaile.set('MEN', true);
+    LaCaile.set('RET', true);
+    LaCaile.set('PIC', true);
+    LaCaile.set('ANT', true);
+    LaCaile.internal = true;
+    return LaCaile;
+  }
+
+  static parse(val) {
+    const parts = (val).split(',');
+    const cf = new ConstellationFilter();
+    try {
+      for (let i = 0; i < 3; i++) {
+        cf.bits[i] = parseInt(parts[i]);
+      }
+    } catch ($e1) {
+    }
+    return cf;
+  }
+
+  _saveBits() {
     for (let i = 0; i < 3; i++) {
       this.oldBits[i] = this.bits[i];
     }
-  },
-  _isChanged: function () {
+  }
+
+  _isChanged() {
     for (let i = 0; i < 3; i++) {
       if (this.oldBits[i] !== this.bits[i]) {
         return true;
       }
     }
     return false;
-  },
-  _checkChanged: function () {
+  }
+
+  _checkChanged() {
     if (this._isChanged()) {
       this._fireChanged();
     }
-  },
-  isEnabled: function (abbrev) {
+  }
+
+  isEnabled(abbrev) {
     let bitID = Constellations.bitIDs[abbrev];
     const index = bitID / 32;
     bitID = bitID % 32;
     return this.blendState.get_state() && !!((1 << bitID) & this.bits[index]);
-  },
-  isSet: function (abbrev) {
+  }
+
+  isSet(abbrev) {
     this._saveBits();
     let bitID = Constellations.bitIDs[abbrev];
     const index = ss.truncate((bitID / 32));
     bitID = bitID % 32;
     return !!((1 << bitID) & this.bits[index]);
-  },
-  set: function (abbrev, state) {
+  }
+
+  set(abbrev, state) {
     this._saveBits();
     let bitID = Constellations.bitIDs[abbrev];
     const index = bitID / 32;
@@ -626,8 +642,9 @@ export const ConstellationFilter$ = {
       this.bits[index] = this.bits[index] ^ (1 << bitID);
     }
     this._checkChanged();
-  },
-  setAll: function (state) {
+  }
+
+  setAll(state) {
     this._saveBits();
     for (let bitID = 0; bitID < 89; bitID++) {
       const index = bitID / 32;
@@ -639,15 +656,17 @@ export const ConstellationFilter$ = {
       }
     }
     this._checkChanged();
-  },
-  setBits: function (bits) {
+  }
+
+  setBits(bits) {
     this._saveBits();
     for (let i = 0; i < 3; i++) {
       this.bits[i] = (bits[i * 4]) + ((bits[i * 4 + 1]) << 8) + ((bits[i * 4 + 2]) << 16) + ((bits[i * 4 + 3]) << 24);
     }
     this._checkChanged();
-  },
-  getBits: function () {
+  }
+
+  getBits() {
     const bits = new Array(12);
     let index = 0;
     for (let i = 0; i < 3; i++) {
@@ -657,41 +676,47 @@ export const ConstellationFilter$ = {
       bits[index++] = (this.bits[i] >> 24);
     }
     return bits;
-  },
-  cloneFilter: function (filter) {
+  }
+
+  cloneFilter(filter) {
     this._saveBits();
     for (let i = 0; i < 3; i++) {
       this.bits[i] = filter.bits[i];
     }
     this._checkChanged();
-  },
-  clone: function () {
+  }
+
+  clone() {
     const newFilter = new ConstellationFilter();
     newFilter.cloneFilter(this);
     return newFilter;
-  },
-  combine: function (filter) {
+  }
+
+  combine(filter) {
     this._saveBits();
     for (let i = 0; i < 3; i++) {
       this.bits[i] = this.bits[i] | filter.bits[i];
     }
     this._checkChanged();
-  },
-  remove: function (filter) {
+  }
+
+  remove(filter) {
     this._saveBits();
     for (let i = 0; i < 3; i++) {
       this.bits[i] = this.bits[i] & ~filter.bits[i];
     }
     this._checkChanged();
-  },
-  _fireChanged: function () {
+  }
+
+  _fireChanged() {
     if (this.settingsOwned) {
     }
-  },
-  toString: function () {
+  }
+
+  toString() {
     return ss.format('{0},{1},{2}', this.bits[0], this.bits[1], this.bits[2]);
   }
-};
+}
 
 class Lineset {
   constructor(name) {
@@ -719,7 +744,7 @@ class Lineset {
   add(ra, dec, pointType, name) {
     this.points.push(new Linepoint(ra, dec, pointType, name));
   }
-};
+}
 
 class Linepoint {
   constructor(ra, dec, type, name) {

@@ -4,7 +4,46 @@
 import ss from './scriptsharp/ss';
 import {Util} from './Util';
 import {Matrix3d} from './Double3d';
-import {ToastTile} from './ToastTile';
+let ToastTile,MercatorTile,EquirectangularTile,SkyImageTile,PlotTile,TangentTile;
+let allTiles = ['ToastTile','MercatorTile','EquirectangularTile','SkyImageTile','PlotTile','TangentTile'];
+let allImports = allTiles.map(t => import(`./${t}`));
+export let tilesReady = new Promise((res,rej) => {
+  Promise.all(allImports).then(tileModules => {
+    onTilesReady(tileModules);
+    res();
+  });
+});
+let onTilesReady = tileModules => {
+  ToastTile = tileModules[0].ToastTile;
+  MercatorTile = tileModules[1].MercatorTile;
+  EquirectangularTile = tileModules[2].EquirectangularTile;
+  SkyImageTile = tileModules[3].SkyImageTile;
+  PlotTile = tileModules[4].PlotTile;
+  TangentTile = tileModules[5].TangentTile;
+  Imageset.getNewTile = function(imageset, level, x, y, parent) {
+    let newTile;
+    switch (imageset.get_projection()) {
+      case 0:
+        newTile = MercatorTile.create(level, x, y, imageset, parent);
+        return newTile;
+      case 1:
+        return EquirectangularTile.create(level, x, y, imageset, parent);
+      case 3:
+      default:
+        return ToastTile.create(level, x, y, imageset, parent);
+      case 5:
+        return SkyImageTile.create(level, x, y, imageset, parent);
+      case 6:
+        return PlotTile.create(level, x, y, imageset, parent);
+      case 2:
+        newTile = TangentTile.create(level, x, y, imageset, parent);
+        return newTile;
+    }
+  };
+};
+
+
+
 import {
   BandPass,
   ImageSetType,
@@ -44,25 +83,8 @@ export function Imageset() {
 Imageset.getTileKey = function(imageset, level, x, y) {
   return imageset.get_imageSetID().toString() + '\\' + level.toString() + '\\' + y.toString() + '_' + x.toString();
 };
-Imageset.getNewTile = function(imageset, level, x, y, parent) {
-  let newTile;
-  switch (imageset.get_projection()) {
-    case 0:
-      newTile = MercatorTile.create(level, x, y, imageset, parent);
-      return newTile;
-    case 1:
-      return EquirectangularTile.create(level, x, y, imageset, parent);
-    case 3:
-    default:
-      return ToastTile.create(level, x, y, imageset, parent);
-    case 5:
-      return SkyImageTile.create(level, x, y, imageset, parent);
-    case 6:
-      return PlotTile.create(level, x, y, imageset, parent);
-    case 2:
-      newTile = TangentTile.create(level, x, y, imageset, parent);
-      return newTile;
-  }
+Imageset.getNewTile = function(){
+  console.warn({getNewTile:arguments});
 };
 Imageset.fromXMLNode = function(node) {
   try {

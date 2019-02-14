@@ -6,84 +6,90 @@ import {Coordinates} from './Coordinates';
 import {SpaceTimeController} from './SpaceTimeController';
 import ss from './scriptsharp/ss';
 
-export function EllipseRenderer() {}
-EllipseRenderer.drawEllipseWithPosition = (renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, worldMatrix, positionNow) => {
-  if (EllipseRenderer._ellipseShader == null) {
-    EllipseRenderer._ellipseShader = new EllipseShader();
-  }
-  if (EllipseRenderer._ellipseVertexBuffer == null) {
-    EllipseRenderer._ellipseVertexBuffer = EllipseRenderer.createEllipseVertexBuffer(500);
-  }
-  const savedWorld = renderContext.get_world();
-  renderContext.set_world(worldMatrix);
-  renderContext.gl.bindBuffer(34962, EllipseRenderer._ellipseVertexBuffer.vertexBuffer);
-  renderContext.gl.bindBuffer(34963, null);
-  EllipseShader.use(renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, 1, savedWorld, positionNow);
-  renderContext.gl.drawArrays(3, 0, EllipseRenderer._ellipseVertexBuffer.count);
-  renderContext.set_world(savedWorld);
-};
-EllipseRenderer.drawEllipse = (renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, worldMatrix) => {
-  if (EllipseRenderer._ellipseShader == null) {
-    EllipseRenderer._ellipseShader = new EllipseShader();
-  }
-  if (EllipseRenderer._ellipseWithoutStartPointVertexBuffer == null) {
-    EllipseRenderer._ellipseWithoutStartPointVertexBuffer = EllipseRenderer.createEllipseVertexBufferWithoutStartPoint(360);
-  }
-  const savedWorld = renderContext.get_world();
-  renderContext.set_world(worldMatrix);
-  renderContext.gl.bindBuffer(34962, EllipseRenderer._ellipseWithoutStartPointVertexBuffer.vertexBuffer);
-  renderContext.gl.bindBuffer(34963, null);
-  EllipseShader.use(renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, 1, savedWorld, new Vector3d(0, 0, 0));
-  renderContext.gl.drawArrays(3, 0, EllipseRenderer._ellipseWithoutStartPointVertexBuffer.count - 1);
-  renderContext.set_world(savedWorld);
-};
-EllipseRenderer.createEllipseVertexBuffer = vertexCount => {
-  const vb = new PositionVertexBuffer(vertexCount);
-  const verts = vb.lock();
-  let index = 0;
-  for (let i = 0; i < vertexCount / 2; ++i) {
-    verts[index++] = new Vector3d(2 * i / vertexCount * 0.05, 0, 0);
-  }
-  for (let i = 0; i < vertexCount / 2; ++i) {
-    verts[index++] = new Vector3d(2 * i / vertexCount * 0.95 + 0.05, 0, 0);
-  }
-  vb.unlock();
-  return vb;
-};
-EllipseRenderer.createEllipseVertexBufferWithoutStartPoint = vertexCount => {
-  const vb = new PositionVertexBuffer(vertexCount);
-  const verts = vb.lock();
-  verts[0] = new Vector3d(1E-06, 0, 0);
-  for (let i = 1; i < vertexCount; ++i) {
-    verts[i] = new Vector3d(2 * i / vertexCount, 0, 0);
-  }
-  vb.unlock();
-  return vb;
-};
-export const EllipseRenderer$ = {};
+export class EllipseRenderer {
+  static drawEllipseWithPosition(renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, worldMatrix, positionNow) {
+    if (EllipseRenderer._ellipseShader == null) {
+      EllipseRenderer._ellipseShader = new EllipseShader();
+    }
+    if (EllipseRenderer._ellipseVertexBuffer == null) {
+      EllipseRenderer._ellipseVertexBuffer = EllipseRenderer.createEllipseVertexBuffer(500);
+    }
+    const savedWorld = renderContext.get_world();
+    renderContext.set_world(worldMatrix);
+    renderContext.gl.bindBuffer(34962, EllipseRenderer._ellipseVertexBuffer.vertexBuffer);
+    renderContext.gl.bindBuffer(34963, null);
+    EllipseShader.use(renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, 1, savedWorld, positionNow);
+    renderContext.gl.drawArrays(3, 0, EllipseRenderer._ellipseVertexBuffer.count);
+    renderContext.set_world(savedWorld);
+  };
 
+  static drawEllipse(renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, worldMatrix) {
+    if (EllipseRenderer._ellipseShader == null) {
+      EllipseRenderer._ellipseShader = new EllipseShader();
+    }
+    if (EllipseRenderer._ellipseWithoutStartPointVertexBuffer == null) {
+      EllipseRenderer._ellipseWithoutStartPointVertexBuffer = EllipseRenderer.createEllipseVertexBufferWithoutStartPoint(360);
+    }
+    const savedWorld = renderContext.get_world();
+    renderContext.set_world(worldMatrix);
+    renderContext.gl.bindBuffer(34962, EllipseRenderer._ellipseWithoutStartPointVertexBuffer.vertexBuffer);
+    renderContext.gl.bindBuffer(34963, null);
+    EllipseShader.use(renderContext, semiMajorAxis, eccentricity, eccentricAnomaly, color, 1, savedWorld, new Vector3d(0, 0, 0));
+    renderContext.gl.drawArrays(3, 0, EllipseRenderer._ellipseWithoutStartPointVertexBuffer.count - 1);
+    renderContext.set_world(savedWorld);
+  }
 
-export function Orbit(elements, segments, color, thickness, scale) {
-  this._elements = null;
-  this._orbitColor = Colors.get_white();
-  this._scale = 0;
-  this._segmentCount = 0;
-  this._elements = elements;
-  this._segmentCount = segments;
-  this._orbitColor = color;
-  this._scale = scale;
+  static createEllipseVertexBuffer(vertexCount) {
+    const vb = new PositionVertexBuffer(vertexCount);
+    const verts = vb.lock();
+    let index = 0;
+    for (let i = 0; i < vertexCount / 2; ++i) {
+      verts[index++] = new Vector3d(2 * i / vertexCount * 0.05, 0, 0);
+    }
+    for (let i = 0; i < vertexCount / 2; ++i) {
+      verts[index++] = new Vector3d(2 * i / vertexCount * 0.95 + 0.05, 0, 0);
+    }
+    vb.unlock();
+    return vb;
+  }
+
+  static createEllipseVertexBufferWithoutStartPoint(vertexCount) {
+    const vb = new PositionVertexBuffer(vertexCount);
+    const verts = vb.lock();
+    verts[0] = new Vector3d(1E-06, 0, 0);
+    for (let i = 1; i < vertexCount; ++i) {
+      verts[i] = new Vector3d(2 * i / vertexCount, 0, 0);
+    }
+    vb.unlock();
+    return vb;
+  }
 }
-export const Orbit$ = {
-  cleanUp: () => {
-  },
-  get_boundingRadius: function () {
+
+
+export class Orbit {
+  constructor(elements, segments, color, thickness, scale) {
+    this._elements = null;
+    this._orbitColor = Colors.get_white();
+    this._scale = 0;
+    this._segmentCount = 0;
+    this._elements = elements;
+    this._segmentCount = segments;
+    this._orbitColor = color;
+    this._scale = scale;
+  }
+
+  cleanUp() {
+  }
+
+  get_boundingRadius() {
     if (this._elements != null) {
       return (this._elements.a * (1 + this._elements.e)) / this._scale;
     } else {
       return 0;
     }
-  },
-  draw3D: function (renderContext, opacity, centerPoint) {
+  }
+
+  draw3D(renderContext, opacity, centerPoint) {
     let orbitalPlaneOrientation = Matrix3d.multiplyMatrix(Matrix3d._rotationZ(Coordinates.degreesToRadians(this._elements.w)), Matrix3d.multiplyMatrix(Matrix3d._rotationX(Coordinates.degreesToRadians(this._elements.i)), Matrix3d._rotationZ(Coordinates.degreesToRadians(this._elements.omega))));
     orbitalPlaneOrientation = Matrix3d.multiplyMatrix(orbitalPlaneOrientation, Orbit._orbitalToWwt);
     const worldMatrix = Matrix3d.multiplyMatrix(Matrix3d.multiplyMatrix(orbitalPlaneOrientation, Matrix3d.translation(centerPoint)), renderContext.get_world());
@@ -102,5 +108,5 @@ export const Orbit$ = {
     }
     EllipseRenderer.drawEllipse(renderContext, this._elements.a / this._scale, this._elements.e, E, color, worldMatrix);
   }
-};
+}
 

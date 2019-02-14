@@ -16,35 +16,23 @@ import {CAAKepler} from './AAKepler';
 import {Vector3d} from '../Double3d';
 import {Util} from '../Util';
 
-export function EOE() {
-  this.a = 0;
-  this.e = 0;
-  this.i = 0;
-  this.w = 0;
-  this.omega = 0;
-  this.jdEquinox = 0;
-  this.t = 0;
-  this.n = 0;
-  this.meanAnnomolyOut = 0;
-  this.a = 0;
-  this.e = 0;
-  this.i = 0;
-  this.w = 0;
-  this.omega = 0;
-  this.jdEquinox = 0;
-  this.t = 0;
+export class EOE {
+  constructor(a = 0, e = 0, i = 0, w = 0, omega = 0, jdEquinox = 0, t = 0) {
+    this.a = a;
+    this.e = e;
+    this.i = i;
+    this.w = w;
+    this.omega = omega;
+    this.jdEquinox = jdEquinox;
+    this.t = t;
+    this.n = 0;
+    this.meanAnnomolyOut = 0;
+  }
+  static _create(br) {
+    return new EOE(br.readSingle(), br.readSingle(), br.readSingle(), br.readSingle(), br.readSingle(), br.readSingle(), br.readSingle());
+  };
 }
-EOE._create = br => {
-  const tmp = new EOE();
-  tmp.a = br.readSingle();
-  tmp.e = br.readSingle();
-  tmp.i = br.readSingle();
-  tmp.w = br.readSingle();
-  tmp.omega = br.readSingle();
-  tmp.jdEquinox = br.readSingle();
-  tmp.t = br.readSingle();
-  return tmp;
-};
+
 export function EPD() {
   this.apparentGeocentricLongitude = 0;
   this.apparentGeocentricLatitude = 0;
@@ -59,6 +47,7 @@ export function EPD() {
   this.apparentGeocentricRA = 0;
   this.apparentGeocentricDeclination = 0;
 }
+
 export function EOD() {
   this.heliocentricRectangularEquatorial = new C3D();
   this.heliocentricRectangularEcliptical = new C3D();
@@ -175,8 +164,7 @@ const calculate = (JD, oobject) => {
       LPrevious = L;
       BPrevious = B;
       RPrevious = R;
-    }
-    else {
+    } else {
       bFirstRecalc = false;
     }
     if (bRecalc) {
@@ -190,8 +178,7 @@ const calculate = (JD, oobject) => {
         y = R * cosB * Math.sin(Lrad) - R0 * cosB0 * Math.sin(L0);
         z = R * Math.sin(Brad) - R0 * Math.sin(B0);
         distance = Math.sqrt(x * x + y * y + z * z);
-      }
-      else {
+      } else {
         distance = R;
       }
       JD0 = JD - ELL.distanceToLightTime(distance);
@@ -358,8 +345,7 @@ const calculateElements = (JD, elements) => {
       details.trueGeocentricDeclination = Delta;
       details.trueGeocentricDistance = Distance;
       details.trueGeocentricLightTime = ELL.distanceToLightTime(Distance);
-    }
-    else {
+    } else {
       details.astrometricGeocenticRA = CT.m24(Alpha / 15);
       details.astrometricGeocentricDeclination = Delta;
       details.astrometricGeocentricDistance = Distance;

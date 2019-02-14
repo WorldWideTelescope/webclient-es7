@@ -10,6 +10,7 @@ import {GM} from './AAGalileanMoons';
 import {DT} from './AADate';
 import ss from '../scriptsharp/ss';
 import {CAARiseTransitSet} from './AARiseTransitSet';
+import {Util} from '../Util';
 
 export function AstroRaDec(ra, dec, dist, shadow, eclipsed) {
   this.RA = 0;
@@ -174,3 +175,5 @@ AstroCalc.getRiseTrinsitSet = function(jd, lat, lng, ra1, dec1, ra2, dec2, ra3, 
   }
   return new RiseSetDetails(RiseTransitSetTime.bValid, RiseTransitSetTime.rise, RiseTransitSetTime.transit, RiseTransitSetTime.set, neverRises);
 };
+
+

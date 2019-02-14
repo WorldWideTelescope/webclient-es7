@@ -1,4 +1,3 @@
-
 // wwtlib.PointList
 
 import ss from '../scriptsharp/ss';
@@ -14,45 +13,46 @@ import {
 } from './GIBuffer';
 import {LineShaderNormalDates, OrbitLineShader, SimpleLineShader, SimpleLineShader2D} from './Shaders';
 
+export class PointList {
+  constructor(device) {
+    this._points = [];
+    this._colors = [];
+    this._dates = [];
+    this._sizes = [];
+    this.timeSeries = false;
+    this.showFarSide = false;
+    this.sky = false;
+    this.depthBuffered = true;
+    this.decay = 0;
+    this.scale = 1;
+    this.autoTime = true;
+    this.jNow = 0;
+    this._dataToDraw = false;
+    this.items = [];
+    this._imageReady = false;
+    this._init = false;
+    this.minSize = 2;
+    this._pointBuffers = [];
+    this._pointBufferCounts = [];
+    this._device = device;
+  }
 
-export function PointList(device) {
-  this._points = [];
-  this._colors = [];
-  this._dates = [];
-  this._sizes = [];
-  this.timeSeries = false;
-  this.showFarSide = false;
-  this.sky = false;
-  this.depthBuffered = true;
-  this.decay = 0;
-  this.scale = 1;
-  this.autoTime = true;
-  this.jNow = 0;
-  this._dataToDraw = false;
-  this.items = [];
-  this._imageReady = false;
-  this._init = false;
-  this.minSize = 2;
-  this._pointBuffers = [];
-  this._pointBufferCounts = [];
-  this._device = device;
-}
-
-export const PointList$ = {
-  addPoint: function (v1, color, date, size) {
+  addPoint(v1, color, date, size) {
     this._points.push(v1);
     this._colors.push(color._clone());
     this._dates.push(date);
     this._sizes.push(size);
     this._emptyPointBuffer();
-  },
-  clear: function () {
+  }
+
+  clear() {
     this._colors.length = 0;
     this._points.length = 0;
     this._dates.length = 0;
     this._emptyPointBuffer();
-  },
-  _emptyPointBuffer: function () {
+  }
+
+  _emptyPointBuffer() {
     const $enum1 = ss.enumerate(this._pointBuffers);
     while ($enum1.moveNext()) {
       const pointBuffer = $enum1.current;
@@ -60,8 +60,9 @@ export const PointList$ = {
     }
     this._pointBuffers.length = 0;
     this._init = false;
-  },
-  _initBuffer: function (renderContext) {
+  }
+
+  _initBuffer(renderContext) {
     const $this = this;
 
     if (!this._init) {
@@ -131,8 +132,9 @@ export const PointList$ = {
       }
       this._init = true;
     }
-  },
-  draw: function (renderContext, opacity, cull) {
+  }
+
+  draw(renderContext, opacity, cull) {
     this._initBuffer(renderContext);
     if (renderContext.gl == null) {
       if (!this._imageReady) {
@@ -175,8 +177,9 @@ export const PointList$ = {
         renderContext.gl.drawArrays(0, 0, pointBuffer.count);
       }
     }
-  },
-  drawTextured: function (renderContext, texture, opacity) {
+  }
+
+  drawTextured(renderContext, texture, opacity) {
     this._initBuffer(renderContext);
     const zero = new Vector3d();
     const matInv = Matrix3d.multiplyMatrix(renderContext.get_world(), renderContext.get_view());
@@ -199,7 +202,8 @@ export function Dates(start, end) {
   this.startDate = start;
   this.endDate = end;
 }
-Dates.empty = function() {
+
+Dates.empty = function () {
   return new Dates(0, 0);
 };
 export const Dates$ = {
@@ -353,6 +357,7 @@ export function LineList() {
   this._lineBuffers = [];
   this._lineBufferCounts = [];
 }
+
 export const LineList$ = {
   get_depthBuffered: function () {
     return this._zBuffer;
@@ -455,6 +460,7 @@ export function TriangleList() {
   this._triangleBuffers = [];
   this._triangleBufferCounts = [];
 }
+
 export const TriangleList$ = {
   addTriangle: function (v1, v2, v3, color, date) {
     this._trianglePoints.push(v1);
@@ -572,6 +578,7 @@ export function OrbitLineList() {
   this._lineBufferCounts = [];
   this.useLocalCenters = false;
 }
+
 export const OrbitLineList$ = {
   get_depthBuffered: function () {
     return this._zBuffer;
@@ -667,26 +674,29 @@ export const OrbitLineList$ = {
 };
 
 
-export function TimeSeriesLineVertex() {
-  this.position = new Vector3d();
-  this.normal = new Vector3d();
-  this.tu = 0;
-  this.tv = 0;
-}
-TimeSeriesLineVertex.create = (position, normal, time, color) => {
-  const temp = new TimeSeriesLineVertex();
-  temp.position = position;
-  temp.normal = normal;
-  temp.tu = time;
-  temp.tv = 0;
-  temp.color = color;
-  return temp;
-};
-export const TimeSeriesLineVertex$ = {
-  get_color: function () {
+export class TimeSeriesLineVertex {
+  constructor() {
+    this.position = new Vector3d();
+    this.normal = new Vector3d();
+    this.tu = 0;
+    this.tv = 0;
+  }
+
+  static create(position, normal, time, color) {
+    const temp = new TimeSeriesLineVertex();
+    temp.position = position;
+    temp.normal = normal;
+    temp.tu = time;
+    temp.tv = 0;
+    temp.color = color;
+    return temp;
+  }
+
+  get_color() {
     return this.color;
-  },
-  set_color: function (value) {
+  }
+
+  set_color(value) {
     this.color = value;
     return value;
   }

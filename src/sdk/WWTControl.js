@@ -1,7 +1,7 @@
 import {BlendState} from './BlendState';
 import {DoubleUtilities, Matrix3d, PositionColoredTextured, Vector2d, Vector3d} from './Double3d';
 import {Tile} from './Tile';
-import {Imageset} from './Imageset';
+import {Imageset,tilesReady} from './Imageset';
 import ss from './scriptsharp/ss';
 import {Color, Colors} from './Color';
 import {Coordinates} from './Coordinates';
@@ -24,6 +24,7 @@ import {TourPlayer} from './Tours/TourPlayer';
 import {Grids} from './Grids';
 import {MinorPlanets} from './MinorPlanets';
 import {Mouse} from './Util';
+
 
 export function WWTControl() {
   this.uiController = null;
@@ -83,6 +84,7 @@ WWTControl.initControl = function(DivId) {
   return WWTControl.initControlParam(DivId, false);
 };
 WWTControl.initControlParam = function(DivId, webGL) {
+
   if (WWTControl.singleton.renderContext.device == null) {
     WWTControl.scriptInterface = new ScriptInterface();
     WWTControl.scriptInterface.settings = Settings.get_current();
@@ -110,17 +112,22 @@ WWTControl.initControlParam = function(DivId, webGL) {
     WWTControl.singleton.renderContext.width = canvas.width;
     WWTControl.singleton.renderContext.height = canvas.height;
     WWTControl.singleton.setup(canvas);
-    WWTControl.singleton.renderContext.set_backgroundImageset(Imageset.create('DSS', '//cdn.worldwidetelescope.org/wwtweb/dss.aspx?q={1},{2},{3}', 2, 3, 3, 100, 0, 12, 256, 180, '.png', false, '', 0, 0, 0, false, '//worldwidetelescope.org/thumbnails/DSS.png', true, false, 0, 0, 0, '', '', '', '', 1, 'Sky'));
-    if (WWTControl.startMode === 'earth') {
-      WWTControl.singleton.renderContext.set_backgroundImageset(Imageset.create('Blue Marble', '//worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},bm200407', 0, 3, 3, 101, 0, 7, 256, 180, '.png', false, '', 0, 0, 0, false, '//worldwidetelescope.org/wwtweb/thumbnail.aspx?name=bm200407', true, false, 0, 0, 0, '', '', '', '', 6371000, 'Earth'));
-    }
-    if (WWTControl.startMode === 'bing') {
-      WWTControl.singleton.renderContext.set_backgroundImageset(Imageset.create('Virtual Earth Aerial', '//a{0}.ortho.tiles.virtualearth.net/tiles/a{1}.jpeg?g=15', 0, 3, 0, 102, 1, 20, 256, 360, '.png', false, '0123', 0, 0, 0, false, '//worldwidetelescope.org/wwtweb/thumbnail.aspx?name=earth', true, false, 0, 0, 0, '', '', '', '', 6371000, 'Earth'));
-    }
+    //console.time('tiles');
+    tilesReady.then(()=> {
+      //console.timeEnd('tiles');
+      WWTControl.singleton.renderContext.set_backgroundImageset(Imageset.create('DSS', '//cdn.worldwidetelescope.org/wwtweb/dss.aspx?q={1},{2},{3}', 2, 3, 3, 100, 0, 12, 256, 180, '.png', false, '', 0, 0, 0, false, '//worldwidetelescope.org/thumbnails/DSS.png', true, false, 0, 0, 0, '', '', '', '', 1, 'Sky'));
+      if (WWTControl.startMode === 'earth') {
+        WWTControl.singleton.renderContext.set_backgroundImageset(Imageset.create('Blue Marble', '//worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},bm200407', 0, 3, 3, 101, 0, 7, 256, 180, '.png', false, '', 0, 0, 0, false, '//worldwidetelescope.org/wwtweb/thumbnail.aspx?name=bm200407', true, false, 0, 0, 0, '', '', '', '', 6371000, 'Earth'));
+      }
+      if (WWTControl.startMode === 'bing') {
+        WWTControl.singleton.renderContext.set_backgroundImageset(Imageset.create('Virtual Earth Aerial', '//a{0}.ortho.tiles.virtualearth.net/tiles/a{1}.jpeg?g=15', 0, 3, 0, 102, 1, 20, 256, 360, '.png', false, '0123', 0, 0, 0, false, '//worldwidetelescope.org/wwtweb/thumbnail.aspx?name=earth', true, false, 0, 0, 0, '', '', '', '', 6371000, 'Earth'));
+      }
+      WWTControl.singleton.render();
+    });
   }
   WWTControl.singleton.renderContext.viewCamera.lng += 0;
   WWTControl.singleton.renderContext._initGL();
-  WWTControl.singleton.render();
+
   return WWTControl.scriptInterface;
 };
 WWTControl.useUserLocation = function() {

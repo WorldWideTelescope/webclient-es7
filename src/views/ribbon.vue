@@ -62,6 +62,7 @@
 import {mapMutations, mapState, mapGetters} from 'vuex';
 import dom from '../lib/dom';
 import lib from '../lib/util';
+import Vue from 'vue';
 
 export default {
   data: () => {
@@ -183,19 +184,27 @@ export default {
       }
       this.activeMenu.left = el.offsetLeft;
       this.activeMenu.items = items;
-      this.$nextTick().then(this.$refs.ribbonMenu.focus);
+      let menu =
+      Vue.nextTick().then(() => {
+        //console.log({refs:this.$refs});
+        this.$refs.ribbonMenu && this.$refs.ribbonMenu.focus();
+      });
     }
   },
   mounted() {
 
   }
 };
+
 </script>
 <style lang="less" scoped>
   .dropdown-menu {
     position: absolute;
     top:30px;
     display:block;
+    &:focus{
+      outline:none;
+    }
     border-radius: 0 0 2px 2px;
     li.divider{
       opacity: .33;
