@@ -11886,7 +11886,7 @@ window.wwtlib = function(){
       lifeTimeMenu.click = LayerManager._lifeTimeMenu_Click;
       showViewer.click = LayerManager._showViewer_Click;
       LayerManager._contextMenu.items.push(renameMenu);
-      if (!selectedLayer.get_opened() && selectedLayer.getPrimaryUI() != null && selectedLayer.getPrimaryUI().get_hasTreeViewNodes()) {
+      if (!selectedLayer.get_opened() && selectedLayer.getPrimaryUI() != null && OrbitLayerUI.get_hasTreeViewNodes()) {
         LayerManager._contextMenu.items.push(Expand);
       }
       if (selectedLayer.get_opened()) {
@@ -17254,8 +17254,8 @@ window.wwtlib = function(){
         for (var y = 0; y < maxY; y++) {
           var tile = TileCache.getTile(layer.get_baseLevel(), x, y, layer, null);
           if (tile != null) {
-            if (tile.isPointInTile(viewLat, viewLong)) {
-              return tile.getSurfacePointAltitude(viewLat, viewLong, false);
+            if (Tile.isPointInTile(viewLat, viewLong)) {
+              return Tile.getSurfacePointAltitude(viewLat, viewLong, false);
             }
           }
         }
@@ -21799,7 +21799,7 @@ window.wwtlib = function(){
       var $enum2 = ss.enumerate(referencedFrames);
       while ($enum2.moveNext()) {
         var item = $enum2.current;
-        item.saveToXml(xmlWriter);
+        Imageset.saveToXml(xmlWriter);
       }
       xmlWriter._writeEndElement();
       xmlWriter._writeStartElement('Layers');
@@ -21807,7 +21807,7 @@ window.wwtlib = function(){
       while ($enum3.moveNext()) {
         var id = $enum3.current;
         if (ss.keyExists(LayerManager.get_layerList(), id)) {
-          LayerManager.get_layerList()[id].saveToXml(xmlWriter);
+          Imageset.saveToXml(xmlWriter);
         }
       }
       xmlWriter._writeEndElement();
@@ -23970,7 +23970,7 @@ window.wwtlib = function(){
       var $enum1 = ss.enumerate(this.selection.selectionSet);
       while ($enum1.moveNext()) {
         var overlay = $enum1.current;
-        overlay.saveToXml(writer, true);
+        Imageset.saveToXml(writer, true);
       }
       writer._writeEndElement();
       this.clipboardData = writer.body;
@@ -26353,17 +26353,17 @@ window.wwtlib = function(){
       var $enum1 = ss.enumerate(this._overlays);
       while ($enum1.moveNext()) {
         var overlay = $enum1.current;
-        overlay.saveToXml(xmlWriter, false);
+        Imageset.saveToXml(xmlWriter, false);
       }
       xmlWriter._writeEndElement();
       if (this._musicTrack != null) {
         xmlWriter._writeStartElement('MusicTrack');
-        this._musicTrack.saveToXml(xmlWriter, false);
+        Imageset.saveToXml(xmlWriter, false);
         xmlWriter._writeEndElement();
       }
       if (this._voiceTrack != null) {
         xmlWriter._writeStartElement('VoiceTrack');
-        this._voiceTrack.saveToXml(xmlWriter, false);
+        Imageset.saveToXml(xmlWriter, false);
         xmlWriter._writeEndElement();
       }
       this._writeLayerList(xmlWriter);
@@ -29942,7 +29942,16 @@ window.wwtlib = function(){
       if (instant || (Math.abs(this.renderContext.viewCamera.lat - cameraParams.lat) < 1E-12 && Math.abs(this.renderContext.viewCamera.lng - cameraParams.lng) < 1E-12 && Math.abs(this.renderContext.viewCamera.zoom - cameraParams.zoom) < 1E-12)) {
         this.set__mover(null);
         this.renderContext.targetCamera = cameraParams.copy();
-        this.renderContext.viewCamera = this.renderContext.targetCamera.copy();
+        if (this.renderContext.space && Settings.get_active().get_galacticMode()) {
+          var gPoint = Coordinates.j2000toGalactic(this.renderContext.viewCamera.get_RA() * 15, this.renderContext.viewCamera.get_dec());
+          this.renderContext.targetAlt = this.renderContext.alt = gPoint[1];
+          this.renderContext.targetAz = this.renderContext.az = gPoint[0];
+        }
+        else if (this.renderContext.space && Settings.get_active().get_localHorizonMode()) {
+          var currentAltAz = Coordinates.equitorialToHorizon(Coordinates.fromRaDec(this.renderContext.viewCamera.get_RA(), this.renderContext.viewCamera.get_dec()), SpaceTimeController.get_location(), SpaceTimeController.get_now());
+          this.renderContext.targetAlt = this.renderContext.alt = currentAltAz.get_alt();
+          this.renderContext.targetAz = this.renderContext.az = currentAltAz.get_az();
+        }
         this._mover_Midpoint();
         this._moving = true;
       }
@@ -37548,7 +37557,7 @@ window.wwtlib = function(){
       }
     },
     getParamNames: function() {
-      return Layer.prototype.getParamNames.call(this);
+      return Object3dLayer.getParamNames.call(this);
     },
     getParams: function() {
       return Layer.prototype.getParams.call(this);
@@ -41982,15 +41991,15 @@ window.wwtlib = function(){
         var f32array = new Float32Array(9 * 5);
         var buffer = f32array;
         var index = 0;
-        index = this.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
         Tile.prepDevice.bufferData(34962, f32array, 35044);
         for (var i = 0; i < 4; i++) {
           index = 0;
@@ -42145,15 +42154,15 @@ window.wwtlib = function(){
         var f32array = new Float32Array(9 * 5);
         var buffer = f32array;
         var index = 0;
-        index = this.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
-        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
+        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
         Tile.prepDevice.bufferData(34962, f32array, 35044);
         for (var i = 0; i < 4; i++) {
           index = 0;
@@ -42404,8 +42413,8 @@ window.wwtlib = function(){
         for (var ii = 0; ii < 4; ii++) {
           var child = this.children[ii];
           if (child != null) {
-            if (child.isPointInTile(lat, lng)) {
-              var retVal = child.getSurfacePointAltitude(lat, lng, meters);
+            if (Tile.isPointInTile(lat, lng)) {
+              var retVal = Tile.getSurfacePointAltitude(lat, lng, meters);
               if (!!retVal) {
                 return retVal;
               }
@@ -42629,11 +42638,11 @@ window.wwtlib = function(){
           while ($enum3.moveNext()) {
             var pt = $enum3.current;
             if (this.demTile) {
-              index = this.addVertex(buffer, index, this._getMappedVertex(pt));
+              index = Tile.addVertex(buffer, index, this._getMappedVertex(pt));
               this.demIndex++;
             }
             else {
-              index = this.addVertex(buffer, index, pt);
+              index = Tile.addVertex(buffer, index, pt);
             }
           }
           if (this.demTile) {
@@ -44388,7 +44397,7 @@ window.wwtlib = function(){
           var $enum1 = ss.enumerate(verts);
           while ($enum1.moveNext()) {
             var pt = $enum1.current;
-            index = this.addVertex(buffer, index, pt);
+            index = Tile.addVertex(buffer, index, pt);
           }
           Tile.prepDevice.bufferData(34962, f32array, 35044);
           for (var y2 = 0; y2 < 2; y2++) {
@@ -44484,7 +44493,7 @@ window.wwtlib = function(){
         var $enum1 = ss.enumerate(verts);
         while ($enum1.moveNext()) {
           var pt = $enum1.current;
-          index = this.addVertex(buffer, index, pt);
+          index = Tile.addVertex(buffer, index, pt);
         }
         Tile.prepDevice.bufferData(34962, f32array, 35044);
         for (var y2 = 0; y2 < 2; y2++) {
@@ -44643,8 +44652,8 @@ window.wwtlib = function(){
         while ($enum1.moveNext()) {
           var child = $enum1.current;
           if (child != null) {
-            if (child.isPointInTile(lat, lng)) {
-              var retVal = child.getSurfacePointAltitude(lat, lng, meters);
+            if (Tile.isPointInTile(lat, lng)) {
+              var retVal = Tile.getSurfacePointAltitude(lat, lng, meters);
               if (!!retVal) {
                 return retVal;
               }
@@ -44804,7 +44813,7 @@ window.wwtlib = function(){
         var $enum1 = ss.enumerate(verts);
         while ($enum1.moveNext()) {
           var pt = $enum1.current;
-          index = this.addVertex(buffer, index, pt);
+          index = Tile.addVertex(buffer, index, pt);
         }
         Tile.prepDevice.bufferData(34962, f32array, 35044);
         for (var y2 = 0; y2 < 2; y2++) {

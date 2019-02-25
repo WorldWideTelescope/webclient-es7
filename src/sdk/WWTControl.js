@@ -24,6 +24,8 @@ import {TourPlayer} from './Tours/TourPlayer';
 import {Grids} from './Grids';
 import {MinorPlanets} from './MinorPlanets';
 import {Mouse} from './Util';
+import {CameraParameters} from './CameraParameters';
+import {ViewMoverKenBurnsStyle, ViewMoverSlew} from './ViewMover';
 
 
 export function WWTControl() {
@@ -113,7 +115,7 @@ WWTControl.initControlParam = function(DivId, webGL) {
     WWTControl.singleton.renderContext.height = canvas.height;
     WWTControl.singleton.setup(canvas);
     //console.time('tiles');
-    tilesReady.then(()=> {
+    tilesReady.then(() => {
       //console.timeEnd('tiles');
       WWTControl.singleton.renderContext.set_backgroundImageset(Imageset.create('DSS', '//cdn.worldwidetelescope.org/wwtweb/dss.aspx?q={1},{2},{3}', 2, 3, 3, 100, 0, 12, 256, 180, '.png', false, '', 0, 0, 0, false, '//worldwidetelescope.org/thumbnails/DSS.png', true, false, 0, 0, 0, '', '', '', '', 1, 'Sky'));
       if (WWTControl.startMode === 'earth') {
@@ -422,50 +424,47 @@ export const WWTControl$ = {
       }
       this.renderContext.drawImageSet(this.renderContext.get_backgroundImageset(), 100);
       if (this.renderContext.get_foregroundImageset() != null) {
-        if (this.renderContext.get_foregroundImageset().get_dataSetType() !== this.renderContext.get_backgroundImageset().get_dataSetType()) {
-          this.renderContext.set_foregroundImageset(null);
+        if (this.renderContext.viewCamera.opacity !== 100 && this.renderContext.gl == null) {
+          if (this._foregroundCanvas.width !== this.renderContext.width || this._foregroundCanvas.height !== this.renderContext.height) {
+            this._foregroundCanvas.width = ss.truncate(this.renderContext.width);
+            this._foregroundCanvas.height = ss.truncate(this.renderContext.height);
+          }
+          var saveDevice = this.renderContext.device;
+          this._fgDevice.clearRect(0, 0, this.renderContext.width, this.renderContext.height);
+          this.renderContext.device = this._fgDevice;
+          this.renderContext.drawImageSet(this.renderContext.get_foregroundImageset(), 100);
+          this.renderContext.device = saveDevice;
+          this.renderContext.device.save();
+          this.renderContext.device.globalAlpha = this.renderContext.viewCamera.opacity / 100;
+          this.renderContext.device.drawImage(this._foregroundCanvas, 0, 0);
+          this.renderContext.device.restore();
         } else {
-          if (this.renderContext.viewCamera.opacity !== 100 && this.renderContext.gl == null) {
-            if (this._foregroundCanvas.width !== this.renderContext.width || this._foregroundCanvas.height !== this.renderContext.height) {
-              this._foregroundCanvas.width = ss.truncate(this.renderContext.width);
-              this._foregroundCanvas.height = ss.truncate(this.renderContext.height);
-            }
-            const saveDevice = this.renderContext.device;
-            this._fgDevice.clearRect(0, 0, this.renderContext.width, this.renderContext.height);
-            this.renderContext.device = this._fgDevice;
-            this.renderContext.drawImageSet(this.renderContext.get_foregroundImageset(), 100);
-            this.renderContext.device = saveDevice;
-            this.renderContext.device.save();
-            this.renderContext.device.globalAlpha = this.renderContext.viewCamera.opacity / 100;
-            this.renderContext.device.drawImage(this._foregroundCanvas, 0, 0);
-            this.renderContext.device.restore();
-          } else {
-            this.renderContext.drawImageSet(this.renderContext.get_foregroundImageset(), this.renderContext.viewCamera.opacity);
-          }
+          this.renderContext.drawImageSet(this.renderContext.get_foregroundImageset(), this.renderContext.viewCamera.opacity);
         }
-      }
-      if (this.renderType === 2 && Settings.get_active().get_showSolarSystem()) {
-        Planets.drawPlanets(this.renderContext, 1);
-        this.constellation = Constellations.containment.findConstellationForPoint(this.renderContext.viewCamera.get_RA(), this.renderContext.viewCamera.get_dec());
-        this._drawSkyOverlays();
-      }
-      if (this.get_planetLike() || this.get_space()) {
-        if (!this.get_space()) {
-          const angle = Coordinates.mstFromUTC2(SpaceTimeController.get_now(), 0) / 180 * Math.PI;
-          this.renderContext.set_worldBaseNonRotating(Matrix3d.multiplyMatrix(Matrix3d._rotationY(angle), this.renderContext.get_worldBase()));
-          if (this._targetBackgroundImageset != null) {
-            this.renderContext.set_nominalRadius(this._targetBackgroundImageset.get_meanRadius());
-          }
-        } else {
-          this.renderContext.set_worldBaseNonRotating(this.renderContext.get_world());
-          if (this._targetBackgroundImageset != null) {
-            this.renderContext.set_nominalRadius(this._targetBackgroundImageset.get_meanRadius());
-          }
-        }
-        const referenceFrame = this._getCurrentReferenceFrame();
-        LayerManager._draw(this.renderContext, 1, this.get_space(), referenceFrame, true, this.get_space());
       }
     }
+    if (this.renderType === 2 && Settings.get_active().get_showSolarSystem()) {
+      Planets.drawPlanets(this.renderContext, 1);
+      this.constellation = Constellations.containment.findConstellationForPoint(this.renderContext.viewCamera.get_RA(), this.renderContext.viewCamera.get_dec());
+      this._drawSkyOverlays();
+    }
+    if (this.get_planetLike() || this.get_space()) {
+      if (!this.get_space()) {
+        const angle = Coordinates.mstFromUTC2(SpaceTimeController.get_now(), 0) / 180 * Math.PI;
+        this.renderContext.set_worldBaseNonRotating(Matrix3d.multiplyMatrix(Matrix3d._rotationY(angle), this.renderContext.get_worldBase()));
+        if (this._targetBackgroundImageset != null) {
+          this.renderContext.set_nominalRadius(this._targetBackgroundImageset.get_meanRadius());
+        }
+      } else {
+        this.renderContext.set_worldBaseNonRotating(this.renderContext.get_world());
+        if (this._targetBackgroundImageset != null) {
+          this.renderContext.set_nominalRadius(this._targetBackgroundImageset.get_meanRadius());
+        }
+      }
+      const referenceFrame = this._getCurrentReferenceFrame();
+      LayerManager._draw(this.renderContext, 1, this.get_space(), referenceFrame, true, this.get_space());
+    }
+    
     const worldSave = this.renderContext.get_world();
     const viewSave = this.renderContext.get_view();
     const projSave = this.renderContext.get_projection();
@@ -767,7 +766,7 @@ export const WWTControl$ = {
       this._fgDevice = this._foregroundCanvas.getContext('2d');
     }
     this._webFolder = new Folder();
-    this._webFolder.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?X=ImageSets5', (args)=>{
+    this._webFolder.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?X=ImageSets5', (args) => {
 
       this.setupComplete();
     });
@@ -1315,7 +1314,16 @@ export const WWTControl$ = {
     if (instant || (Math.abs(this.renderContext.viewCamera.lat - cameraParams.lat) < 1E-12 && Math.abs(this.renderContext.viewCamera.lng - cameraParams.lng) < 1E-12 && Math.abs(this.renderContext.viewCamera.zoom - cameraParams.zoom) < 1E-12)) {
       this.set__mover(null);
       this.renderContext.targetCamera = cameraParams.copy();
-      this.renderContext.viewCamera = this.renderContext.targetCamera.copy();
+      if (this.renderContext.space && Settings.get_active().get_galacticMode()) {
+        const gPoint = Coordinates.j2000toGalactic(this.renderContext.viewCamera.get_RA() * 15, this.renderContext.viewCamera.get_dec());
+        this.renderContext.targetAlt = this.renderContext.alt = gPoint[1];
+        this.renderContext.targetAz = this.renderContext.az = gPoint[0];
+      }
+      else if (this.renderContext.space && Settings.get_active().get_localHorizonMode()) {
+        const currentAltAz = Coordinates.equitorialToHorizon(Coordinates.fromRaDec(this.renderContext.viewCamera.get_RA(), this.renderContext.viewCamera.get_dec()), SpaceTimeController.get_location(), SpaceTimeController.get_now());
+        this.renderContext.targetAlt = this.renderContext.alt = currentAltAz.get_alt();
+        this.renderContext.targetAz = this.renderContext.az = currentAltAz.get_az();
+      }
       if (this.renderContext.space && Settings.get_active().get_galacticMode()) {
         const gPoint = Coordinates.j2000toGalactic(this.renderContext.viewCamera.get_RA() * 15, this.renderContext.viewCamera.get_dec());
         this.renderContext.targetAlt = this.renderContext.alt = gPoint[1];

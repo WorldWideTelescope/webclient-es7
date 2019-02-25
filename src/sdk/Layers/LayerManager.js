@@ -17,9 +17,15 @@ import {Planets} from '../Planets';
 import {ReferenceFrame} from './ReferenceFrame';
 import {TourPlayer} from '../Tours/TourPlayer';
 import {Orbit} from '../Orbit';
+import {SpreadSheetLayer} from './SpreadsheetLayer';
+import {GreatCirlceRouteLayer} from './GreatCircleRouteLayer';
+import {Layer} from './Layer';
+import {ContextMenuStrip, ToolStripMenuItem, ToolStripSeparator} from '../Utilities/ContextMenuStrip';
+import {OrbitLayer} from './Orbit';
 
-export function LayerManager() {
-}
+export function SkyOverlays() {}
+export function FrameTarget() {}
+export let LayerManager = {};
 LayerManager.get_version = function() {
   return LayerManager._version;
 };
@@ -181,7 +187,6 @@ LayerManager.initLayers = function() {
   LayerManager._version++;
   LayerManager.loadTree();
 };
-
 LayerManager._addIss = function() {
   const layer = new ISSLayer();
   layer.set_name(Language.getLocalizedText(1314, 'ISS Model  (Toshiyuki Takahei)'));
@@ -755,7 +760,7 @@ LayerManager._preDraw = function(renderContext, opacity, astronomical, reference
             if (!thisMap.frame.reference) {
               layer.set_astronomical(true);
             }
-            layer.preDraw(renderContext, opacity * fadeOpacity);
+            Layer.preDraw(renderContext, opacity * fadeOpacity);
           }
         }
       }
@@ -829,7 +834,8 @@ LayerManager.showLayerMenu = function(selected, x, y) {
   else if (ss.canCast(selected, Layer)) {
     LayerManager.set_currentMap((selected).get_referenceFrame());
   }
-  if (((ss.canCast(selected, Layer)) && !(ss.canCast(selected, SkyOverlays)))) {
+  //todo:fix
+  if (ss.canCast(selected, Layer) && !(ss.canCast(selected, SkyOverlays))) {
     const selectedLayer = selected;
     LayerManager._contextMenu = new ContextMenuStrip();
     const renameMenu = ToolStripMenuItem.create(Language.getLocalizedText(225, 'Rename'));
@@ -877,7 +883,7 @@ LayerManager.showLayerMenu = function(selected, x, y) {
     if (selectedLayer.get_opened()) {
       LayerManager._contextMenu.items.push(Collapse);
     }
-    if (selectedLayer.canCopyToClipboard()) {
+    if (Layer.canCopyToClipboard()) {
     }
     LayerManager._contextMenu.items.push(deleteMenu);
     LayerManager._contextMenu.items.push(spacer2);
@@ -906,7 +912,7 @@ LayerManager.showLayerMenu = function(selected, x, y) {
     }
     LayerManager._contextMenu._show(new Vector2d(x, y));
   }
-  else if (ss.canCast(selected, LayerMap)) {
+  else if (selected.constructor.name === 'LayerMap') {
     const map = ss.safeCast(selected, LayerMap);
     const sandbox = map.frame.reference.toString() === 'Sandbox';
     const Dome = map.frame.name === 'Dome';
@@ -1051,7 +1057,7 @@ LayerManager._collapse_Click = function(sender, e) {
 LayerManager._copyMenu_Click = function(sender, e) {
   if (LayerManager._selectedLayer != null && ss.canCast(LayerManager._selectedLayer, Layer)) {
     const node = LayerManager._selectedLayer;
-    node.copyToClipboard();
+    Layer.copyToClipboard();
   }
 };
 LayerManager._newLayerGroupMenu_Click = function(sender, e) {
@@ -1403,7 +1409,8 @@ LayerManager._loadOrbitsFile = function(name, data, currentMap) {
   LayerManager.loadTree();
   return layer;
 };
-export const LayerManager$ = {};
+
+
 
 
 // wwtlib.LayerMap

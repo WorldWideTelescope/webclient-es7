@@ -3,154 +3,163 @@ import {Color, Colors} from '../Color';
 import {ImageSetLayer} from '../ImageSetLayer';
 import {IUiController} from '../interface';
 import {Guid, Util} from '../Util';
+import pako from 'pako';
 
-export function Layer() {
-  this.id = Guid.newGuid();
-  this.loadedFromTour = false;
-  this.tourDocument = null;
-  this.opacity = 1;
-  this.opened = false;
-  this._startTime = ss.date('01/01/1900');
-  this._endTime = ss.date('01/01/2100');
-  this._fadeSpan = 0;
-  this._fadeType = 4;
-  this.version = 0;
-  this.color = Colors.get_white();
-  this.enabled = true;
-  this.astronomical = false;
-}
-Layer.fromXml = function(layerNode, someFlag) {
-  const layerClassName = layerNode.attributes.getNamedItem('Type').nodeValue;
-  const overLayType = ss.replaceString(layerClassName, 'TerraViewer.', '');
-  if (overLayType == null) {
-    return null;
+let OrbitLayer,SpreadSheetLayer,GreatCirlceRouteLayer,Object3dLayer,GridLayer;
+import('./Orbit').then((module) => OrbitLayer = module.OrbitLayer);
+import('./SpreadsheetLayer').then((module) => SpreadSheetLayer = module.SpreadSheetLayer);
+import('./GridLayer').then((module) => GridLayer = module.GridLayer);
+import('./GreatCircleRouteLayer').then((module) => GreatCirlceRouteLayer = module.GreatCirlceRouteLayer);
+import('./Object3d').then((module) => Object3dLayer = module.Object3dLayer);
+
+export class Layer {
+  constructor(obj) {
+    this.id = Guid.newGuid();
+    this.loadedFromTour = false;
+    this.tourDocument = null;
+    this.opacity = 1;
+    this.opened = false;
+    this._startTime = ss.date('01/01/1900');
+    this._endTime = ss.date('01/01/2100');
+    this._fadeSpan = 0;
+    this._fadeType = 4;
+    this.version = 0;
+    this.color = Colors.get_white();
+    this.enabled = true;
+    this.astronomical = false;
+    Object.assign(this,obj);
   }
-  let newLayer = null;
-  switch (overLayType) {
-    case 'SpreadSheetLayer':
-      newLayer = new SpreadSheetLayer();
-      break;
-    case 'GreatCirlceRouteLayer':
-      newLayer = new GreatCirlceRouteLayer();
-      break;
-    case 'GridLayer':
-      newLayer = new GridLayer();
-      break;
-    case 'ImageSetLayer':
-      newLayer = new ImageSetLayer();
-      break;
-    case 'Object3dLayer':
-      newLayer = new Object3dLayer();
-      break;
-    case 'OrbitLayer':
-      newLayer = new OrbitLayer();
-      break;
-    default:
+  static fromXml(layerNode, someFlag) {
+    const layerClassName = layerNode.attributes.getNamedItem('Type').nodeValue;
+    const overLayType = ss.replaceString(layerClassName, 'TerraViewer.', '');
+    if (overLayType == null) {
       return null;
+    }
+    let newLayer = null;
+    switch (overLayType) {
+      case 'SpreadSheetLayer':
+        newLayer = new SpreadSheetLayer();
+        break;
+      case 'GreatCirlceRouteLayer':
+        newLayer = new GreatCirlceRouteLayer();
+        break;
+      case 'GridLayer':
+        newLayer = new GridLayer();
+        break;
+      case 'ImageSetLayer':
+        newLayer = new ImageSetLayer();
+        break;
+      case 'Object3dLayer':
+        newLayer = new Object3dLayer();
+        break;
+      case 'OrbitLayer':
+        newLayer = new OrbitLayer();
+        break;
+      default:
+        return null;
+    }
+    newLayer.initFromXml(layerNode);
+    return newLayer;
   }
-  newLayer.initFromXml(layerNode);
-  return newLayer;
-};
-export const Layer$ = {
-  getPrimaryUI: function () {
+  static getPrimaryUI() {
     return null;
-  },
-  getFileStreamUrl: function (filename) {
+  }
+  getFileStreamUrl(filename) {
     if (this.tourDocument != null) {
       return this.tourDocument.getFileStream(filename);
     }
     return null;
-  },
-  get_opacity: function () {
+  }
+  get_opacity() {
     return this.opacity;
-  },
-  set_opacity: function (value) {
+  }
+  set_opacity(value) {
     if (this.opacity !== value) {
       this.version++;
       this.opacity = value;
     }
     return value;
-  },
-  get_opened: function () {
+  }
+  get_opened() {
     return this.opened;
-  },
-  set_opened: function (value) {
+  }
+  set_opened(value) {
     if (this.opened !== value) {
       this.version++;
       this.opened = value;
     }
     return value;
-  },
-  get_startTime: function () {
+  }
+  get_startTime() {
     return this._startTime;
-  },
-  set_startTime: function (value) {
+  }
+  set_startTime(value) {
     if (!ss.compareDates(this._startTime, value)) {
       this.version++;
       this._startTime = value;
     }
     return value;
-  },
-  get_endTime: function () {
+  }
+  get_endTime() {
     return this._endTime;
-  },
-  set_endTime: function (value) {
+  }
+  set_endTime(value) {
     if (!ss.compareDates(this._endTime, value)) {
       this.version++;
       this._endTime = value;
     }
     return value;
-  },
-  get_fadeSpan: function () {
+  }
+  get_fadeSpan() {
     return this._fadeSpan;
-  },
-  set_fadeSpan: function (value) {
+  }
+  set_fadeSpan(value) {
     this.version++;
     this._fadeSpan = value;
     return value;
-  },
-  get_fadeType: function () {
+  }
+  get_fadeType() {
     return this._fadeType;
-  },
-  set_fadeType: function (value) {
+  }
+  set_fadeType(value) {
     if (this._fadeType !== value) {
       this.set_version(this.get_version() + 1) - 1;
       this._fadeType = value;
     }
     return value;
-  },
-  get_version: function () {
+  }
+  get_version() {
     return this.version;
-  },
-  set_version: function (value) {
+  }
+  set_version(value) {
     this.version = value;
     return value;
-  },
-  findClosest: function (target, distance, closestPlace, astronomical) {
+  }
+  static findClosest(target, distance, closestPlace, astronomical) {
     return closestPlace;
-  },
-  hoverCheckScreenSpace: function (cursor) {
+  }
+  static hoverCheckScreenSpace(cursor) {
     return false;
-  },
-  clickCheckScreenSpace: function (cursor) {
+  }
+  static clickCheckScreenSpace(cursor) {
     return false;
-  },
-  draw: function (renderContext, opacity, flat) {
+  }
+  static draw(renderContext, opacity, flat) {
     return true;
-  },
-  preDraw: function (renderContext, opacity) {
+  }
+  static preDraw(renderContext, opacity) {
     return true;
-  },
-  upadteData: function (data, purgeOld, purgeAll, hasHeader) {
+  }
+  static upadteData(data, purgeOld, purgeAll, hasHeader) {
     return true;
-  },
-  canCopyToClipboard: function () {
+  }
+  static canCopyToClipboard() {
     return false;
-  },
-  copyToClipboard: function () {
+  }
+  static copyToClipboard() {
     return;
-  },
-  getParams: function () {
+  }
+  getParams() {
     const paramList = new Array(5);
     paramList[0] = this.color.r / 255;
     paramList[1] = this.color.g / 255;
@@ -158,82 +167,82 @@ export const Layer$ = {
     paramList[3] = this.color.a / 255;
     paramList[4] = this.opacity;
     return paramList;
-  },
-  setParams: function (paramList) {
+  }
+  setParams(paramList) {
     if (paramList.length === 5) {
       this.opacity = paramList[4];
       this.color = Color.fromArgb((paramList[3] * 255), (paramList[0] * 255), (paramList[1] * 255), (paramList[2] * 255));
     }
-  },
-  getParamNames: function () {
+  }
+  static getParamNames() {
     return ['Color.Red', 'Color.Green', 'Color.Blue', 'Color.Alpha', 'Opacity'];
-  },
-  getEditUI: function () {
+  }
+  getEditUI() {
     return ss.safeCast(this, IUiController);
-  },
-  cleanUp: function () {
-  },
-  get_name: function () {
+  }
+  cleanUp() {
+  }
+  get_name() {
     return this._name;
-  },
-  set_name: function (value) {
+  }
+  set_name(value) {
     if (this._name !== value) {
       this.version++;
       this._name = value;
     }
     return value;
-  },
-  toString: function () {
+  }
+  toString() {
     return this._name;
-  },
-  get_referenceFrame: function () {
+  }
+  get_referenceFrame() {
     return this.referenceFrame;
-  },
-  set_referenceFrame: function (value) {
+  }
+  set_referenceFrame(value) {
     this.referenceFrame = value;
     return value;
-  },
-  getProps: function () {
+  }
+  static getProps() {
     return '';
-  },
-  get_color: function () {
+  }
+  get_color() {
     return this.color;
-  },
-  set_color: function (value) {
+  }
+  set_color(value) {
     if (this.color !== value) {
       this.color = value;
       this.version++;
       this.cleanUp();
     }
     return value;
-  },
-  colorChanged: function () {
+  }
+  colorChanged() {
     this.cleanUp();
-  },
-  get_colorValue: function () {
+  }
+  get_colorValue() {
     return this.get_color().toString();
-  },
-  set_colorValue: function (value) {
+  }
+  set_colorValue(value) {
     this.set_color(Color.fromName(value));
     return value;
-  },
-  get_astronomical: function () {
+  }
+  get_astronomical() {
     return this.astronomical;
-  },
-  set_astronomical: function (value) {
+  }
+  set_astronomical(value) {
     if (this.astronomical !== value) {
       this.version++;
       this.astronomical = value;
     }
     return value;
-  },
-  getTypeName: function () {
+  }
+  static getTypeName() {
     return 'TerraViewer.Layer';
-  },
-  saveToXml: function (xmlWriter) {
+  }
+  saveToXml(xmlWriter) {
     xmlWriter._writeStartElement('Layer');
     xmlWriter._writeAttributeString('Id', this.id.toString());
-    xmlWriter._writeAttributeString('Type', this.getTypeName());
+    xmlWriter._writeAttributeString('Type', Layer.getTypeName());
     xmlWriter._writeAttributeString('Name', this.get_name());
     xmlWriter._writeAttributeString('ReferenceFrame', this.referenceFrame);
     xmlWriter._writeAttributeString('Color', this.color.save());
@@ -242,15 +251,15 @@ export const Layer$ = {
     xmlWriter._writeAttributeString('EndTime', Util.xmlDate(this.get_endTime()));
     xmlWriter._writeAttributeString('FadeSpan', this.get_fadeSpan().toString());
     xmlWriter._writeAttributeString('FadeType', this.get_fadeType().toString());
-    this.writeLayerProperties(xmlWriter);
+    Layer.writeLayerProperties(xmlWriter);
     xmlWriter._writeEndElement();
-  },
-  writeLayerProperties: function (xmlWriter) {
+  }
+  static writeLayerProperties(xmlWriter) {
     return;
-  },
-  initializeFromXml: function (node) {
-  },
-  initFromXml: function (node) {
+  }
+  initializeFromXml(node) {
+  }
+  initFromXml(node) {
     this.id = Guid.fromString(node.attributes.getNamedItem('Id').nodeValue);
     this.set_name(node.attributes.getNamedItem('Name').nodeValue);
     this.referenceFrame = node.attributes.getNamedItem('ReferenceFrame').nodeValue;
@@ -284,14 +293,14 @@ export const Layer$ = {
       }
     }
     this.initializeFromXml(node);
-  },
-  loadData: function (doc, filename) {
+  }
+  static loadData(doc, filename) {
     return;
-  },
-  addFilesToCabinet: function (fc) {
+  }
+  static addFilesToCabinet(fc) {
     return;
-  },
-  getStringFromGzipBlob: function (blob, dataReady) {
+  }
+  getStringFromGzipBlob(blob, dataReady) {
     const reader = new FileReader();
     reader.onloadend = function (e) {
       const result = pako.inflate(e.target.result, {to: 'string'});
@@ -300,3 +309,19 @@ export const Layer$ = {
     reader.readAsArrayBuffer(blob);
   }
 };
+
+export class LayerCollection extends Layer{
+  constructor() {
+    super();
+  }
+  draw(renderContext, opacity, flat) {
+    return Layer.draw.call(this, renderContext, opacity, false);
+  }
+}
+
+export function DomainValue(text, markerIndex) {
+  this.markerIndex = 4;
+  this.customMarker = null;
+  this.text = text;
+  this.markerIndex = markerIndex;
+}

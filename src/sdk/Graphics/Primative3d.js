@@ -49,6 +49,7 @@ export class PointList {
     this._colors.length = 0;
     this._points.length = 0;
     this._dates.length = 0;
+    this._sizes.length = 0;
     this._emptyPointBuffer();
   }
 
@@ -192,60 +193,58 @@ export class PointList {
       renderContext.gl.drawArrays(0, 0, pointBuffer.count);
     }
   }
-};
+}
 
 // wwtlib.Dates
 
-export function Dates(start, end) {
-  this.startDate = 0;
-  this.endDate = 0;
-  this.startDate = start;
-  this.endDate = end;
-}
 
-Dates.empty = function () {
-  return new Dates(0, 0);
-};
-export const Dates$ = {
-  copy: function () {
+
+
+export class Dates {
+  constructor(start, end) {
+    this.startDate = 0;
+    this.endDate = 0;
+    this.startDate = start;
+    this.endDate = end;
+  }
+  static empty () {
+    return new Dates(0, 0);
+  }
+  copy(){
     return new Dates(this.startDate, this.endDate);
   }
-};
-
-
-// wwtlib.SimpleLineList
-
-export function SimpleLineList() {
-  this._zBuffer = true;
-  this._linePoints = [];
-  this._usingLocalCenter = false;
-  this.sky = true;
-  this.aaFix = true;
-  this.pure2D = false;
-  this.viewTransform = Matrix3d.get_identity();
-  this._lineBuffers = [];
-  this._lineBufferCounts = [];
-  this.useLocalCenters = false;
 }
 
-export const SimpleLineList$ = {
-  get_depthBuffered: function () {
+export class SimpleLineList {
+  constructor() {
+    this._zBuffer = true;
+    this._linePoints = [];
+    this._usingLocalCenter = false;
+    this.sky = true;
+    this.aaFix = true;
+    this.pure2D = false;
+    this.viewTransform = Matrix3d.get_identity();
+    this._lineBuffers = [];
+    this._lineBufferCounts = [];
+    this.useLocalCenters = false;
+  }
+  get_depthBuffered() {
     return this._zBuffer;
-  },
-  set_depthBuffered: function (value) {
+  }
+  set_depthBuffered(value) {
     this._zBuffer = value;
     return value;
-  },
-  addLine: function (v1, v2) {
+  }
+  addLine(v1, v2) {
     this._linePoints.push(v1);
     this._linePoints.push(v2);
     this._emptyLineBuffer();
-  },
-  clear: function () {
+  }
+  clear() {
     this._linePoints.length = 0;
     this._emptyLineBuffer();
-  },
-  drawLines: function (renderContext, opacity, color) {
+  }
+  drawLines(renderContext, opacity, color) {
     if (this._linePoints.length < 2) {
       return;
     }
@@ -285,8 +284,8 @@ export const SimpleLineList$ = {
         renderContext.gl.drawArrays(1, 0, lineBuffer.count);
       }
     }
-  },
-  _initLineBuffer: function (renderContext) {
+  }
+  _initLineBuffer(renderContext) {
     if (renderContext.gl != null) {
       if (!this._lineBuffers.length) {
         let point;
@@ -337,55 +336,53 @@ export const SimpleLineList$ = {
         }
       }
     }
-  },
-  _emptyLineBuffer: function () {
   }
-};
-
-export function LineList() {
-  this._zBuffer = true;
-  this.timeSeries = false;
-  this.showFarSide = true;
-  this.sky = false;
-  this.decay = 0;
-  this.useNonRotatingFrame = false;
-  this.jNow = 0;
-  this._linePoints = [];
-  this._lineColors = [];
-  this._lineDates = [];
-  this._usingLocalCenter = true;
-  this._lineBuffers = [];
-  this._lineBufferCounts = [];
+  _emptyLineBuffer() {}
 }
 
-export const LineList$ = {
-  get_depthBuffered: function () {
+export class LineList  {
+  constructor() {
+    this._zBuffer = true;
+    this.timeSeries = false;
+    this.showFarSide = true;
+    this.sky = false;
+    this.decay = 0;
+    this.useNonRotatingFrame = false;
+    this.jNow = 0;
+    this._linePoints = [];
+    this._lineColors = [];
+    this._lineDates = [];
+    this._usingLocalCenter = true;
+    this._lineBuffers = [];
+    this._lineBufferCounts = [];
+  }
+  get_depthBuffered() {
     return this._zBuffer;
-  },
-  set_depthBuffered: function (value) {
+  }
+  set_depthBuffered(value) {
     this._zBuffer = value;
     return value;
-  },
-  addLine: function (v1, v2, color, date) {
+  }
+  addLine(v1, v2, color, date) {
     this._linePoints.push(v1);
     this._linePoints.push(v2);
     this._lineColors.push(color);
     this._lineDates.push(date);
     this._emptyLineBuffer();
-  },
-  addLineNoDate: function (v1, v2, color) {
+  }
+  addLineNoDate(v1, v2, color) {
     this._linePoints.push(v1);
     this._linePoints.push(v2);
     this._lineColors.push(color);
     this._lineDates.push(new Dates(0, 0));
     this._emptyLineBuffer();
-  },
-  clear: function () {
+  }
+  clear() {
     this._linePoints.length = 0;
     this._lineColors.length = 0;
     this._lineDates.length = 0;
-  },
-  drawLines: function (renderContext, opacity) {
+  }
+  drawLines(renderContext, opacity) {
     if (this._linePoints.length < 2 || opacity <= 0) {
       return;
     }
@@ -399,8 +396,8 @@ export const LineList$ = {
         renderContext.gl.drawArrays(1, 0, lineBuffer.count);
       }
     }
-  },
-  _initLineBuffer: function () {
+  }
+  _initLineBuffer() {
     if (!this._lineBuffers.length) {
       const count = this._linePoints.length;
       let lineBuffer = null;
@@ -439,38 +436,38 @@ export const LineList$ = {
         lineBuffer.unlock();
       }
     }
-  },
-  _emptyLineBuffer: function () {
   }
-};
-
-export function TriangleList() {
-  this._trianglePoints = [];
-  this._triangleColors = [];
-  this._triangleDates = [];
-  this.timeSeries = false;
-  this.showFarSide = false;
-  this.sky = false;
-  this.depthBuffered = true;
-  this.writeZbuffer = false;
-  this.decay = 0;
-  this.autoTime = true;
-  this.jNow = 0;
-  this._dataToDraw = false;
-  this._triangleBuffers = [];
-  this._triangleBufferCounts = [];
+  _emptyLineBuffer() {
+  }
 }
 
-export const TriangleList$ = {
-  addTriangle: function (v1, v2, v3, color, date) {
+
+export class TriangleList {
+  constructor() {
+    this._trianglePoints = [];
+    this._triangleColors = [];
+    this._triangleDates = [];
+    this.timeSeries = false;
+    this.showFarSide = false;
+    this.sky = false;
+    this.depthBuffered = true;
+    this.writeZbuffer = false;
+    this.decay = 0;
+    this.autoTime = true;
+    this.jNow = 0;
+    this._dataToDraw = false;
+    this._triangleBuffers = [];
+    this._triangleBufferCounts = [];
+  }
+  addTriangle(v1, v2, v3, color, date) {
     this._trianglePoints.push(v1);
     this._trianglePoints.push(v2);
     this._trianglePoints.push(v3);
     this._triangleColors.push(color);
     this._triangleDates.push(date);
     this._emptyTriangleBuffer();
-  },
-  addSubdividedTriangles: function (v1, v2, v3, color, date, subdivisions) {
+  }
+  addSubdividedTriangles(v1, v2, v3, color, date, subdivisions) {
     subdivisions--;
     if (subdivisions < 0) {
       this.addTriangle(v1, v2, v3, color, date);
@@ -486,8 +483,8 @@ export const TriangleList$ = {
       this.addSubdividedTriangles(v12, v2, v23, color, date, subdivisions);
       this.addSubdividedTriangles(v23, v3, v31, color, date, subdivisions);
     }
-  },
-  addQuad: function (v1, v2, v3, v4, color, date) {
+  }
+  addQuad(v1, v2, v3, v4, color, date) {
     this._trianglePoints.push(v1);
     this._trianglePoints.push(v3);
     this._trianglePoints.push(v2);
@@ -499,16 +496,16 @@ export const TriangleList$ = {
     this._triangleColors.push(color);
     this._triangleDates.push(date);
     this._emptyTriangleBuffer();
-  },
-  clear: function () {
+  }
+  clear() {
     this._triangleColors.length = 0;
     this._trianglePoints.length = 0;
     this._triangleDates.length = 0;
     this._emptyTriangleBuffer();
-  },
-  _emptyTriangleBuffer: function () {
-  },
-  _initTriangleBuffer: function () {
+  }
+  _emptyTriangleBuffer() {
+  }
+  _initTriangleBuffer() {
     if (!this._triangleBuffers.length) {
       const count = this._trianglePoints.length;
       let triangleBuffer = null;
@@ -549,8 +546,8 @@ export const TriangleList$ = {
       this._trianglePoints.length = 0;
       this._dataToDraw = true;
     }
-  },
-  draw: function (renderContext, opacity, cull) {
+  }
+  draw(renderContext, opacity, cull) {
     if (this._trianglePoints.length < 1 && !this._dataToDraw) {
       return;
     }
@@ -565,40 +562,39 @@ export const TriangleList$ = {
       }
     }
   }
-};
-
-export function OrbitLineList() {
-  this._zBuffer = true;
-  this._linePoints = [];
-  this._lineColors = [];
-  this.sky = true;
-  this.aaFix = true;
-  this.viewTransform = Matrix3d.get_identity();
-  this._lineBuffers = [];
-  this._lineBufferCounts = [];
-  this.useLocalCenters = false;
 }
 
-export const OrbitLineList$ = {
-  get_depthBuffered: function () {
+export class OrbitLineList {
+  constructor() {
+    this._zBuffer = true;
+    this._linePoints = [];
+    this._lineColors = [];
+    this.sky = true;
+    this.aaFix = true;
+    this.viewTransform = Matrix3d.get_identity();
+    this._lineBuffers = [];
+    this._lineBufferCounts = [];
+    this.useLocalCenters = false;
+  }
+  get_depthBuffered() {
     return this._zBuffer;
-  },
-  set_depthBuffered: function (value) {
+  }
+  set_depthBuffered(value) {
     this._zBuffer = value;
     return value;
-  },
-  addLine: function (v1, v2, c1, c2) {
+  }
+  addLine(v1, v2, c1, c2) {
     this._linePoints.push(v1);
     this._lineColors.push(c1);
     this._linePoints.push(v2);
     this._lineColors.push(c2);
     this._emptyLineBuffer();
-  },
-  clear: function () {
+  }
+  clear() {
     this._linePoints.length = 0;
     this._emptyLineBuffer();
-  },
-  drawLines: function (renderContext, opacity, color) {
+  }
+  drawLines(renderContext, opacity, color) {
     if (this._linePoints.length < 2) {
       return;
     }
@@ -610,8 +606,8 @@ export const OrbitLineList$ = {
       OrbitLineShader.use(renderContext, lineBuffer.vertexBuffer, color);
       renderContext.gl.drawArrays(1, 0, lineBuffer.count);
     }
-  },
-  _initLineBuffer: function (renderContext) {
+  }
+  _initLineBuffer(renderContext) {
     if (renderContext.gl != null) {
       if (!this._lineBuffers.length) {
         const count = this._linePoints.length;
@@ -662,8 +658,8 @@ export const OrbitLineList$ = {
         }
       }
     }
-  },
-  _emptyLineBuffer: function () {
+  }
+  _emptyLineBuffer() {
     const $enum1 = ss.enumerate(this._lineBuffers);
     while ($enum1.moveNext()) {
       const lineBuffer = $enum1.current;
@@ -671,8 +667,7 @@ export const OrbitLineList$ = {
     }
     this._lineBuffers.length = 0;
   }
-};
-
+}
 
 export class TimeSeriesLineVertex {
   constructor() {
@@ -700,4 +695,4 @@ export class TimeSeriesLineVertex {
     this.color = value;
     return value;
   }
-};
+}

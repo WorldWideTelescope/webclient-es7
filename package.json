@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --modern",
     "build": "vue-cli-service build --modern",
+    "sdk": "vue-cli-service build --target lib --name wwtsdk .\\src\\sdk\\wwtsdk.js",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e"
   },
@@ -12,6 +13,7 @@
     "axios": "^0.18.0",
     "bootstrap-less": "^3.3.8",
     "lodash": "^4.17.11",
+    "pako": "^1.0.8",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",

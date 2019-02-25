@@ -3,33 +3,37 @@
 import {Colors} from '../Color';
 import {Matrix3d, Vector3d} from '../Double3d';
 import ss from '../scriptsharp/ss';
-import {Object3dLayer} from '../Layers/Object3d';
+import {Object3d, Object3dLayer} from '../Layers/Object3d';
+import {Layer} from '../Layers/Layer';
+import {TourDocument} from '../Tours/TourDocument';
 
-export function ISSLayer() {
-  Object3dLayer.call(this);
-  this.id = ISSLayer.issGuid;
-}
-ISSLayer.loadBackground = function() {
-  if (ISSLayer._loading$2) {
-    return;
+export class ISSLayer extends Object3dLayer{
+  constructor(){
+    super();
+    this.id = ISSLayer.issGuid;
   }
-  ISSLayer._loading$2 = true;
-  const url = 'http://www.worldwidetelescope.org/data/iss.wtt';
-  ISSLayer._doc$2 = TourDocument.fromUrlRaw(url, function() {
-    ISSLayer.createSpaceStation();
-  });
-};
-ISSLayer.createSpaceStation = function() {
-  ISSLayer._doc$2.set_id('28016047-97a9-4b33-a226-cd820262a151');
-  const filename = '0c10ae54-b6da-4282-bfda-f34562d403bc.3ds';
-  const o3d = new Object3d(ISSLayer._doc$2, filename, true, false, true, Colors.get_white());
-  if (o3d != null) {
-    o3d.issLayer = true;
-    ISSLayer._issmodel$2 = o3d;
+
+  static loadBackground () {
+    if (ISSLayer._loading$2) {
+      return;
+    }
+    ISSLayer._loading$2 = true;
+    const url = 'http://www.worldwidetelescope.org/data/iss.wtt';
+    ISSLayer._doc$2 = TourDocument.fromUrlRaw(url, function() {
+      //console.log(arguments, this);
+      ISSLayer.createSpaceStation();
+    });
   }
-};
-export const ISSLayer$ = {
-  draw: function (renderContext, opacity, flat) {
+  static createSpaceStation () {
+    ISSLayer._doc$2.set_id('28016047-97a9-4b33-a226-cd820262a151');
+    const filename = '0c10ae54-b6da-4282-bfda-f34562d403bc.3ds';
+    const o3d = new Object3d(ISSLayer._doc$2, filename, true, false, true, Colors.get_white());
+    if (o3d != null) {
+      o3d.issLayer = true;
+      ISSLayer._issmodel$2 = o3d;
+    }
+  }
+  draw(renderContext, opacity, flat) {
     if (this.object3d == null && ISSLayer._issmodel$2 == null) {
       if (!ISSLayer._loading$2) {
         const worldView = Matrix3d.multiplyMatrix(renderContext.get_world(), renderContext.get_view());
@@ -50,17 +54,11 @@ export const ISSLayer$ = {
       }
     }
     this.object3d = ISSLayer._issmodel$2;
-    return Object3dLayer.prototype.draw.call(this, renderContext, opacity, flat);
-  },
-  getPrimaryUI: function () {
-    return null;
-  },
-  addFilesToCabinet: function (fc) {
-    return;
-  },
-  loadData: function (doc, filename) {
-    return;
-  },
-  cleanUp: function () {
+    return Layer.draw.call(this, renderContext, opacity, flat);
+  }
+  getPrimaryUI() {return null; }
+  addFilesToCabinet(fc) {}
+  loadData(doc, filename) {}
+  cleanUp() {
   }
 };

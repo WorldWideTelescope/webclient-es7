@@ -1,16 +1,16 @@
 import ss from './scriptsharp/ss';
 import GFX from './astrocalc/GFX';
-import {ABR,ACFT} from './astrocalc/AAAberration';
+import {ABR, ACFT} from './astrocalc/AAAberration';
 import {ASEP} from './astrocalc/AAAngularSeparation';
-import {C3D, COR, CT } from './astrocalc/AACoordinateTransformation';
+import {C3D, COR, CT} from './astrocalc/AACoordinateTransformation';
 import {CalD, DT} from './astrocalc/AADate';
 import {DYT} from './astrocalc/AADynamicalTime';
-import { CAAEarth, VSC } from './astrocalc/AAEarth';
-import { CAAEclipticalElementDetails, CAAEclipticalElements } from './astrocalc/AAEclipticalElements';
-import {ELL,EOE,EPD,EOD} from './astrocalc/AAElliptical';
+import {CAAEarth, VSC} from './astrocalc/AAEarth';
+import {CAAEclipticalElementDetails, CAAEclipticalElements} from './astrocalc/AAEclipticalElements';
+import {ELL, EOE, EPD, EOD} from './astrocalc/AAElliptical';
 import {EOT} from './astrocalc/AAEquationOfTime';
 import {CAAFK5} from './astrocalc/AAFK5';
-import {GM,GMD,GMDS} from './astrocalc/AAGalileanMoons';
+import {GM, GMD, GMDS} from './astrocalc/AAGalileanMoons';
 import {CAAGlobe} from './astrocalc/AAGlobe';
 import {CAAMercury} from './astrocalc/AAMercury';
 import {CAAMoonPerigeeApogee, MPAC} from './astrocalc/AAMoonPerigeeApogee';
@@ -31,21 +31,15 @@ import {CAAMoonNodes} from './astrocalc/AAMoonNodes';
 import {IFR} from './astrocalc/AAIlluminatedFraction';
 import {INTP} from './astrocalc/AAInterpolate';
 import {MIFR} from './astrocalc/AAMoonIlluminatedFraction';
-import {CAAParallax,CAATopocentricEclipticDetails} from './astrocalc/AAParallax';
+import {CAAParallax, CAATopocentricEclipticDetails} from './astrocalc/AAParallax';
 import {CAASidereal} from './astrocalc/AASidereal';
 import {CAAPhysicalJupiter, CAAPhysicalJupiterDetails} from './astrocalc/AAPhysicalJupiter';
 import {CAAPhysicalMars, CAAPhysicalMarsDetails} from './astrocalc/AAPhysicalMars';
-import {CAAPhysicalSunDetails,CAAPhysicalSun} from './astrocalc/AAPhysicalSun';
+import {CAAPhysicalSunDetails, CAAPhysicalSun} from './astrocalc/AAPhysicalSun';
 import {CAAPrecession} from './astrocalc/AAPrecession';
-import {CAARiseTransitSet,CAARiseTransitSetDetails} from './astrocalc/AARiseTransitSet';
-import {Util, Guid, Guid$, Mouse} from './Util';
+import {CAARiseTransitSet, CAARiseTransitSetDetails} from './astrocalc/AARiseTransitSet';
+import {Util, Guid, Guid$, Mouse, Cursors, Cursor} from './Util';
 import {Tile} from './Tile';
-import {
-  IFolder,
-  ISettings,
-  IThumbnail,
-  IUiController,
-} from './interface';
 import {
   DAY_OF_WEEK, EO, CullMode,
   Classification, BandPass, ImageSetType,
@@ -63,23 +57,36 @@ import {
   FadeType, AltUnits, ScaleTypes, DataTypes, PointScaleTypes,
   Enums
 } from './enums.js';
-import {AstroCalc,RiseSetDetails, AstroRaDec} from './astrocalc/AstroCalc';
+import {AstroCalc, RiseSetDetails, AstroRaDec} from './astrocalc/AstroCalc';
 import {CAAStellarMagnitudes} from './astrocalc/AAStellarMagnitudes';
 import {
   ConvexHull,
-  ConvexHull$, DoubleUtilities, Matrix2d,Matrix2d$,
-  Matrix3d, Matrix3d$, PlaneD, PlaneD$,
+  ConvexHull$,
+  DoubleUtilities,
+  Matrix2d,
+  Matrix2d$,
+  Matrix3d,
+  Matrix3d$,
+  PlaneD,
+  PlaneD$,
   PositionColored,
-  PositionColoredTextured, PositionNormalTextured, PositionNormalTextured$,
-  PositionNormalTexturedTangent, PositionNormalTexturedX2, PositionNormalTexturedX2$,
-  PositionTexture, SphereHull, SphereHull$,
+  PositionColoredTextured,
+  PositionNormalTextured,
+  PositionNormalTextured$,
+  PositionNormalTexturedTangent,
+  PositionNormalTexturedX2,
+  PositionNormalTexturedX2$,
+  PositionTexture,
+  SphereHull,
+  SphereHull$,
   Vector2d,
-  Vector3d, Vector4d, Vector4d$
+  Vector3d,
+  Vector4d,
+  Vector4d$
 } from './Double3d';
-
 import {TileCache} from './TileCache';
-import {Color,Colors} from './Color';
-import {Coordinates,Coordinates$} from './Coordinates';
+import {Color, Colors} from './Color';
+import {Coordinates, Coordinates$} from './Coordinates';
 import {BlendState} from './BlendState';
 import {Texture, Texture$} from './Graphics/Texture';
 import {Imageset, Imageset$} from './Imageset';
@@ -100,40 +107,37 @@ import {
   SimpleLineShader2D,
   SimpleLineShader
 } from './Graphics/Shaders';
-import {LayerManager,LayerManager$,LayerMap,LayerMap$} from './Layers/LayerManager';
-import {WWTControl,WWTControl$} from './WWTControl';
-import {SpaceTimeController,SpaceTimeController$} from './SpaceTimeController';
-import {WebFile,WebFile$} from './WebFile';
-import {ISSLayer,ISSLayer$} from './Graphics/ISSLayer';
+import {LayerManager, LayerMap, LayerMap$} from './Layers/LayerManager';
+import {WWTControl, WWTControl$} from './WWTControl';
+import {SpaceTimeController, SpaceTimeController$} from './SpaceTimeController';
+import {WebFile, WebFile$} from './WebFile';
+import {ISSLayer} from './Graphics/ISSLayer';
 import {Language} from './Language';
-import {Settings,Settings$, SettingParameter, SettingParameter$} from './settings';
+import {Settings, Settings$, SettingParameter, SettingParameter$} from './settings';
 import {VoTableLayer, VoTableLayer$} from './VOTable';
 import {ImageSetLayer, ImageSetLayer$} from './ImageSetLayer';
-import {Layer,Layer$} from './Layers/Layer';
-import {Histogram,Histogram$} from './Histogram';
+import {DomainValue, Layer,  LayerCollection} from './Layers/Layer';
+import {Histogram, Histogram$} from './Histogram';
 import {KeplerianElements, KeplerianElements$, Planets, Planets$} from './Planets';
-import {Constellations,ConstellationFilter} from './Constellation';
+import {Constellations, ConstellationFilter} from './Constellation';
 import {Sprite2d} from './Graphics/Sprite2d';
-import {ScriptInterface,ScriptInterface$} from './ScriptInterface';
-import {RenderContext,RenderContext$} from './RenderContext';
-import {ReferenceFrame,ReferenceFrame$} from './Layers/ReferenceFrame';
-import {
-  CameraParameters,
-  CameraParameters$ as from,
-  CameraParameters$ as to,
-  CameraParameters$
-} from './CameraParameters';
+import {ScriptInterface, ScriptInterface$} from './ScriptInterface';
+import {RenderContext, RenderContext$} from './RenderContext';
+import {ReferenceFrame, ReferenceFrame$} from './Layers/ReferenceFrame';
+import { CameraParameters,  CameraParameters$ } from './CameraParameters';
 import {Folder} from './Folder';
-import {Object3d,Object3d$,Object3dLayer,Object3dLayer$} from './Layers/Object3d';
-import {RenderTriangle,RenderTriangle$} from './RenderTriangle';
+import {Group, Mesh, Object3d, Object3dLayer} from './Layers/Object3d';
+import {RenderTriangle, RenderTriangle$} from './RenderTriangle';
 import {
   PointList,
-  SimpleLineList, SimpleLineList$,
-  Dates, Dates$,
-  LineList, LineList$,
-  TriangleList, TriangleList$, TimeSeriesLineVertex, OrbitLineList$, OrbitLineList
+  SimpleLineList,
+  Dates,
+  LineList,
+  TriangleList,
+  TimeSeriesLineVertex,
+  OrbitLineList
 } from './Graphics/Primative3d';
-import {Place,Place$} from './Place';
+import {Place, Place$} from './Place';
 import {
   TimeSeriesPointVertex,
   IndexBuffer,
@@ -152,11 +156,11 @@ import {
 import {Annotation, Annotation$} from './Annotation';
 import {Wtml} from './WTML';
 import {TourPlayer, TourPlayer$} from './Tours/TourPlayer';
-import {Grids,Grids$} from './Grids';
+import {Grids, Grids$} from './Grids';
 import {MinorPlanets} from './MinorPlanets';
 import {UiTools, UiTools$} from './UITools';
 import {EllipseRenderer, Orbit} from './Orbit';
-import {BinaryReader,BinaryReader$} from './Utilities/BinaryReader';
+import {BinaryReader, BinaryReader$} from './Utilities/BinaryReader';
 import {Star, Star$} from './Star';
 import {KeplerVertex, KeplerVertex$} from './KeplerVertex';
 import {Tessellator} from './Graphics/Tessellator';
@@ -169,411 +173,22 @@ import {EquirectangularTile} from './EquirectangularTile';
 import {SkyImageTile} from './SkyImageTile';
 import {PlotTile} from './PlotTile';
 import {ToastTile, DistanceCalc} from './ToastTile';
+import {LayerUI, LayerUIMenuItem, LayerUITreeNode, Object3dLayerUI} from './Layers/LayerUI';
+import {TourDocument} from './Tours/TourDocument';
+import {FileCabinet} from './Tours/FileCabilnet';
+import {SpreadSheetLayer} from './Layers/SpreadsheetLayer';
+import {ContextMenuStrip, ToolStripMenuItem, ToolStripSeparator} from './Utilities/ContextMenuStrip';
+import {ViewMoverKenBurnsStyle, ViewMoverKenBurnsStyle$, ViewMoverSlew} from './ViewMover';
+import {OrbitLayer, OrbitLayerUI} from './Layers/Orbit';
+import {GridLayer} from './Layers/GridLayer';
+
 let wwtlib = (() => {
 
 
-  function DomainValue(text, markerIndex) {
-    this.markerIndex = 4;
-    this.customMarker = null;
-    this.text = text;
-    this.markerIndex = markerIndex;
-  }
-  const DomainValue$ = {};
-
-  function SkyOverlays() {}
-  const SkyOverlays$ = {};
-
-  function GroundOverlayLayer() {}
-  const GroundOverlayLayer$ = {};
-
-  function FrameTarget() {}
-  const FrameTarget$ = {};
-
-  function LayerUI() {}
-  const LayerUI$ = {
-    get_hasTreeViewNodes: () => false,
-    getTreeNodes: () => null,
-    getNodeContextMenu: node => null,
-    setUICallbacks: callbacks => {
-    }
-  };
-
-  function LayerUIMenuItem() {
-    this._tag = null;
-    this._isChecked = false;
-    this._isEnabled = true;
-    this._subMenus = null;
-  }
-  const LayerUIMenuItem$ = {
-    get_name: function () {
-      return this._name;
-    },
-    set_name: function (value) {
-      this._name = value;
-      return value;
-    },
-    get_tag: function () {
-      return this._tag;
-    },
-    set_tag: function (value) {
-      this._tag = value;
-      return value;
-    },
-    get_checked: function () {
-      return this._isChecked;
-    },
-    set_checked: function (value) {
-      this._isChecked = value;
-      return value;
-    },
-    get_enabled: function () {
-      return this._isEnabled;
-    },
-    set_enabled: function (value) {
-      this._isEnabled = value;
-      return value;
-    },
-    add_menuItemSelected: function (value) {
-      this.__menuItemSelected = ss.bindAdd(this.__menuItemSelected, value);
-    },
-    remove_menuItemSelected: function (value) {
-      this.__menuItemSelected = ss.bindSub(this.__menuItemSelected, value);
-    },
-    fireMenuItemSelected: function () {
-      if (this.__menuItemSelected != null) {
-        this.__menuItemSelected(this);
-      }
-    },
-    get_subMenus: function () {
-      if (this._subMenus == null) {
-        this._subMenus = [];
-      }
-      return this._subMenus;
-    }
-  };
-
-  function LayerUITreeNode() {
-    this._parent = null;
-    this._level = 0;
-    this._open = false;
-    this._isChecked = false;
-    this._bold = false;
-    this._color = Colors.get_white();
-    this._nodes = null;
-  }
-  const LayerUITreeNode$ = {
-    add_nodeChecked: function (value) {
-      this.__nodeChecked = ss.bindAdd(this.__nodeChecked, value);
-    },
-    remove_nodeChecked: function (value) {
-      this.__nodeChecked = ss.bindSub(this.__nodeChecked, value);
-    },
-    fireNodeChecked: function (newState) {
-      if (this.__nodeChecked != null) {
-        this.__nodeChecked(this, newState);
-      }
-    },
-    add_nodeUpdated: function (value) {
-      this.__nodeUpdated = ss.bindAdd(this.__nodeUpdated, value);
-    },
-    remove_nodeUpdated: function (value) {
-      this.__nodeUpdated = ss.bindSub(this.__nodeUpdated, value);
-    },
-    fireNodeUpdated: function () {
-      if (this.__nodeUpdated != null) {
-        this.__nodeUpdated(this);
-      }
-    },
-    add_nodeSelected: function (value) {
-      this.__nodeSelected = ss.bindAdd(this.__nodeSelected, value);
-    },
-    remove_nodeSelected: function (value) {
-      this.__nodeSelected = ss.bindSub(this.__nodeSelected, value);
-    },
-    fireNodeSelected: function () {
-      if (this.__nodeSelected != null) {
-        this.__nodeSelected(this);
-      }
-    },
-    add_nodeActivated: function (value) {
-      this.__nodeActivated = ss.bindAdd(this.__nodeActivated, value);
-    },
-    remove_nodeActivated: function (value) {
-      this.__nodeActivated = ss.bindSub(this.__nodeActivated, value);
-    },
-    fireNodeActivated: function () {
-      if (this.__nodeActivated != null) {
-        this.__nodeActivated(this);
-      }
-    },
-    get_name: function () {
-      return this._name;
-    },
-    set_name: function (value) {
-      if (this._name !== value) {
-        this._name = value;
-        this.fireNodeUpdated();
-      }
-      return value;
-    },
-    get_parent: function () {
-      return this._parent;
-    },
-    set_parent: function (value) {
-      this._parent = value;
-      return value;
-    },
-    get_level: function () {
-      return this._level;
-    },
-    set_level: function (value) {
-      this._level = value;
-      return value;
-    },
-    get_tag: function () {
-      return this._tag;
-    },
-    set_tag: function (value) {
-      this._tag = value;
-      return value;
-    },
-    get_referenceTag: function () {
-      return this._referenceTag;
-    },
-    set_referenceTag: function (value) {
-      this._referenceTag = value;
-      return value;
-    },
-    get_opened: function () {
-      return this._open;
-    },
-    set_opened: function (value) {
-      if (this._open !== value) {
-        this._open = value;
-        this.fireNodeUpdated();
-      }
-      return value;
-    },
-    get_checked: function () {
-      return this._isChecked;
-    },
-    set_checked: function (value) {
-      if (this._isChecked !== value) {
-        this._isChecked = value;
-        this.fireNodeUpdated();
-      }
-      return value;
-    },
-    get_bold: function () {
-      return this._bold;
-    },
-    set_bold: function (value) {
-      if (this._bold !== value) {
-        this._bold = value;
-        this.fireNodeUpdated();
-      }
-      return value;
-    },
-    get_color: function () {
-      return this._color;
-    },
-    set_color: function (value) {
-      if (this._color !== value) {
-        this._color = value;
-        this.fireNodeUpdated();
-      }
-      return value;
-    },
-    add: function (name) {
-      const node = new LayerUITreeNode();
-      node.set_name(name);
-      node.set_parent(this);
-      node.set_level(this.get_level() + 1);
-      this.get_nodes().push(node);
-      return node;
-    },
-    get_nodes: function () {
-      if (this._nodes == null) {
-        this._nodes = [];
-      }
-      return this._nodes;
-    }
-  };
-
-  function Group() {
-    this.startIndex = 0;
-    this.indexCount = 0;
-    this.materialIndex = 0;
-  }
-  const Group$ = {};
-
-  function Mesh() {
-    this.boundingSphere = new SphereHull();
-  }
-  Mesh.create = (vertices, indices) => {
-    const mesh = new Mesh();
-    mesh.vertices = vertices;
-    mesh.indices = indices;
-    const points = new Array(vertices.length);
-    for (let i = 0; i < vertices.length; ++i) {
-      points[i] = vertices[i].get_position();
-    }
-    mesh.boundingSphere = ConvexHull.findEnclosingSphereFast(points);
-    return mesh;
-  };
-  Mesh.createTangent = (vertices, indices) => {
-    const mesh = new Mesh();
-    mesh.tangentVertices = vertices;
-    mesh.indices = indices;
-    const points = new Array(mesh.tangentVertices.length);
-    for (let i = 0; i < mesh.tangentVertices.length; ++i) {
-      points[i] = mesh.tangentVertices[i].get_position();
-    }
-    mesh.boundingSphere = ConvexHull.findEnclosingSphereFast(points);
-    return mesh;
-  };
-  const Mesh$ = {
-    dispose: function () {
-      if (this.vertexBuffer != null) {
-        this.vertexBuffer.dispose();
-        this.vertexBuffer = null;
-      }
-      if (this.tangentVertexBuffer != null) {
-        this.tangentVertexBuffer.dispose();
-        this.tangentVertexBuffer = null;
-      }
-      if (this.indexBuffer != null) {
-        this.indexBuffer.dispose();
-        this.indexBuffer = null;
-      }
-    },
-    setObjects: function (objects) {
-      this._objects = objects;
-    },
-    commitToDevice: function () {
-      if (this.vertices != null) {
-        this.vertexBuffer = PositionNormalTexturedVertexBuffer.create(this.vertices);
-      } else if (this.tangentVertices != null) {
-        this.tangentVertexBuffer = PositionNormalTexturedTangentVertexBuffer.create(this.tangentVertices);
-      }
-      this.indexBuffer = new IndexBuffer(new Uint32Array(this.indices));
-    },
-    beginDrawing: function (renderContext) {
-      if (this.vertexBuffer != null) {
-        renderContext._setVertexBuffer(this.vertexBuffer);
-      } else if (this.tangentVertexBuffer != null) {
-        renderContext._setVertexBuffer(this.tangentVertexBuffer);
-      }
-      if (this.indexBuffer != null) {
-        renderContext._setIndexBuffer(this.indexBuffer);
-      }
-    },
-    drawSubset: function (renderContext, materialIndex) {
-      if (this.indexBuffer == null || this._objects == null) {
-        return;
-      }
-      this.drawHierarchy(this._objects, materialIndex, renderContext, 0);
-    },
-    drawHierarchy: function (nodes, materialIndex, renderContext, depth) {
-      if (depth > 1212) {
-        return;
-      }
-      const $enum1 = ss.enumerate(nodes);
-      while ($enum1.moveNext()) {
-        const node = $enum1.current;
-        if (node.drawGroup != null && node.enabled) {
-          const $enum2 = ss.enumerate(node.drawGroup);
-          while ($enum2.moveNext()) {
-            const group = $enum2.current;
-            if (group.materialIndex === materialIndex) {
-              renderContext.gl.drawElements(4, group.indexCount, 5125, group.startIndex * 4);
-            }
-          }
-        }
-        this.drawHierarchy(node.children, materialIndex, renderContext, depth + 1);
-      }
-    },
-    get_objects: function () {
-      return this._objects;
-    },
-    set_objects: function (value) {
-      this._objects = value;
-      return value;
-    }
-  };
-
-  function VertexPosition() {
-    this.index = 0;
-  }
-
-  function ObjectNode() {
-    this.level = -1;
-    this.children = [];
-    this.enabled = true;
-    this.drawGroup = [];
-    this.applyLists = [];
-    this.applyListsIndex = [];
-  }
-  const ObjectNode$ = {};
-
-  function KmlCoordinate() {
-    this.lat = 0;
-    this.lng = 0;
-    this.alt = 0;
-  }
-  const KmlCoordinate$ = {};
-
-  function KmlLineList() {
-    this.extrude = false;
-    this.astronomical = false;
-    this.meanRadius = 6371000;
-    this.pointList = [];
-  }
-  const KmlLineList$ = {
-    parseWkt: function (geoText, option, alt, date) {
-      const parts = UiTools.split(geoText, '(,)');
-      const $enum1 = ss.enumerate(parts);
-      while ($enum1.moveNext()) {
-        const part = $enum1.current;
-        const coordinates = ss.trim(part).split(' ');
-        if (coordinates.length > 1) {
-          const pnt = new KmlCoordinate();
-          pnt.lng = parseFloat(coordinates[0]);
-          if (this.astronomical) {
-            pnt.lng -= 180;
-          }
-          pnt.lat = parseFloat(coordinates[1]);
-          if (coordinates.length > 2 && !alt) {
-            pnt.alt = parseFloat(coordinates[2]);
-          } else {
-            pnt.alt = alt;
-          }
-          pnt.date = date;
-          this.pointList.push(pnt);
-        }
-      }
-    },
-    getCenterPoint: function () {
-      const point = new KmlCoordinate();
-      point.lat = 0;
-      point.lng = 0;
-      point.alt = 0;
-      const $enum1 = ss.enumerate(this.pointList);
-      while ($enum1.moveNext()) {
-        const pnt = $enum1.current;
-        point.lat += pnt.lat;
-        point.lng += pnt.lng;
-        point.alt += pnt.alt;
-      }
-      point.lat /= this.pointList.length;
-      point.lng /= this.pointList.length;
-      point.alt /= this.pointList.length;
-      return point;
-    }
-  };
 
   function PushPin() {
   }
+
   PushPin.getPushPinTexture = pinId => {
     let texture = null;
     if (ss.keyExists(PushPin._pinTextureCache, pinId)) {
@@ -597,14 +212,13 @@ let wwtlib = (() => {
       Tile.prepDevice.generateMipmap(3553);
       Tile.prepDevice.bindTexture(3553, null);
       PushPin._pinTextureCache[pinId] = texture;
-    }
-    catch ($e1) {
+    } catch ($e1) {
     }
     return texture;
   };
   const PushPin$ = {};
 
-  class Table{
+  class Table {
     constructor() {
       this.guid = new Guid();
       this.header = [];
@@ -612,12 +226,15 @@ let wwtlib = (() => {
       this.delimiter = '\t';
       this.locked = false;
     }
+
     lock() {
       this.locked = true;
     }
+
     unlock() {
       this.locked = false;
     }
+
     save() {
       let data = '';
       let first = true;
@@ -650,6 +267,7 @@ let wwtlib = (() => {
       }
       return data;
     }
+
     loadFromString(data, isUpdate, purge, hasHeader) {
       let count = 0;
       const lines = data.split('\r\n');
@@ -698,6 +316,7 @@ let wwtlib = (() => {
     this.error = false;
     this.errorText = '';
   }
+
   VoTable.loadFromUrl = (url, complete) => {
     const temp = new VoTable();
     temp._onComplete = complete;
@@ -871,6 +490,7 @@ let wwtlib = (() => {
     this.selected = false;
     this.owner = owner;
   }
+
   const VoRow$ = {
     getColumnData: function (key) {
       if (this.owner.columns[key] != null) {
@@ -906,8 +526,7 @@ let wwtlib = (() => {
     if (node.attributes.getNamedItem('precision') != null) {
       try {
         this.precision = parseInt(node.attributes.getNamedItem('precision').nodeValue);
-      }
-      catch ($e1) {
+      } catch ($e1) {
       }
     }
     if (node.attributes.getNamedItem('ID') != null) {
@@ -915,8 +534,7 @@ let wwtlib = (() => {
     }
     if (node.attributes.getNamedItem('name') != null) {
       this.name = node.attributes.getNamedItem('name').nodeValue;
-    }
-    else {
+    } else {
       this.name = this.id;
     }
     if (node.attributes.getNamedItem('unit') != null) {
@@ -932,8 +550,7 @@ let wwtlib = (() => {
         const dim = $enum2.current;
         if (!(dim.indexOf('*') > -1)) {
           this.sizes[indexer++] = parseInt(dim);
-        }
-        else {
+        } else {
           let len = 9999;
           const lenString = ss.replaceString(dim, '*', '');
           if (lenString.length > 0) {
@@ -944,6 +561,7 @@ let wwtlib = (() => {
       }
     }
   }
+
   VoColumn.getType = type => {
     let Type = 13;
     switch (type) {
@@ -996,7 +614,6 @@ let wwtlib = (() => {
   };
 
 
-
   function BodyAngles(poleRa, poleDec, primeMeridian, rotationRate) {
     this.poleDec = 0;
     this.poleRa = 0;
@@ -1007,14 +624,10 @@ let wwtlib = (() => {
     this.primeMeridian = primeMeridian;
     this.rotationRate = rotationRate;
   }
+
   const BodyAngles$ = {};
 
-  function Material() {
-    this.specularSharpness = 0;
-    this.opacity = 0;
-    this.isDefault = false;
-  }
-  const Material$ = {};
+
 
   function Text3dBatch(height) {
     this.height = 128;
@@ -1025,6 +638,7 @@ let wwtlib = (() => {
     this._vertCount = 0;
     this.height = (height * 3);
   }
+
   const Text3dBatch$ = {
     add: function (newItem) {
       this.items.push(newItem);
@@ -1132,6 +746,7 @@ let wwtlib = (() => {
     this.size = new Vector2d();
     this.referenceCount = 1;
   }
+
   GlyphItem.create = (glyph, uv, size, extents) => {
     const temp = new GlyphItem(glyph);
     temp.glyph = glyph;
@@ -1173,6 +788,7 @@ let wwtlib = (() => {
     this._webFile.onStateChange = ss.bind('_glyphXmlReady', this);
     this._webFile.send();
   }
+
   GlyphCache.getCache = height => {
     if (!ss.keyExists(GlyphCache._caches, height)) {
       GlyphCache._caches[height] = new GlyphCache(height);
@@ -1280,6 +896,7 @@ let wwtlib = (() => {
       this.sky = false;
     }
   }
+
   const Text3d$ = {
     addGlyphPoints: function (pointList, size, position, uv) {
       const points = new Array(6);
@@ -1385,6 +1002,7 @@ let wwtlib = (() => {
     this.eTypeBucket = br.readByte();
     this.size = br.readSingle();
   }
+
   Galaxy.getEType = value => {
     let a = 0;
     let b = Galaxy._eTypeBuckets.length - 1;
@@ -1392,8 +1010,7 @@ let wwtlib = (() => {
       const m = (a + b) / 2;
       if (value > Galaxy._eTypeBuckets[m]) {
         a = m;
-      }
-      else {
+      } else {
         b = m;
       }
     }
@@ -1408,6 +1025,7 @@ let wwtlib = (() => {
     this.lengthInSecs = 0;
     this._thumbnailUrlField = '';
   }
+
   Tour._fromXml = child => {
     const temp = new Tour();
     if (child.attributes.getNamedItem('ID') != null) {
@@ -1508,201 +1126,7 @@ let wwtlib = (() => {
     get_children: () => []
   };
 
-  function FileEntry(filename, size) {
-    this.size = 0;
-    this.offset = 0;
-    this.filename = filename;
-    this.size = size;
-  }
-  const FileEntry$ = {
-    toString: function () {
-      return this.filename;
-    }
-  };
 
-  function FileCabinet() {
-    this.tempDirectory = '';
-    this._currentOffset = 0;
-    this._packageID = '';
-    this.url = '';
-    this.clearFileList();
-  }
-  FileCabinet.fromUrl = (url, callMe) => {
-    const temp = new FileCabinet();
-    temp.url = url;
-    temp._callMe = callMe;
-    temp._webFile = new WebFile(url);
-    temp._webFile.responseType = 'blob';
-    temp._webFile.onStateChange = ss.bind('_loadCabinet', temp);
-    temp._webFile.send();
-    return temp;
-  };
-  const FileCabinet$ = {
-    get_packageID: function () {
-      return this._packageID;
-    },
-    set_packageID: function (value) {
-      this._packageID = value;
-      return value;
-    },
-    addFile: function (filename, data) {
-      if (data == null) {
-        return;
-      }
-      if (!ss.keyExists(this._fileDirectory, filename)) {
-        const fe = new FileEntry(filename, data.size);
-        fe.offset = this._currentOffset;
-        fe.blob = data;
-        this.fileList.push(fe);
-        this._fileDirectory[filename] = fe;
-        this._currentOffset += fe.size;
-      }
-    },
-    clearFileList: function () {
-      if (this.fileList == null) {
-        this.fileList = [];
-      }
-      if (this._fileDirectory == null) {
-        this._fileDirectory = {};
-      }
-      this.fileList.length = 0;
-      ss.clearKeys(this._fileDirectory);
-      this._currentOffset = 0;
-    },
-    packageFiles: function () {
-      const xmlWriter = new XmlTextWriter();
-      xmlWriter.formatting = 1;
-      xmlWriter._writeProcessingInstruction('xml', 'version=\'1.0\' encoding=\'UTF-8\'');
-      xmlWriter._writeStartElement('FileCabinet');
-      xmlWriter._writeAttributeString('HeaderSize', '0x0BADFOOD');
-      xmlWriter._writeStartElement('Files');
-      const $enum1 = ss.enumerate(this.fileList);
-      while ($enum1.moveNext()) {
-        var entry = $enum1.current;
-        xmlWriter._writeStartElement('File');
-        xmlWriter._writeAttributeString('Name', entry.filename);
-        xmlWriter._writeAttributeString('Size', entry.size.toString());
-        xmlWriter._writeAttributeString('Offset', entry.offset.toString());
-        xmlWriter._writeEndElement();
-      }
-      xmlWriter._writeEndElement();
-      xmlWriter._writeFullEndElement();
-      xmlWriter._close();
-      let data = xmlWriter.body;
-      let blob = new Blob([data]);
-      const sizeText = ss.format('0x{0:x8}', blob.size);
-      data = ss.replaceString(data, '0x0BADFOOD', sizeText);
-      blob = new Blob([data]);
-      const blobs = [];
-      blobs.push(blob);
-      const $enum2 = ss.enumerate(this.fileList);
-      while ($enum2.moveNext()) {
-        var entry = $enum2.current;
-        blobs.push(entry.blob);
-      }
-      const cabBlob = new Blob(blobs, {type: 'application/x-wtt'});
-      ;
-      return cabBlob;
-    },
-    _loadCabinet: function () {
-      const $this = this;
-
-      if (this._webFile.get_state() === 2) {
-        alert(this._webFile.get_message());
-      } else if (this._webFile.get_state() === 1) {
-        this._mainBlob = this._webFile.getBlob();
-        const chunck = new FileReader();
-        chunck.onloadend = e => {
-          const offset = $this._getSize(chunck.result);
-          const header = new FileReader();
-          header.onloadend = ee => {
-            const data = ss.safeCast(header.result, String);
-            const xParser = new DOMParser();
-            $this.extract(xParser.parseFromString(data, 'text/xml'), offset);
-            $this._callMe();
-          };
-          header.readAsText($this._mainBlob.slice(0, offset));
-        };
-        chunck.readAsText(this._mainBlob.slice(0, 255));
-      }
-    },
-    _getSize: data => {
-      const start = data.indexOf('0x');
-      if (start === -1) {
-        return 0;
-      }
-      return parseInt(data.substring(start, start + 10), 16);
-    },
-    extract: function (doc, offset) {
-      try {
-        const cab = Util.selectSingleNode(doc, 'FileCabinet');
-        const files = Util.selectSingleNode(cab, 'Files');
-        this.fileList.length = 0;
-        const $enum1 = ss.enumerate(files.childNodes);
-        while ($enum1.moveNext()) {
-          const child = $enum1.current;
-          if (child.nodeName === 'File') {
-            const fe = new FileEntry(child.attributes.getNamedItem('Name').nodeValue, parseInt(child.attributes.getNamedItem('Size').nodeValue));
-            fe.offset = offset;
-            offset += fe.size;
-            this.fileList.push(fe);
-          }
-        }
-      } catch ($e2) {
-      }
-    },
-    getFileBlob: function (filename) {
-      const fe = this.getFileEntry(filename);
-      if (fe != null) {
-        const ext = filename.substr(filename.lastIndexOf('.')).toLowerCase();
-        let type = null;
-        switch (ext) {
-          case '.png':
-            type = 'image/png';
-            break;
-          case '.jpg':
-          case '.jpeg':
-            type = 'image/jpeg';
-            break;
-          case '.mp3':
-            type = 'audio/mpeg3';
-            break;
-          case '.txt':
-            type = 'text/plain';
-            break;
-          case '.fit':
-          case '.fits':
-            type = 'application/octet-stream';
-            break;
-        }
-        return this._mainBlob.slice(fe.offset, fe.offset + fe.size, type);
-      }
-      return null;
-    },
-    getFileEntry: function (filename) {
-      const $enum1 = ss.enumerate(this.fileList);
-      while ($enum1.moveNext()) {
-        const entry = $enum1.current;
-        if (entry.filename === filename) {
-          return entry;
-        }
-      }
-      return null;
-    },
-    get_masterFile: function () {
-      if (this.fileList.length > 0) {
-        return this.fileList[0].filename;
-      } else {
-        return null;
-      }
-    },
-    clearTempFiles: function () {
-      const $enum1 = ss.enumerate(this.fileList);
-      while ($enum1.moveNext()) {
-        const entry = $enum1.current;
-      }
-    }
-  };
 
   function Overlay() {
     this.isDynamic = false;
@@ -1739,6 +1163,7 @@ let wwtlib = (() => {
     this.texture2d = null;
     this._interpolationType = 5;
   }
+
   Overlay._fromXml = (owner, overlay) => {
     if (overlay.attributes == null) {
       return null;
@@ -2167,6 +1592,7 @@ let wwtlib = (() => {
     this._centerX = 0;
     this._centerY = 0;
   }
+
   const Selection$ = {
     clearSelection: function () {
       this.selectionSet.length = 0;
@@ -2351,6 +1777,7 @@ let wwtlib = (() => {
     this.fontSize = 0;
     this.borderStyle = 0;
   }
+
   TextObject.create = (text, bold, italic, underline, fontSize, fontName, forgroundColor, backgroundColor, borderStyle) => {
     const temp = new TextObject();
     temp.text = text;
@@ -2399,721 +1826,6 @@ let wwtlib = (() => {
     }
   };
 
-  function TourDocument() {
-    this._tourDirty = 0;
-    this._workingDirectory = '';
-    this.url = '';
-    this._tagId = '';
-    this._representativeThumbnailTourstop = 0;
-    this._id = '';
-    this._title = '';
-    this._runTime = 0;
-    this._lastDirtyCheck = 0;
-    this._description = '';
-    this._attributesAndCredits = '';
-    this._authorEmailOther = '';
-    this._authorEmail = '';
-    this._authorUrl = '';
-    this._authorPhone = '';
-    this._authorContactText = '';
-    this._orgName = 'None';
-    this._orgUrl = '';
-    this._author = '';
-    this._authorImageUrl = '';
-    this._authorImage = null;
-    this._organizationUrl = '';
-    this._filename = '';
-    this._level = 0;
-    this._type = 268435456;
-    this._taxonomy = '';
-    this._keywords = '';
-    this._objects = '';
-    this._editMode = false;
-    this.explicitTourLinks = [];
-    this.implicitTourLinks = [];
-    this._tourStops = [];
-    this._currentTourstopIndex = -1;
-    this._textureList = {};
-    this._textureList2d = {};
-    this._fileCache = {};
-    this.dontCleanUpTempFiles = false;
-    this._id = Guid.newGuid().toString();
-  }
-  TourDocument.get_baseWorkingDirectory = () => '';
-  TourDocument.fromUrl = (url, callMe) => {
-    const temp = new TourDocument();
-    temp.url = url;
-    temp._callMe = callMe;
-    temp._cabinet = FileCabinet.fromUrl(url, ss.bind('_loadXmlDocument', temp));
-    return temp;
-  };
-  TourDocument.fromUrlRaw = (url, callMe) => {
-    const temp = new TourDocument();
-    temp.url = url;
-    temp._callMe = callMe;
-    temp._cabinet = FileCabinet.fromUrl(url, callMe);
-    return temp;
-  };
-  const TourDocument$ = {
-    get_tourDirty: function () {
-      return this._tourDirty > 0;
-    },
-    set_tourDirty: function (value) {
-      if (value) {
-        this._tourDirty++;
-      } else {
-        this._tourDirty = 0;
-      }
-      return value;
-    },
-    get_workingDirectory: function () {
-      if (ss.emptyString(this._workingDirectory)) {
-        this._workingDirectory = TourDocument.get_baseWorkingDirectory() + this._id + '\\';
-      }
-      return this._workingDirectory;
-    },
-    set_workingDirectory: function (value) {
-      this._workingDirectory = value;
-      return value;
-    },
-    _loadXmlDocument: function () {
-      const $this = this;
-
-      const master = this._cabinet.get_masterFile();
-      const doc = new FileReader();
-      doc.onloadend = ee => {
-        const data = ss.safeCast(doc.result, String);
-        const xParser = new DOMParser();
-        $this.fromXml(xParser.parseFromString(data, 'text/xml'));
-        $this._callMe();
-      };
-      doc.readAsText(this._cabinet.getFileBlob(master));
-    },
-    fromXml: function (doc) {
-      const root = Util.selectSingleNode(doc, 'Tour');
-      this._id = root.attributes.getNamedItem('ID').nodeValue;
-      this.set_title(root.attributes.getNamedItem('Title').nodeValue);
-      this.set_author(root.attributes.getNamedItem('Author').nodeValue);
-      if (root.attributes.getNamedItem('Descirption') != null) {
-        this.set_description(root.attributes.getNamedItem('Descirption').nodeValue);
-      }
-      if (root.attributes.getNamedItem('AuthorEmail') != null) {
-        this._authorEmail = root.attributes.getNamedItem('AuthorEmail').nodeValue;
-      }
-      if (root.attributes.getNamedItem('Keywords') != null) {
-        this.set_keywords(root.attributes.getNamedItem('Keywords').nodeValue);
-      }
-      if (root.attributes.getNamedItem('OrganizationName') != null) {
-        this.set_orgName(root.attributes.getNamedItem('OrganizationName').nodeValue);
-      }
-      this._organizationUrl = root.attributes.getNamedItem('OrganizationUrl').nodeValue;
-      this._level = Enums.parse('UserLevel', root.attributes.getNamedItem('UserLevel').nodeValue);
-      this._type = Enums.parse('Classification', root.attributes.getNamedItem('Classification').nodeValue);
-      this._taxonomy = root.attributes.getNamedItem('Taxonomy').nodeValue;
-      const TourStops = Util.selectSingleNode(root, 'TourStops');
-      const $enum1 = ss.enumerate(TourStops.childNodes);
-      while ($enum1.moveNext()) {
-        const tourStop = $enum1.current;
-        if (tourStop.nodeName === 'TourStop') {
-          this.addTourStop(TourStop._fromXml(this, tourStop));
-        }
-      }
-      const Frames = Util.selectSingleNode(root, 'ReferenceFrames');
-      if (Frames != null) {
-        const $enum2 = ss.enumerate(Frames.childNodes);
-        while ($enum2.moveNext()) {
-          const frame = $enum2.current;
-          if (frame.nodeName === 'ReferenceFrame') {
-            const newFrame = new ReferenceFrame();
-            newFrame.initializeFromXml(frame);
-            if (!ss.keyExists(LayerManager.get_allMaps(), newFrame.name)) {
-              const map = new LayerMap(newFrame.name, 18);
-              map.frame = newFrame;
-              map.loadedFromTour = true;
-              LayerManager.get_allMaps()[newFrame.name] = map;
-            }
-          }
-        }
-        LayerManager.connectAllChildren();
-        LayerManager.loadTree();
-      }
-      const Layers = Util.selectSingleNode(root, 'Layers');
-      if (Layers != null) {
-        const $enum3 = ss.enumerate(Layers.childNodes);
-        while ($enum3.moveNext()) {
-          const layer = $enum3.current;
-          if (layer.nodeName === 'Layer') {
-            const newLayer = Layer.fromXml(layer, true);
-            if (newLayer != null) {
-              const fileName = ss.format('{0}.txt', newLayer.id.toString());
-              if (ss.keyExists(LayerManager.get_layerList(), newLayer.id)) {
-                LayerManager.deleteLayerByID(newLayer.id, true, false);
-              }
-              try {
-                newLayer.loadedFromTour = true;
-                newLayer.loadData(this, fileName);
-                LayerManager.add(newLayer, false);
-              } catch ($e4) {
-              }
-            }
-          }
-        }
-        LayerManager.loadTree();
-      }
-      this._tourDirty = 0;
-    },
-    saveToDataUrl: function () {
-      return URL.createObjectURL(this.saveToBlob());
-      ;
-    },
-    saveToBlob: function () {
-      const excludeAudio = false;
-      this.cleanUp();
-      const tourXml = this.getTourXML();
-      const fc = new FileCabinet();
-      fc.set_packageID(this.get_id());
-      fc.addFile('Tour.wwtxml', new Blob([tourXml]));
-      if (this._authorImage != null) {
-      }
-      const $enum1 = ss.enumerate(this.get_tourStops());
-      while ($enum1.moveNext()) {
-        const stop = $enum1.current;
-        stop._addFilesToCabinet(fc, excludeAudio);
-      }
-      const masterList = this._createLayerMasterList();
-      const $enum2 = ss.enumerate(masterList);
-      while ($enum2.moveNext()) {
-        const id = $enum2.current;
-        if (ss.keyExists(LayerManager.get_layerList(), id)) {
-          LayerManager.get_layerList()[id].addFilesToCabinet(fc);
-        }
-      }
-      this.set_tourDirty(false);
-      return fc.packageFiles();
-    },
-    getTourXML: function () {
-      const xmlWriter = new XmlTextWriter();
-      xmlWriter.formatting = 1;
-      xmlWriter._writeProcessingInstruction('xml', 'version=\'1.0\' encoding=\'UTF-8\'');
-      xmlWriter._writeStartElement('Tour');
-      xmlWriter._writeAttributeString('ID', this._id);
-      xmlWriter._writeAttributeString('Title', this._title);
-      xmlWriter._writeAttributeString('Descirption', this.get_description());
-      xmlWriter._writeAttributeString('Description', this.get_description());
-      xmlWriter._writeAttributeString('RunTime', (this.get_runTime() / 1000).toString());
-      xmlWriter._writeAttributeString('Author', this._author);
-      xmlWriter._writeAttributeString('AuthorEmail', this._authorEmail);
-      xmlWriter._writeAttributeString('OrganizationUrl', this._organizationUrl);
-      xmlWriter._writeAttributeString('OrganizationName', this.get_orgName());
-      xmlWriter._writeAttributeString('Keywords', this.get_keywords());
-      xmlWriter._writeAttributeString('UserLevel', Enums.toXml('UserLevel', this._level));
-      xmlWriter._writeAttributeString('Classification', Enums.toXml('Classification', this._type));
-      xmlWriter._writeAttributeString('Taxonomy', this._taxonomy);
-      const timeLineTour = this._isTimelineTour();
-      xmlWriter._writeAttributeString('TimeLineTour', timeLineTour.toString());
-      xmlWriter._writeStartElement('TourStops');
-      const $enum1 = ss.enumerate(this.get_tourStops());
-      while ($enum1.moveNext()) {
-        const stop = $enum1.current;
-        stop._saveToXml(xmlWriter, true);
-      }
-      xmlWriter._writeEndElement();
-      const masterList = this._createLayerMasterList();
-      const referencedFrames = this._getReferenceFrameList();
-      xmlWriter._writeStartElement('ReferenceFrames');
-      const $enum2 = ss.enumerate(referencedFrames);
-      while ($enum2.moveNext()) {
-        const item = $enum2.current;
-        item.saveToXml(xmlWriter);
-      }
-      xmlWriter._writeEndElement();
-      xmlWriter._writeStartElement('Layers');
-      const $enum3 = ss.enumerate(masterList);
-      while ($enum3.moveNext()) {
-        const id = $enum3.current;
-        if (ss.keyExists(LayerManager.get_layerList(), id)) {
-          LayerManager.get_layerList()[id].saveToXml(xmlWriter);
-        }
-      }
-      xmlWriter._writeEndElement();
-      xmlWriter._writeFullEndElement();
-      xmlWriter._close();
-      return xmlWriter.body;
-    },
-    _getReferenceFrameList: () => {
-      const list = [];
-      const $enum1 = ss.enumerate(ss.keys(LayerManager.get_allMaps()));
-      while ($enum1.moveNext()) {
-        const key = $enum1.current;
-        const lm = LayerManager.get_allMaps()[key];
-        if ((lm.frame.reference === 18 || lm.frame.reference === 19) && !(list.indexOf(lm.frame) >= 0) && !lm.frame._systemGenerated) {
-          list.push(lm.frame);
-        }
-      }
-      return list;
-    },
-    _createLayerMasterList: function () {
-      const masterList = [];
-      const $enum1 = ss.enumerate(this.get_tourStops());
-      while ($enum1.moveNext()) {
-        const stop = $enum1.current;
-        const $enum2 = ss.enumerate(ss.keys(stop.layers));
-        while ($enum2.moveNext()) {
-          const id = $enum2.current;
-          if (!(masterList.indexOf(id) >= 0)) {
-            if (ss.keyExists(LayerManager.get_layerList(), id)) {
-              masterList.push(id);
-            }
-          }
-        }
-      }
-      return masterList;
-    },
-    _isTimelineTour: () => false,
-    get_tagId: function () {
-      return this._tagId;
-    },
-    set_tagId: function (value) {
-      this._tagId = value;
-      return value;
-    },
-    get_authorThumbnailFilename: () => 'Author.Png',
-    get_tourThumbnailFilename: function () {
-      if (this._representativeThumbnailTourstop < this._tourStops.length) {
-        return this._tourStops[this._representativeThumbnailTourstop].get_tourStopThumbnailFilename();
-      } else {
-        return null;
-      }
-    },
-    get_id: function () {
-      return this._id;
-    },
-    set_id: function (value) {
-      this._id = value;
-      return value;
-    },
-    get_title: function () {
-      return this._title;
-    },
-    set_title: function (value) {
-      this._title = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_runTime: function () {
-      if (!this._runTime || this._lastDirtyCheck !== this._tourDirty) {
-        this._runTime = this._calculateRunTime();
-        this._lastDirtyCheck = this._tourDirty;
-      }
-      return this._runTime;
-    },
-    get_description: function () {
-      return this._description;
-    },
-    set_description: function (value) {
-      this._description = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_attributesAndCredits: function () {
-      return this._attributesAndCredits;
-    },
-    set_attributesAndCredits: function (value) {
-      this._attributesAndCredits = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_authorEmailOther: function () {
-      return this._authorEmailOther;
-    },
-    set_authorEmailOther: function (value) {
-      this._authorEmailOther = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_authorEmail: function () {
-      return this._authorEmail;
-    },
-    set_authorEmail: function (value) {
-      this._authorEmail = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_authorUrl: function () {
-      return this._authorUrl;
-    },
-    set_authorUrl: function (value) {
-      this._authorUrl = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_authorPhone: function () {
-      return this._authorPhone;
-    },
-    set_authorPhone: function (value) {
-      this._authorPhone = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_authorContactText: function () {
-      return this._authorContactText;
-    },
-    set_authorContactText: function (value) {
-      this._authorContactText = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_orgName: function () {
-      return this._orgName;
-    },
-    set_orgName: function (value) {
-      this._orgName = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_orgUrl: function () {
-      return this._orgUrl;
-    },
-    set_orgUrl: function (value) {
-      this._orgUrl = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_author: function () {
-      return this._author;
-    },
-    set_author: function (value) {
-      this._author = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_authorImageUrl: function () {
-      return this._authorImageUrl;
-    },
-    set_authorImageUrl: function (value) {
-      this._authorImageUrl = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_authorImage: function () {
-      return this._authorImage;
-    },
-    set_authorImage: function (value) {
-      this._authorImage = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_organizationUrl: function () {
-      return this._organizationUrl;
-    },
-    set_organizationUrl: function (value) {
-      this._organizationUrl = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_fileName: function () {
-      return this._filename;
-    },
-    set_fileName: function (value) {
-      this._filename = value;
-      return value;
-    },
-    get_level: function () {
-      return this._level;
-    },
-    set_level: function (value) {
-      this._level = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_type: function () {
-      return this._type;
-    },
-    set_type: function (value) {
-      this._type = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_taxonomy: function () {
-      return this._taxonomy;
-    },
-    set_taxonomy: function (value) {
-      this._taxonomy = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_keywords: function () {
-      return this._keywords;
-    },
-    set_keywords: function (value) {
-      this._keywords = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_objects: function () {
-      return this._objects;
-    },
-    set_objects: function (value) {
-      this._objects = value;
-      this.set_tourDirty(true);
-      return value;
-    },
-    get_editMode: function () {
-      return this._editMode;
-    },
-    set_editMode: function (value) {
-      this._editMode = value;
-      return value;
-    },
-    get_tourStops: function () {
-      return this._tourStops;
-    },
-    set_tourStops: function (value) {
-      this._tourStops = value;
-      return value;
-    },
-    get_currentTourstopIndex: function () {
-      return this._currentTourstopIndex;
-    },
-    set_currentTourstopIndex: function (value) {
-      this._currentTourstopIndex = value;
-      return value;
-    },
-    addTourStop: function (ts) {
-      ts.set_owner(this);
-      this.get_tourStops().push(ts);
-      this._currentTourstopIndex = this._tourStops.length - 1;
-      this.set_tourDirty(true);
-    },
-    insertTourStop: function (ts) {
-      ts.set_owner(this);
-      if (this._currentTourstopIndex > -1) {
-        this.get_tourStops().splice(this._currentTourstopIndex, 0, ts);
-      } else {
-        this.get_tourStops().push(ts);
-        this._currentTourstopIndex = this._tourStops.length - 1;
-      }
-      this.set_tourDirty(true);
-    },
-    insertAfterTourStop: function (ts) {
-      ts.set_owner(this);
-      if (this._currentTourstopIndex > -1 || this._currentTourstopIndex < this.get_tourStops().length) {
-        this.get_tourStops().splice(this._currentTourstopIndex + 1, 0, ts);
-      } else {
-        this.get_tourStops().push(ts);
-        this._currentTourstopIndex = this._tourStops.length - 1;
-      }
-      this.set_tourDirty(true);
-    },
-    removeTourStop: function (ts) {
-      ss.remove(this._tourStops, ts);
-      if (this._currentTourstopIndex > this._tourStops.length - 1) {
-        this._currentTourstopIndex--;
-      }
-      this.set_tourDirty(true);
-    },
-    _calculateRunTime: function () {
-      let totalTime = 0;
-      for (let i = 0; i < this._tourStops.length; i++) {
-        totalTime += this._tourStops[i].get_duration();
-        if (i > 0) {
-          switch (this._tourStops[i].get__transition()) {
-            case 0:
-              if (this._tourStops[i].get_target().get_backgroundImageset() == null || (this._tourStops[i - 1].get_target().get_backgroundImageset().get_dataSetType() === this._tourStops[i].get_target().get_backgroundImageset().get_dataSetType() && ((this._tourStops[i - 1].get_target().get_backgroundImageset().get_dataSetType() !== 4) || (this._tourStops[i - 1].get_target().get_target() === this._tourStops[i].get_target().get_target())))) {
-                const start = (this._tourStops[i - 1].get_endTarget() == null) ? this._tourStops[i - 1].get_target().get_camParams() : this._tourStops[i - 1].get_endTarget().get_camParams();
-                const slew = ViewMoverSlew.create(start, this._tourStops[i].get_target().get_camParams());
-                totalTime += slew.get_moveTime() * 1000;
-              }
-              break;
-            case 2:
-              break;
-            case 1:
-              break;
-            case 5:
-              break;
-            default:
-              break;
-          }
-        }
-      }
-      return ss.truncate(totalTime);
-    },
-    elapsedTimeTillTourstop: function (index) {
-      if (!index && index >= this._tourStops.length) {
-        return 0;
-      }
-      let totalTime = 0;
-      for (let i = 0; i < index; i++) {
-        totalTime += this._tourStops[i].get_duration();
-        if (i > 0) {
-          switch (this._tourStops[i].get__transition()) {
-            case 0:
-              const start = (this._tourStops[i - 1].get_endTarget() == null) ? this._tourStops[i - 1].get_target().get_camParams() : this._tourStops[i - 1].get_endTarget().get_camParams();
-              if (this._tourStops[i - 1].get_target().get_backgroundImageset().get_dataSetType() === this._tourStops[i].get_target().get_backgroundImageset().get_dataSetType() && ((this._tourStops[i - 1].get_target().get_backgroundImageset().get_dataSetType() !== 4) || (this._tourStops[i - 1].get_target().get_target() === this._tourStops[i].get_target().get_target()))) {
-                const slew = ViewMoverSlew.create(start, this._tourStops[i].get_target().get_camParams());
-                totalTime += slew.get_moveTime() * 1000;
-              }
-              break;
-            case 2:
-              break;
-            case 1:
-              break;
-            case 5:
-              break;
-            default:
-              break;
-          }
-        }
-      }
-      return totalTime / 1000;
-    },
-    elapsedTimeSinceLastMaster: function (index) {
-      let masterOut = null;
-      if (!index && index >= this._tourStops.length) {
-        return null;
-      }
-      let totalTime = 0;
-      for (let i = 0; i < index; i++) {
-        if (this._tourStops[i].get_masterSlide()) {
-          totalTime = 0;
-          masterOut = this._tourStops[i];
-        }
-        totalTime += this._tourStops[i].get_duration();
-        if (i > 0) {
-          switch (this._tourStops[i].get__transition()) {
-            case 0:
-              const start = (this._tourStops[i - 1].get_endTarget() == null) ? this._tourStops[i - 1].get_target().get_camParams() : this._tourStops[i - 1].get_endTarget().get_camParams();
-              if (this._tourStops[i - 1].get_target().get_backgroundImageset().get_dataSetType() === this._tourStops[i].get_target().get_backgroundImageset().get_dataSetType() && ((this._tourStops[i - 1].get_target().get_backgroundImageset().get_dataSetType() !== 4) || (this._tourStops[i - 1].get_target().get_target() === this._tourStops[i].get_target().get_target()))) {
-                const slew = ViewMoverSlew.create(start, this._tourStops[i].get_target().get_camParams());
-                totalTime += slew.get_moveTime() * 1000;
-              }
-              break;
-            case 2:
-              break;
-            case 1:
-              break;
-            case 5:
-              break;
-            default:
-              break;
-          }
-        }
-      }
-      return new MasterTime(masterOut, totalTime / 1000);
-    },
-    getMasterSlideForIndex: function (index) {
-      let master = -1;
-      for (let i = 0; i < index; i++) {
-        if (this._tourStops[i].get_masterSlide()) {
-          master = i;
-        }
-      }
-      if (master === -1) {
-        return null;
-      }
-      return this._tourStops[master];
-    },
-    getTourStopIndexByID: function (id) {
-      if (!id || id === 'Next') {
-        return this._currentTourstopIndex++;
-      }
-      let index = 0;
-      const $enum1 = ss.enumerate(this._tourStops);
-      while ($enum1.moveNext()) {
-        const stop = $enum1.current;
-        if (stop.get_id() === id) {
-          return index;
-        }
-        index++;
-      }
-      return -1;
-    },
-    cleanUp: () => {
-    },
-    getCachedTexture: function (filename, callMe) {
-      if (this._textureList == null) {
-        this._textureList = {};
-      }
-      if (ss.keyExists(this._textureList, filename)) {
-        callMe();
-        return this._textureList[filename];
-      }
-      const url = this.getFileStream(filename);
-      if (!ss.whitespace(url)) {
-        const texture = document.createElement('img');
-        texture.src = this.getFileStream(filename);
-        texture.addEventListener('load', () => {
-          callMe();
-        }, false);
-        this._textureList[filename] = texture;
-        return texture;
-      } else {
-        return null;
-      }
-    },
-    getCachedTexture2d: function (filename) {
-      if (this._textureList2d == null) {
-        this._textureList2d = {};
-      }
-      if (ss.keyExists(this._textureList2d, filename)) {
-        return this._textureList2d[filename];
-      }
-      const texture = new Texture();
-      texture.load(this.getFileStream(filename));
-      this._textureList2d[filename] = texture;
-      return texture;
-    },
-    addCachedFile: function (filename, file) {
-      this._fileCache[filename] = file;
-      if (ss.keyExists(this._textureList2d, filename)) {
-        delete this._textureList2d[filename];
-      }
-      if (ss.keyExists(this._textureList, filename)) {
-        delete this._textureList[filename];
-      }
-    },
-    getFileStream: function (filename) {
-      const blob = this.getFileBlob(filename);
-      if (blob == null) {
-        return null;
-      }
-      return URL.createObjectURL(blob);
-      ;
-    },
-    getFileBlob: function (filename) {
-      if (ss.keyExists(this._fileCache, filename)) {
-        return this._fileCache[filename];
-      } else if (this._cabinet != null) {
-        return this._cabinet.getFileBlob(this.get_workingDirectory() + filename);
-      } else {
-        return null;
-      }
-    },
-    get_currentTourStop: function () {
-      if (this._currentTourstopIndex > -1) {
-        return this.get_tourStops()[this._currentTourstopIndex];
-      } else {
-        return null;
-      }
-    },
-    set_currentTourStop: function (value) {
-      let i = 0;
-      const $enum1 = ss.enumerate(this.get_tourStops());
-      while ($enum1.moveNext()) {
-        const stop = $enum1.current;
-        if (stop === value) {
-          if (this._currentTourstopIndex > -1) {
-          }
-          this._currentTourstopIndex = i;
-          break;
-        }
-        i++;
-      }
-      return value;
-    },
-    clearTempFiles: () => {
-    }
-  };
 
   function TourEditTab() {
     this.musicTrack = new SoundEditor();
@@ -3127,6 +1839,7 @@ let wwtlib = (() => {
     this._player = null;
     this._defultColor = Colors.get_white();
   }
+
   const TourEditTab$ = {
     setUiStrings: () => {
     },
@@ -3890,6 +2603,7 @@ let wwtlib = (() => {
     this.editTextCallback = null;
     this._defaultColor = Colors.get_white();
   }
+
   const TourEditor$ = {
     render: function (renderContext) {
       renderContext.setupMatricesOverlays();
@@ -4746,7 +3460,7 @@ let wwtlib = (() => {
       const $enum1 = ss.enumerate(this.selection.selectionSet);
       while ($enum1.moveNext()) {
         const overlay = $enum1.current;
-        overlay.saveToXml(writer, true);
+        Imageset.saveToXml(writer, true);
       }
       writer._writeEndElement();
       this.clipboardData = writer.body;
@@ -5207,14 +3921,22 @@ let wwtlib = (() => {
     }
   };
 
-  function OverlayList() {}
-  OverlayList._updateOverlayList = (currentTourStop, selection) => {};
-  OverlayList._updateOverlayListSelection = selection => {  };
+  function OverlayList() {
+  }
+
+  OverlayList._updateOverlayList = (currentTourStop, selection) => {
+  };
+  OverlayList._updateOverlayListSelection = selection => {
+  };
   const OverlayList$ = {};
 
-  function TourEdit() {}
-  TourEdit._ensureSelectedVisible = () => {};
-  TourEdit._selectCurrent = () => {  };
+  function TourEdit() {
+  }
+
+  TourEdit._ensureSelectedVisible = () => {
+  };
+  TourEdit._selectCurrent = () => {
+  };
   TourEdit._undoStep = () => {
     if (Undo.peekAction()) {
       Undo.stepBack();
@@ -5230,6 +3952,7 @@ let wwtlib = (() => {
   function SoundEditor() {
     this.target = null;
   }
+
   const SoundEditor$ = {};
 
   function TourStopList() {
@@ -5241,6 +3964,7 @@ let wwtlib = (() => {
     this.multipleSelection = false;
     this.hitType = false;
   }
+
   const TourStopList$ = {
     selectAll: function () {
       this.selectedItems = {};
@@ -5260,8 +3984,11 @@ let wwtlib = (() => {
     }
   };
 
-  function TimeLine() {}
-  TimeLine.refreshUi = () => {};
+  function TimeLine() {
+  }
+
+  TimeLine.refreshUi = () => {
+  };
   const TimeLine$ = {};
 
   function MasterTime(master, durration) {
@@ -5269,6 +3996,7 @@ let wwtlib = (() => {
     this.master = master;
     this.durration = durration;
   }
+
   const MasterTime$ = {};
 
   function TourStop() {
@@ -5361,6 +4089,7 @@ let wwtlib = (() => {
     this._voiceTrack = null;
     this._id = Guid.newGuid().toString();
   }
+
   TourStop.create = target => {
     const ts = new TourStop();
     ts._target = target;
@@ -5550,26 +4279,22 @@ let wwtlib = (() => {
     }
     if (tourStop.attributes.getNamedItem('ShowSkyOverlays') != null) {
       newTourStop._showSkyOverlays = ss.boolean(tourStop.attributes.getNamedItem('ShowSkyOverlays').nodeValue);
-    }
-    else {
+    } else {
       newTourStop._showSkyOverlays = true;
     }
     if (tourStop.attributes.getNamedItem('ShowConstellations') != null) {
       newTourStop._showConstellations = ss.boolean(tourStop.attributes.getNamedItem('ShowConstellations').nodeValue);
-    }
-    else {
+    } else {
       newTourStop._showConstellations = true;
     }
     if (tourStop.attributes.getNamedItem('ShowSkyNode') != null) {
       newTourStop._showSkyNode = ss.boolean(tourStop.attributes.getNamedItem('ShowSkyNode').nodeValue);
-    }
-    else {
+    } else {
       newTourStop._showSkyNode = true;
     }
     if (tourStop.attributes.getNamedItem('ShowSkyGrids') != null) {
       newTourStop._showSkyGrids = ss.boolean(tourStop.attributes.getNamedItem('ShowSkyGrids').nodeValue);
-    }
-    else {
+    } else {
       newTourStop._showSkyGrids = true;
     }
     if (tourStop.attributes.getNamedItem('ShowSkyOverlaysIn3d') != null) {
@@ -5586,26 +4311,22 @@ let wwtlib = (() => {
     }
     if (tourStop.attributes.getNamedItem('ConstellationBoundariesFilter') != null) {
       newTourStop._constellationBoundariesFilter = ConstellationFilter.parse(tourStop.attributes.getNamedItem('ConstellationBoundariesFilter').nodeValue);
-    }
-    else {
+    } else {
       newTourStop._constellationBoundariesFilter = ConstellationFilter.get_allConstellation();
     }
     if (tourStop.attributes.getNamedItem('ConstellationBoundariesFilter') != null) {
       newTourStop._constellationFiguresFilter = ConstellationFilter.parse(tourStop.attributes.getNamedItem('ConstellationBoundariesFilter').nodeValue);
-    }
-    else {
+    } else {
       newTourStop._constellationFiguresFilter = new ConstellationFilter();
     }
     if (tourStop.attributes.getNamedItem('ConstellationNamesFilter') != null) {
       newTourStop._constellationNamesFilter = ConstellationFilter.parse(tourStop.attributes.getNamedItem('ConstellationNamesFilter').nodeValue);
-    }
-    else {
+    } else {
       newTourStop._constellationNamesFilter = new ConstellationFilter();
     }
     if (tourStop.attributes.getNamedItem('ConstellationArtFilter') != null) {
       newTourStop._constellationArtFilter = ConstellationFilter.parse(tourStop.attributes.getNamedItem('ConstellationArtFilter').nodeValue);
-    }
-    else {
+    } else {
       newTourStop._constellationArtFilter = new ConstellationFilter();
     }
     if (tourStop.attributes.getNamedItem('MinorPlanetsFilter') != null) {
@@ -6370,17 +5091,17 @@ let wwtlib = (() => {
       const $enum1 = ss.enumerate(this._overlays);
       while ($enum1.moveNext()) {
         const overlay = $enum1.current;
-        overlay.saveToXml(xmlWriter, false);
+        Imageset.saveToXml(xmlWriter, false);
       }
       xmlWriter._writeEndElement();
       if (this._musicTrack != null) {
         xmlWriter._writeStartElement('MusicTrack');
-        this._musicTrack.saveToXml(xmlWriter, false);
+        Imageset.saveToXml(xmlWriter, false);
         xmlWriter._writeEndElement();
       }
       if (this._voiceTrack != null) {
         xmlWriter._writeStartElement('VoiceTrack');
-        this._voiceTrack.saveToXml(xmlWriter, false);
+        Imageset.saveToXml(xmlWriter, false);
         xmlWriter._writeEndElement();
       }
       this._writeLayerList(xmlWriter);
@@ -6712,6 +5433,7 @@ let wwtlib = (() => {
     this.endParams = new Array(0);
     this.frameParams = new Array(0);
   }
+
   const LayerInfo$ = {};
 
   function UndoTourStopChange(text, tour) {
@@ -6726,6 +5448,7 @@ let wwtlib = (() => {
     this._undoXml = TourStop.getXmlText(tour.get_currentTourStop());
     this._targetTour.set_tourDirty(true);
   }
+
   const UndoTourStopChange$ = {
     get_actionText: function () {
       return this._actionText;
@@ -6759,7 +5482,9 @@ let wwtlib = (() => {
     }
   };
 
-  function Undo() {}
+  function Undo() {
+  }
+
   Undo.clear = () => {
     Undo._undoStack = new ss.Stack();
     Undo._redoStack = new ss.Stack();
@@ -6771,16 +5496,14 @@ let wwtlib = (() => {
   Undo.peekActionString = () => {
     if (Undo._undoStack.count > 0) {
       return Undo._undoStack.peek().toString();
-    }
-    else {
+    } else {
       return Language.getLocalizedText(551, 'Nothing to Undo');
     }
   };
   Undo.peekRedoActionString = () => {
     if (Undo._redoStack.count > 0) {
       return Undo._redoStack.peek().toString();
-    }
-    else {
+    } else {
       return '';
     }
   };
@@ -6798,7 +5521,9 @@ let wwtlib = (() => {
   };
   const Undo$ = {};
 
-  function UndoStep() {}
+  function UndoStep() {
+  }
+
   const UndoStep$ = {
     undo: () => {
     },
@@ -6820,6 +5545,7 @@ let wwtlib = (() => {
     this._targetTour = tour;
     this._targetTour.set_tourDirty(true);
   }
+
   const UndoTourSlidelistChange$ = {
     get_actionText: function () {
       return this._actionText;
@@ -6866,6 +5592,7 @@ let wwtlib = (() => {
     this._targetTour = tour;
     this._targetTour.set_tourDirty(true);
   }
+
   const UndoTourPropertiesChange$ = {
     get_actionText: function () {
       return this._actionText;
@@ -6922,6 +5649,7 @@ let wwtlib = (() => {
     this.width = 0;
     this.height = 0;
   }
+
   Rectangle.create = (x, y, width, height) => {
     const temp = new Rectangle();
     temp.x = x;
@@ -6963,35 +5691,6 @@ let wwtlib = (() => {
     }
   };
 
-  function Cursor() {}
-  Cursor.get_position = () => new Vector2d();
-  Cursor.get_current = () => document.body.style.cursor;
-  Cursor.set_current = value => {
-    document.body.style.cursor = value;
-    return value;
-  };
-  const Cursor$ = {};
-
-  function Cursors() {
-  }
-  Cursors.get_arrow = () => 'default';
-  Cursors.get_cross = () => 'crosshair';
-  Cursors.get_defaultV = () => 'default';
-  Cursors.get_hand = () => 'grab';
-  Cursors.get_help = () => 'help';
-  Cursors.get_hSplit = () => 'row-resize';
-  Cursors.get_iBeam = () => 'text';
-  Cursors.get_no = () => 'not-allowed';
-  Cursors.get_sizeAll = () => 'help';
-  Cursors.get_sizeNESW = () => 'nwse-resize';
-  Cursors.get_sizeNS = () => 'ns-resize';
-  Cursors.get_sizeNWSE = () => 'nwse-resize';
-  Cursors.get_sizeWE = () => 'ew-resize';
-  Cursors.get_upArrow = () => 'help';
-  Cursors.get_vSplit = () => 'col-resize';
-  Cursors.get_waitCursor = () => 'wait';
-  const Cursors$ = {};
-
   function SelectLink(id) {
     this._return = false;
     this._next = true;
@@ -7000,11 +5699,11 @@ let wwtlib = (() => {
     this._ok = false;
     if (id != null) {
       this.set_id(id);
-    }
-    else {
+    } else {
       this.set_next(true);
     }
   }
+
   const SelectLink$ = {
     get_returnCaller: function () {
       return this._return;
@@ -7058,6 +5757,7 @@ let wwtlib = (() => {
   function PopupVolume() {
     this.volume = 0;
   }
+
   const PopupVolume$ = {
     showDialog: () => 1
   };
@@ -7067,6 +5767,7 @@ let wwtlib = (() => {
     this.location = new Vector2d();
     this.color = new Color();
   }
+
   const PopupColorPicker$ = {
     showDialog: () => 1
   };
@@ -7076,6 +5777,7 @@ let wwtlib = (() => {
     this.location = new Vector2d();
     this.overlay = null;
   }
+
   const OverlayProperties$ = {
     showDialog: () => 1
   };
@@ -7084,6 +5786,7 @@ let wwtlib = (() => {
     this.callBack = null;
     this.color = Colors.get_white();
   }
+
   const ColorPicker$ = {
     nonMenuClick: e => {
     },
@@ -7106,114 +5809,16 @@ let wwtlib = (() => {
     }
   };
 
-  function ContextMenuStrip() {
-    this.items = [];
-  }
-  const ContextMenuStrip$ = {
-    _dispose: () => {
-    },
-    _nonMenuClick: function (e) {
-      const menu = document.getElementById('contextmenu');
-      menu.style.display = 'none';
-      window.removeEventListener('click', ss.bind('_nonMenuClick', this), false);
-      const popup = document.getElementById('popoutmenu');
-      while (popup.firstChild != null) {
-        popup.removeChild(popup.firstChild);
-      }
-      popup.style.display = 'none';
-    },
-    _menuItemClicked: e => {
-      const me = e.currentTarget;
-      me.itemTag.click(me.itemTag, new ss.EventArgs());
-    },
-    _show: function (position) {
-      const menu = document.getElementById('contextmenu');
-      while (menu.firstChild != null) {
-        menu.removeChild(menu.firstChild);
-      }
-      menu.className = 'contextmenu';
-      menu.style.display = 'block';
-      menu.style.left = position.x.toString() + 'px';
-      menu.style.top = position.y.toString() + 'px';
-      window.addEventListener('click', ss.bind('_nonMenuClick', this), true);
-      const $enum1 = ss.enumerate(this.items);
-      while ($enum1.moveNext()) {
-        const item = $enum1.current;
-        if (item.visible) {
-          const md = document.createElement('div');
-          if (item.dropDownItems.length > 0) {
-            md.className = 'contextmenuitem submenu';
-          } else {
-            if (item.checked) {
-              md.className = 'contextmenuitem checkedmenu';
-            } else {
-              md.className = 'contextmenuitem';
-            }
-          }
-          md.innerText = item.name;
-          const it = md;
-          it.itemTag = item;
-          md.addEventListener('mouseover', ss.bind('_openSubMenu', this), false);
-          if (item.click != null) {
-            md.addEventListener('click', ss.bind('_menuItemClicked', this), false);
-          }
-          menu.appendChild(md);
-        }
-      }
-    },
-    _openSubMenu: function (e) {
-      const me = e.currentTarget;
-      const child = me.itemTag;
-      const menu = document.getElementById('popoutmenu');
-      while (menu.firstChild != null) {
-        menu.removeChild(menu.firstChild);
-      }
-      menu.style.display = 'none';
-      if (!child.dropDownItems.length) {
-        return;
-      }
-      const position = new Vector2d();
-      position.x = e.currentTarget.parentNode.offsetLeft + e.currentTarget.parentNode.clientWidth;
-      position.y = e.currentTarget.parentNode.offsetTop + e.currentTarget.offsetTop;
-      menu.className = 'contextmenu';
-      menu.style.display = 'block';
-      menu.style.left = position.x.toString() + 'px';
-      menu.style.top = position.y.toString() + 'px';
-      window.addEventListener('click', ss.bind('_nonMenuClick', this), true);
-      const $enum1 = ss.enumerate(child.dropDownItems);
-      while ($enum1.moveNext()) {
-        const item = $enum1.current;
-        if (item.visible) {
-          const md = document.createElement('div');
-          md.className = (item.checked) ? 'contextmenuitem checkedmenu' : 'contextmenuitem';
-          md.innerText = item.name;
-          const it = md;
-          it.itemTag = item;
-          md.addEventListener('click', ss.bind('_menuItemClicked', this), false);
-          menu.appendChild(md);
-        }
-      }
-    }
-  };
 
-  function ToolStripMenuItem() {
-    this.tag = null;
-    this.dropDownItems = [];
-    this.checked = false;
-    this.enabled = true;
-    this.visible = true;
-  }
-  ToolStripMenuItem.create = name => {
-    const tsmi = new ToolStripMenuItem();
-    tsmi.name = name;
-    return tsmi;
-  };
-  const ToolStripMenuItem$ = {};
 
-  function TagMe() { }
+  function TagMe() {
+  }
+
   const TagMe$ = {};
 
-  function Dialog() {}
+  function Dialog() {
+  }
+
   const Dialog$ = {
     add_showDialogHook: function (value) {
       this.__showDialogHook = ss.bindAdd(this.__showDialogHook, value);
@@ -7238,6 +5843,7 @@ let wwtlib = (() => {
     this.label = label;
     this.text = text;
   }
+
   const SimpleInput$ = {
     showDialog: () => 1,
     nonMenuClick: function (e) {
@@ -7303,6 +5909,7 @@ let wwtlib = (() => {
     this._attributes = {};
     this._value = '';
   }
+
   const XmlTextWriter$ = {
     _pushNewElement: function (name) {
       this._writePending(false);
@@ -7403,6 +6010,7 @@ let wwtlib = (() => {
     this._depthColumn = 3;
     this._magColumn = 4;
   }
+
   const VizLayer$ = {
     load: function (data) {
       const $this = this;
@@ -7476,6 +6084,7 @@ let wwtlib = (() => {
   function DataItem() {
     this.size = 0;
   }
+
   const DataItem$ = {
     getColor: () => 'Red'
   };
@@ -7486,6 +6095,7 @@ let wwtlib = (() => {
     this.offsetX = x;
     this.offsetY = y;
   }
+
   const WWTElementEvent$ = {};
 
   function FolderBrowser() {
@@ -7516,6 +6126,7 @@ let wwtlib = (() => {
     this._addButtonHover = false;
     this.imageClicked = false;
   }
+
   FolderBrowser.create = () => {
     const temp = new FolderBrowser();
     temp.height = 85;
@@ -7910,37 +6521,62 @@ let wwtlib = (() => {
     }
   };
 
-  class FolderUp{
-    constructor(){
+  class FolderUp {
+    constructor() {
       this.parent = null;
       this._bounds = new Rectangle();
     }
-    static get_name(){return 'Up Level'}
+
+    static get_name() {
+      return 'Up Level';
+    }
+
     get_thumbnail() {
       return this._thumbnail;
     }
+
     set_thumbnail(value) {
       this._thumbnail = value;
       return value;
     }
+
     static get_thumbnailUrl() {
       return '//worldwidetelescope.org/wwtweb/thumbnail.aspx?Name=folderup';
     }
-    static set_thumbnailUrl(){
+
+    static set_thumbnailUrl() {
       return;
     }
+
     get_bounds() {
       return this._bounds;
     }
+
     set_bounds(value) {
       this._bounds = value;
       return value;
     }
-    static get_isImage(){return false}
-    static get_isTour(){return false}
-    static get_isFolder(){return false}
-    static get_isCloudCommunityItem(){return false}
-    static get_readOnly(){return false}
+
+    static get_isImage() {
+      return false;
+    }
+
+    static get_isTour() {
+      return false;
+    }
+
+    static get_isFolder() {
+      return false;
+    }
+
+    static get_isCloudCommunityItem() {
+      return false;
+    }
+
+    static get_readOnly() {
+      return false;
+    }
+
     get_children() {
       if (this.parent == null) {
         return [];
@@ -7949,1945 +6585,6 @@ let wwtlib = (() => {
       }
     }
   }
-
-  function ViewMoverKenBurnsStyle(from, to, time, fromDateTime, toDateTime, type) {
-    this.interpolationType = 0;
-    this.fastDirectionMove = false;
-    this._toTargetTime = 0;
-    this._dateTimeSpan = 0;
-    this._complete = false;
-    this._midpointFired = false;
-    this.interpolationType = type;
-    if (Math.abs(from.lng - to.lng) > 180) {
-      if (from.lng > to.lng) {
-        from.lng -= 360;
-      }
-      else {
-        from.lng += 360;
-      }
-    }
-    this._fromDateTime = fromDateTime;
-    this._toDateTime = toDateTime;
-    this._dateTimeSpan = toDateTime - fromDateTime;
-    this._from = from.copy();
-    this._to = to.copy();
-    this._fromTime = ss.now();
-    this._toTargetTime = time;
-  }
-  const ViewMoverKenBurnsStyle$ = {
-    get_complete: function () {
-      return this._complete;
-    },
-    get_currentPosition: function () {
-      const elapsed = ss.now() - this._fromTime;
-      const elapsedSeconds = (elapsed) / 1000;
-      let alpha = elapsedSeconds / this._toTargetTime;
-      if (!this._midpointFired && alpha >= 0.5) {
-        this._midpointFired = true;
-        if (this._midpoint != null) {
-          this._midpoint();
-        }
-      }
-      if (alpha >= 1) {
-        alpha = 1;
-        this._complete = true;
-        return this._to.copy();
-      }
-      if (Settings.get_active().get_galacticMode() && WWTControl.singleton.renderContext.space) {
-        return CameraParameters.interpolateGreatCircle(this._from, this._to, alpha, this.interpolationType, this.fastDirectionMove);
-      }
-      return CameraParameters.interpolate(this._from, this._to, alpha, this.interpolationType, this.fastDirectionMove);
-    },
-    get_currentDateTime: function () {
-      const elapsed = ss.now() - this._fromTime;
-      const elapsedSeconds = (elapsed) / 1000;
-      const alpha = elapsedSeconds / this._toTargetTime;
-      const delta = this._dateTimeSpan * alpha;
-      const retDate = new Date(this._fromDateTime.getTime() + ss.truncate(delta));
-      return retDate;
-    },
-    get_midpoint: function () {
-      return this._midpoint;
-    },
-    set_midpoint: function (value) {
-      this._midpoint = value;
-      return value;
-    },
-    get_moveTime: function () {
-      return this._toTargetTime;
-    }
-  };
-
-  /*function ViewMoverSlew() {
-
-  }*/
-  class ViewMoverSlew{
-    constructor(){
-      this._upTargetTime = 0;
-      this._downTargetTime = 0;
-      this._toTargetTime = 0;
-      this._upTimeFactor = 0.6;
-      this._downTimeFactor = 0.6;
-      this._travelTimeFactor = 7;
-      this._midpointFired = false;
-      this._complete = false;
-    }
-    static create(){
-      const temp = new ViewMoverSlew();
-      temp.init(from, to);
-      return temp;
-    }
-    static createUpDown(){
-      const temp = new ViewMoverSlew();
-      temp._upTimeFactor = temp._downTimeFactor = upDowFactor;
-      temp.init(from.copy(), to.copy());
-      return temp;
-    }
-    init(from, to) {
-      if (Math.abs(from.lng - to.lng) > 180) {
-        if (from.lng > to.lng) {
-          from.lng -= 360;
-        } else {
-          from.lng += 360;
-        }
-      }
-      if (to.zoom <= 0) {
-        to.zoom = 360;
-      }
-      if (from.zoom <= 0) {
-        from.zoom = 360;
-      }
-      this._from = from;
-      this._to = to;
-      this._fromTime = ss.now();
-      let zoomUpTarget = 360;
-      let travelTime;
-      const lngDist = Math.abs(from.lng - to.lng);
-      const latDist = Math.abs(from.lat - to.lat);
-      const distance = Math.sqrt(latDist * latDist + lngDist * lngDist);
-      zoomUpTarget = (distance / 3) * 20;
-      if (zoomUpTarget > 360) {
-        zoomUpTarget = 360;
-      }
-      if (zoomUpTarget < from.zoom) {
-        zoomUpTarget = from.zoom;
-      }
-      travelTime = (distance / 180) * (360 / zoomUpTarget) * this._travelTimeFactor;
-      const rotateTime = Math.max(Math.abs(from.angle - to.angle), Math.abs(from.rotation - to.rotation));
-      const logDistUp = Math.max(Math.abs(Util.logN(zoomUpTarget, 2) - Util.logN(from.zoom, 2)), rotateTime);
-      this._upTargetTime = this._upTimeFactor * logDistUp;
-      this._downTargetTime = this._upTargetTime + travelTime;
-      const logDistDown = Math.abs(Util.logN(zoomUpTarget, 2) - Util.logN(to.zoom, 2));
-      this._toTargetTime = this._downTargetTime + Math.max((this._downTimeFactor * logDistDown), rotateTime);
-      this._fromTop = from.copy();
-      this._fromTop.zoom = zoomUpTarget;
-      this._fromTop.angle = (from.angle + to.angle) / 2;
-      this._fromTop.rotation = (from.rotation + to.rotation) / 2;
-      this._toTop = to.copy();
-      this._toTop.zoom = this._fromTop.zoom;
-      this._toTop.angle = this._fromTop.angle;
-      this._toTop.rotation = this._fromTop.rotation;
-    }
-    get_complete() {
-      return this._complete;
-    }
-    get_currentPosition(){
-    const elapsed = ss.now() - this._fromTime;
-    let elapsedSeconds = (elapsed) / 1000;
-    if (elapsedSeconds < this._upTargetTime) {
-    return CameraParameters.interpolate(this._from, this._fromTop, elapsedSeconds / this._upTargetTime, 3, false);
-  } else if (elapsedSeconds < this._downTargetTime) {
-    elapsedSeconds -= this._upTargetTime;
-    if (Settings.get_active().get_galacticMode() && WWTControl.singleton.renderContext.space) {
-      return CameraParameters.interpolateGreatCircle(this._fromTop, this._toTop, elapsedSeconds / (this._downTargetTime - this._upTargetTime), 3, false);
-    }
-    return CameraParameters.interpolate(this._fromTop, this._toTop, elapsedSeconds / (this._downTargetTime - this._upTargetTime), 3, false);
-  } else {
-    if (!this._midpointFired) {
-      this._midpointFired = true;
-      if (this._midpoint != null) {
-        this._midpoint();
-      }
-    }
-    elapsedSeconds -= this._downTargetTime;
-    let alpha = elapsedSeconds / (this._toTargetTime - this._downTargetTime);
-    if (alpha > 1) {
-      alpha = 1;
-      this._complete = true;
-      return this._to.copy();
-    }
-    return CameraParameters.interpolate(this._toTop, this._to, alpha, 3, false);
-  }
-}
-    static get_currentDateTime(){
-      SpaceTimeController.updateClock();
-      return SpaceTimeController.get_now();
-    }
-    static get_midpoint(){
-      return this._midpoint;
-    }
-    static set_midpoint(value) {
-      this._midpoint = value;
-      return value;
-    }
-    static get_moveTime(){
-      return this._toTargetTime;
-    }
-  };
-
-  function GreatCirlceRouteLayer() {
-    this._triangleList$1 = null;
-    this._latStart$1 = 0;
-    this._lngStart$1 = 0;
-    this._latEnd$1 = 0;
-    this._lngEnd$1 = 0;
-    this._width$1 = 4;
-    this._percentComplete$1 = 100;
-    Layer.call(this);
-  }
-  const GreatCirlceRouteLayer$ = {
-    getTypeName: () => 'TerraViewer.GreatCirlceRouteLayer',
-    cleanUp: function () {
-      if (this._triangleList$1 != null) {
-        this._triangleList$1.clear();
-      }
-      this._triangleList$1 = null;
-      Layer.prototype.cleanUp.call(this);
-    },
-    draw: function (renderContext, opacity, flat) {
-      if (this._triangleList$1 == null) {
-        this._initializeRoute$1(renderContext);
-      }
-      this._triangleList$1.jNow = this._percentComplete$1 / 100;
-      this._triangleList$1.draw(renderContext, opacity * this.get_opacity(), 2);
-      return true;
-    },
-    _initializeRoute$1: function (renderContext) {
-      this._triangleList$1 = new TriangleList();
-      this._triangleList$1.decay = 1000;
-      this._triangleList$1.sky = this.get_astronomical();
-      this._triangleList$1.timeSeries = true;
-      this._triangleList$1.depthBuffered = false;
-      this._triangleList$1.autoTime = false;
-      const steps = 500;
-      const start = Coordinates.geoTo3dDouble(this._latStart$1, this._lngStart$1);
-      const end = Coordinates.geoTo3dDouble(this._latEnd$1, this._lngEnd$1);
-      const dir = Vector3d.subtractVectors(end, start);
-      dir.normalize();
-      const startNormal = start;
-      startNormal.normalize();
-      const left = Vector3d.cross(startNormal, dir);
-      const right = Vector3d.cross(dir, startNormal);
-      left.normalize();
-      right.normalize();
-      left.multiply(0.001 * this._width$1);
-      right.multiply(0.001 * this._width$1);
-      let lastLeft = new Vector3d();
-      let lastRight = new Vector3d();
-      let firstTime = true;
-      for (let i = 0; i <= steps; i++) {
-        const v = Vector3d.lerp(start, end, i / steps);
-        v.normalize();
-        const cl = v;
-        const cr = v;
-        cl.add(left);
-        cr.add(right);
-        if (!firstTime) {
-          this._triangleList$1.addQuad(lastRight, lastLeft, cr, cl, this.get_color(), new Dates(i / steps, 2));
-        } else {
-          firstTime = false;
-        }
-        lastLeft = cl;
-        lastRight = cr;
-      }
-    },
-    getParams: function () {
-      return [this._percentComplete$1];
-    },
-    getParamNames: () => ['Percentage'],
-    setParams: function (paramList) {
-      if (paramList.length > 0) {
-        this._percentComplete$1 = paramList[0];
-      }
-    },
-    get_latStart: function () {
-      return this._latStart$1;
-    },
-    set_latStart: function (value) {
-      if (this._latStart$1 !== value) {
-        this._latStart$1 = value;
-        this.version++;
-      }
-      return value;
-    },
-    get_lngStart: function () {
-      return this._lngStart$1;
-    },
-    set_lngStart: function (value) {
-      if (this._lngStart$1 !== value) {
-        this._lngStart$1 = value;
-        this.version++;
-      }
-      return value;
-    },
-    get_latEnd: function () {
-      return this._latEnd$1;
-    },
-    set_latEnd: function (value) {
-      if (this._latEnd$1 !== value) {
-        this._latEnd$1 = value;
-        this.version++;
-      }
-      return value;
-    },
-    get_lngEnd: function () {
-      return this._lngEnd$1;
-    },
-    set_lngEnd: function (value) {
-      if (this._lngEnd$1 !== value) {
-        this._lngEnd$1 = value;
-        this.version++;
-      }
-      return value;
-    },
-    get_width: function () {
-      return this._width$1;
-    },
-    set_width: function (value) {
-      if (this._width$1 !== value) {
-        this._width$1 = value;
-        this.version++;
-      }
-      return value;
-    },
-    get_percentComplete: function () {
-      return this._percentComplete$1;
-    },
-    set_percentComplete: function (value) {
-      if (this._percentComplete$1 !== value) {
-        this._percentComplete$1 = value;
-        this.version++;
-      }
-      return value;
-    },
-    writeLayerProperties: function (xmlWriter) {
-      xmlWriter._writeAttributeString('LatStart', this.get_latStart().toString());
-      xmlWriter._writeAttributeString('LngStart', this.get_lngStart().toString());
-      xmlWriter._writeAttributeString('LatEnd', this.get_latEnd().toString());
-      xmlWriter._writeAttributeString('LngEnd', this.get_lngEnd().toString());
-      xmlWriter._writeAttributeString('Width', this.get_width().toString());
-      xmlWriter._writeAttributeString('PercentComplete', this.get_percentComplete().toString());
-    },
-    initializeFromXml: function (node) {
-      this._latStart$1 = parseFloat(node.attributes.getNamedItem('LatStart').nodeValue);
-      this._lngStart$1 = parseFloat(node.attributes.getNamedItem('LngStart').nodeValue);
-      this._latEnd$1 = parseFloat(node.attributes.getNamedItem('LatEnd').nodeValue);
-      this._lngEnd$1 = parseFloat(node.attributes.getNamedItem('LngEnd').nodeValue);
-      this._width$1 = parseFloat(node.attributes.getNamedItem('Width').nodeValue);
-      this._percentComplete$1 = parseFloat(node.attributes.getNamedItem('PercentComplete').nodeValue);
-    }
-  };
-
-  function GridLayer() {
-    Layer.call(this);
-  }
-  const GridLayer$ = {
-    draw: function (renderContext, opacity, flat) {
-      Grids.drawPlanetGrid(renderContext, opacity * this.get_opacity(), this.get_color());
-      Grids.drawPlanetGridText(renderContext, opacity * this.get_opacity(), this.get_color());
-      return true;
-    }
-  };
-
-  function LayerCollection() {
-    Layer.call(this);
-  }
-  const LayerCollection$ = {
-    draw: function (renderContext, opacity, flat) {
-      return Layer.prototype.draw.call(this, renderContext, opacity, false);
-    }
-  };
-
-  function Object3dLayerUI(layer) {
-    this._layer$1 = null;
-    this._opened$1 = true;
-    this._callbacks$1 = null;
-    LayerUI.call(this);
-    this._layer$1 = layer;
-  }
-  const Object3dLayerUI$ = {
-    setUICallbacks: function (callbacks) {
-      this._callbacks$1 = callbacks;
-    },
-    get_hasTreeViewNodes: () => true,
-    getTreeNodes: function () {
-      const nodes = [];
-      if (this._layer$1.object3d.objects.length > 0 && this._layer$1.object3d.objects[0].children != null) {
-        this._loadTree$1(nodes, this._layer$1.object3d.objects[0].children);
-      }
-      return nodes;
-    },
-    _loadTree$1: function (nodes, children) {
-      const $enum1 = ss.enumerate(children);
-      while ($enum1.moveNext()) {
-        const child = $enum1.current;
-        const node = new LayerUITreeNode();
-        node.set_name(child.name);
-        node.set_tag(child);
-        node.set_checked(child.enabled);
-        node.add_nodeSelected(ss.bind('_node_NodeSelected$1', this));
-        node.add_nodeChecked(ss.bind('_node_NodeChecked$1', this));
-        nodes.push(node);
-        this._loadTree$1(node.get_nodes(), child.children);
-      }
-    },
-    _node_NodeChecked$1: (node, newState) => {
-      const child = node.get_tag();
-      if (child != null) {
-        child.enabled = newState;
-      }
-    },
-    _node_NodeSelected$1: function (node) {
-      if (this._callbacks$1 != null) {
-        const child = node.get_tag();
-        const rowData = {};
-        rowData['Name'] = child.name;
-        rowData['Pivot.X'] = child.pivotPoint.x.toString();
-        rowData['Pivot.Y'] = child.pivotPoint.y.toString();
-        rowData['Pivot.Z'] = child.pivotPoint.z.toString();
-        this._callbacks$1.showRowData(rowData);
-      }
-    },
-    getNodeContextMenu: function (node) {
-      return LayerUI.prototype.getNodeContextMenu.call(this, node);
-    }
-  };
-
-  function OrbitLayer() {
-    this._frames$1 = [];
-    this._primaryUI$1 = null;
-    this._pointOpacity$1 = 1;
-    this._pointColor$1 = Colors.get_yellow();
-    this._filename$1 = '';
-    this._dataFile$1 = '';
-    Layer.call(this);
-  }
-  const OrbitLayer$ = {
-    get_frames: function () {
-      return this._frames$1;
-    },
-    set_frames: function (value) {
-      this._frames$1 = value;
-      return value;
-    },
-    getPrimaryUI: function () {
-      if (this._primaryUI$1 == null) {
-        this._primaryUI$1 = new OrbitLayerUI(this);
-      }
-      return this._primaryUI$1;
-    },
-    cleanUp: function () {
-      const $enum1 = ss.enumerate(this._frames$1);
-      while ($enum1.moveNext()) {
-        const frame = $enum1.current;
-        if (frame.get_orbit() != null) {
-          frame.get_orbit().cleanUp();
-          frame.set_orbit(null);
-        }
-      }
-    },
-    writeLayerProperties: function (xmlWriter) {
-      xmlWriter._writeAttributeString('PointOpacity', this.get_pointOpacity().toString());
-      xmlWriter._writeAttributeString('PointColor', this._pointColor$1.save());
-    },
-    get_pointOpacity: function () {
-      return this._pointOpacity$1;
-    },
-    set_pointOpacity: function (value) {
-      if (this._pointOpacity$1 !== value) {
-        this.version++;
-        this._pointOpacity$1 = value;
-      }
-      return value;
-    },
-    get_pointColor: function () {
-      return this._pointColor$1;
-    },
-    set_pointColor: function (value) {
-      if (this._pointColor$1 !== value) {
-        this.version++;
-        this._pointColor$1 = value;
-      }
-      return value;
-    },
-    getParams: function () {
-      const paramList = new Array(6);
-      paramList[0] = this._pointOpacity$1;
-      paramList[1] = this.get_color().r / 255;
-      paramList[2] = this.get_color().g / 255;
-      paramList[3] = this.get_color().b / 255;
-      paramList[4] = this.get_color().a / 255;
-      paramList[5] = this.get_opacity();
-      return paramList;
-    },
-    getParamNames: () => ['PointOpacity', 'Color.Red', 'Color.Green', 'Color.Blue', 'Color.Alpha', 'Opacity'],
-    setParams: function (paramList) {
-      if (paramList.length === 6) {
-        this._pointOpacity$1 = paramList[0];
-        this.set_opacity(paramList[5]);
-        const color = Color.fromArgb(ss.truncate((paramList[4] * 255)), ss.truncate((paramList[1] * 255)), ss.truncate((paramList[2] * 255)), ss.truncate((paramList[3] * 255)));
-        this.set_color(color);
-      }
-    },
-    initializeFromXml: function (node) {
-      this.set_pointOpacity(parseFloat(node.attributes.getNamedItem('PointOpacity').nodeValue));
-      this.set_pointColor(Color.load(node.attributes.getNamedItem('PointColor').nodeValue));
-    },
-    draw: function (renderContext, opacity, flat) {
-      const matSaved = renderContext.get_world();
-      renderContext.set_world(renderContext.get_worldBaseNonRotating());
-      const $enum1 = ss.enumerate(this._frames$1);
-      while ($enum1.moveNext()) {
-        const frame = $enum1.current;
-        if (frame.showOrbitPath) {
-          if (frame.get_orbit() == null) {
-            frame.set_orbit(new Orbit(frame.get_elements(), 360, this.get_color(), 1, renderContext.get_nominalRadius()));
-          }
-          frame.get_orbit().draw3D(renderContext, opacity * this.get_opacity(), new Vector3d());
-        }
-      }
-      renderContext.set_world(matSaved);
-      return true;
-    },
-    addFilesToCabinet: function (fc) {
-      this._filename$1 = fc.tempDirectory + ss.format('{0}\\{1}.txt', fc.get_packageID(), this.id.toString());
-      const dir = this._filename$1.substring(0, this._filename$1.lastIndexOf('\\'));
-      const blob = new Blob([this._dataFile$1]);
-      fc.addFile(this._filename$1, blob);
-      Layer.prototype.addFilesToCabinet.call(this, fc);
-    },
-    loadData: function (tourDoc, filename) {
-      const $this = this;
-
-      const blob = tourDoc.getFileBlob(filename);
-      const doc = new FileReader();
-      doc.onloadend = ee => {
-        $this._dataFile$1 = ss.safeCast(doc.result, String);
-        $this.loadString($this._dataFile$1);
-      };
-      doc.readAsText(blob);
-    },
-    loadString: function (dataFile) {
-      const data = dataFile.split('\n');
-      this._frames$1.length = 0;
-      for (let i = 0; i < data.length; i += 2) {
-        let line1 = i;
-        let line2 = i + 1;
-        if (data[i].length > 0) {
-          const frame = new ReferenceFrame();
-          if (data[i].substring(0, 1) !== '1') {
-            line1++;
-            line2++;
-            frame.name = ss.trim(data[i]);
-            i++;
-          } else if (data[i].substring(0, 1) === '1') {
-            frame.name = data[i].substring(2, 5);
-          } else {
-            i -= 2;
-            continue;
-          }
-          frame.reference = 18;
-          frame.oblateness = 0;
-          frame.showOrbitPath = true;
-          frame.showAsPoint = true;
-          frame.referenceFrameType = 1;
-          frame.scale = 1;
-          frame.semiMajorAxisUnits = 1;
-          frame.meanRadius = 10;
-          frame.oblateness = 0;
-          frame.fromTLE(data[line1], data[line2], 398600441800000);
-          this._frames$1.push(frame);
-        } else {
-          i -= 1;
-        }
-      }
-    }
-  };
-
-  function OrbitLayerUI(layer) {
-    this._layer$1 = null;
-    this._opened$1 = true;
-    this._callbacks$1 = null;
-    LayerUI.call(this);
-    this._layer$1 = layer;
-  }
-  const OrbitLayerUI$ = {
-    setUICallbacks: function (callbacks) {
-      this._callbacks$1 = callbacks;
-    },
-    get_hasTreeViewNodes: () => true,
-    getTreeNodes: function () {
-      const nodes = [];
-      const $enum1 = ss.enumerate(this._layer$1.get_frames());
-      while ($enum1.moveNext()) {
-        const frame = $enum1.current;
-        const node = new LayerUITreeNode();
-        node.set_name(frame.name);
-        node.set_tag(frame);
-        node.set_checked(frame.showOrbitPath);
-        node.add_nodeSelected(ss.bind('_node_NodeSelected$1', this));
-        node.add_nodeChecked(ss.bind('_node_NodeChecked$1', this));
-        nodes.push(node);
-      }
-      return nodes;
-    },
-    _node_NodeChecked$1: (node, newState) => {
-      const frame = node.get_tag();
-      if (frame != null) {
-        frame.showOrbitPath = newState;
-      }
-    },
-    _node_NodeSelected$1: function (node) {
-      if (this._callbacks$1 != null) {
-        const frame = node.get_tag();
-        const rowData = {};
-        rowData['Name'] = frame.name;
-        rowData['SemiMajor Axis'] = frame.semiMajorAxis.toString();
-        rowData['SMA Units'] = frame.semiMajorAxisUnits.toString();
-        rowData['Inclination'] = frame.inclination.toString();
-        rowData['Eccentricity'] = frame.eccentricity.toString();
-        rowData['Long of Asc. Node'] = frame.longitudeOfAscendingNode.toString();
-        rowData['Argument Of Periapsis'] = frame.argumentOfPeriapsis.toString();
-        rowData['Epoch'] = frame.epoch.toString();
-        rowData['Mean Daily Motion'] = frame.meanDailyMotion.toString();
-        rowData['Mean Anomoly at Epoch'] = frame.meanAnomolyAtEpoch.toString();
-        this._callbacks$1.showRowData(rowData);
-      }
-    },
-    getNodeContextMenu: function (node) {
-      return LayerUI.prototype.getNodeContextMenu.call(this, node);
-    }
-  };
-
-  function SpreadSheetLayer() {
-    this._dataDirty$1 = false;
-    this._barChartBitmask$1 = 0;
-    this._barScaleFactor$1 = 20;
-    this._meanRadius$1 = 6371000;
-    this._table$1 = new Table();
-    this.isLongIndex = false;
-    this.shapeVertexCount = 0;
-    this.lines = false;
-    this.latColumn = -1;
-    this.fixedSize = 1;
-    this.decay = 16;
-    this.timeSeries = false;
-    this._dynamicData$1 = false;
-    this._autoUpdate$1 = false;
-    this._dataSourceUrl$1 = '';
-    this._beginRange$1 = new Date('1/1/2100');
-    this._endRange$1 = new Date('01/01/1800');
-    this.markerDomainValues = {};
-    this.colorDomainValues = {};
-    this._coordinatesType$1 = 0;
-    this.lngColumn = -1;
-    this.geometryColumn = -1;
-    this._xAxisColumn$1 = -1;
-    this._yAxisColumn$1 = -1;
-    this._zAxisColumn$1 = -1;
-    this._xAxisReverse$1 = false;
-    this._yAxisReverse$1 = false;
-    this._zAxisReverse$1 = false;
-    this._altType$1 = 3;
-    this._markerMix$1 = 0;
-    this._raUnits$1 = 0;
-    this._colorMap$1 = 3;
-    this._markerColumn$1 = -1;
-    this._colorMapColumn$1 = -1;
-    this._plotType$1 = 0;
-    this._markerIndex$1 = 0;
-    this._showFarSide$1 = false;
-    this._markerScale$1 = 1;
-    this._altUnit$1 = 1;
-    this._cartesianScale$1 = 1;
-    this._cartesianCustomScale$1 = 1;
-    this.altColumn = -1;
-    this.startDateColumn = -1;
-    this.endDateColumn = -1;
-    this.sizeColumn = -1;
-    this.nameColumn = 0;
-    this._hyperlinkFormat$1 = '';
-    this._hyperlinkColumn$1 = -1;
-    this.scaleFactor = 1;
-    this.pointScaleType = 1;
-    this.positions = [];
-    this.bufferIsFlat = false;
-    this.baseDate = new Date(2010, 0, 1, 12, 0, 0);
-    this.dirty = true;
-    this.lastVersion = 0;
-    Layer.call(this);
-  }
-  SpreadSheetLayer._getDatafromFeed$1 = url => '';
-  SpreadSheetLayer._executeQuery$1 = url => '';
-  SpreadSheetLayer.parseDate = date => {
-    let dt = ss.now();
-    try {
-      dt = new Date(date);
-    }
-    catch ($e1) {
-      try {
-        return SpreadSheetLayer.execlToDateTime(parseFloat(date));
-      }
-      catch ($e2) {
-      }
-    }
-    return dt;
-  };
-  SpreadSheetLayer.execlToDateTime = excelDate => {
-    if (excelDate > 59) {
-      excelDate -= 1;
-    }
-    if (excelDate > 730000) {
-      excelDate = 730000;
-    }
-    const es = new Date(1899, 12, 31);
-    return new Date(es.getDate() + ss.truncate((excelDate * 24 * 60 * 60 * 1000)));
-  };
-  SpreadSheetLayer.get__circleTexture$1 = () => SpreadSheetLayer._circleTexture$1;
-  const SpreadSheetLayer$ = {
-    getTypeName: () => 'TerraViewer.SpreadSheetLayer',
-    get_header: function () {
-      return this._table$1.header;
-    },
-    canCopyToClipboard: () => true,
-    copyToClipboard: () => {
-    },
-    dynamicUpdate: function () {
-      const data = SpreadSheetLayer._getDatafromFeed$1(this.get_dataSourceUrl());
-      if (data != null) {
-        this.upadteData(data, false, true, true);
-        this.guessHeaderAssignments();
-        return true;
-      }
-      return false;
-    },
-    upadteData: function (data, purgeOld, purgeAll, hasHeader) {
-      this.loadFromString(ss.safeCast(data, String), true, purgeOld, purgeAll, hasHeader);
-      this.computeDateDomainRange(-1, -1);
-      this._dataDirty$1 = true;
-      return true;
-    },
-    loadData: function (tourDoc, filename) {
-      const $this = this;
-
-      this._table$1 = new Table();
-      const blob = tourDoc.getFileBlob(filename);
-      this.getStringFromGzipBlob(blob, data => {
-        $this._table$1.loadFromString(data, false, true, true);
-        $this.computeDateDomainRange(-1, -1);
-        if ($this.get_dynamicData() && $this.get_autoUpdate()) {
-          $this.dynamicUpdate();
-        }
-        $this._dataDirty$1 = true;
-        $this.dirty = true;
-      });
-    },
-    addFilesToCabinet: function (fc) {
-      this._fileName$1 = fc.tempDirectory + ss.format('{0}\\{1}.txt', fc.get_packageID(), this.id.toString());
-      const dir = this._fileName$1.substring(0, this._fileName$1.lastIndexOf('\\'));
-      const data = this._table$1.save();
-      const blob = new Blob([data]);
-      fc.addFile(this._fileName$1, blob);
-      Layer.prototype.addFilesToCabinet.call(this, fc);
-    },
-    guessHeaderAssignments: function () {
-      let index = 0;
-      const $enum1 = ss.enumerate(this._table$1.header);
-      while ($enum1.moveNext()) {
-        const headerName = $enum1.current;
-        const name = headerName.toLowerCase();
-        if (name.indexOf('lat') > -1 && this.latColumn === -1) {
-          this.latColumn = index;
-        }
-        if ((name.indexOf('lon') > -1 || name.indexOf('lng') > -1) && this.lngColumn === -1) {
-          this.lngColumn = index;
-        }
-        if (name.indexOf('dec') > -1 && this.latColumn === -1) {
-          this.latColumn = index;
-          this.astronomical = true;
-        }
-        if ((name.indexOf('ra') > -1 || name.indexOf('ascen') > -1) && this.lngColumn === -1) {
-          this.lngColumn = index;
-          this.astronomical = true;
-          this.pointScaleType = 4;
-        }
-        if ((name.indexOf('mag') > -1 || name.indexOf('size') > -1) && this.sizeColumn === -1) {
-          this.sizeColumn = index;
-        }
-        if ((name.indexOf('date') > -1 || name.indexOf('time') > -1 || name.indexOf('dt') > -1 || name.indexOf('tm') > -1)) {
-          if (name.indexOf('end') > -1 && this.endDateColumn === -1) {
-            this.endDateColumn = index;
-          } else if (this.startDateColumn === -1) {
-            this.startDateColumn = index;
-          }
-        }
-        if ((name.indexOf('altitude') > -1 || name.indexOf('alt') > -1) && this.altColumn === -1) {
-          this.altColumn = index;
-          this.set_altType(1);
-          this.set_altUnit(1);
-        }
-        if (name.indexOf('depth') > -1 && this.altColumn === -1) {
-          this.altColumn = index;
-          this.set_altType(0);
-          this.set_altUnit(5);
-        }
-        if (ss.startsWith(name, 'x') && this.get_xAxisColumn() === -1) {
-          this.set_xAxisColumn(index);
-        }
-        if (ss.startsWith(name, 'y') && this.get_yAxisColumn() === -1) {
-          this.set_yAxisColumn(index);
-        }
-        if (ss.startsWith(name, 'z') && this.get_zAxisColumn() === -1) {
-          this.set_zAxisColumn(index);
-        }
-        if (name.indexOf('color') > -1 && this.get_colorMapColumn() === -1) {
-          this.set_colorMapColumn(index);
-        }
-        if ((name.indexOf('geometry') > -1 || name.indexOf('geography') > -1) && this.geometryColumn === -1) {
-          this.geometryColumn = index;
-        }
-        index++;
-      }
-      if (this._table$1.header.length > 0) {
-        this.nameColumn = 0;
-      }
-    },
-    computeDateDomainRange: function (columnStart, columnEnd) {
-      if (columnStart === -1) {
-        columnStart = this.startDateColumn;
-      }
-      if (columnEnd === -1) {
-        columnEnd = this.endDateColumn;
-      }
-      if (columnEnd === -1) {
-        columnEnd = columnStart;
-      }
-      this.set_beginRange(new Date('12/31/2100'));
-      this.set_endRange(new Date('12/31/1890'));
-      const $enum1 = ss.enumerate(this._table$1.rows);
-      while ($enum1.moveNext()) {
-        const row = $enum1.current;
-        try {
-          if (columnStart > -1) {
-            const sucsess = false;
-            let dateTimeStart = new Date('12/31/2100');
-            try {
-              dateTimeStart = new Date(row[columnStart]);
-              if (dateTimeStart < this.get_beginRange()) {
-                this.set_beginRange(dateTimeStart);
-              }
-            } catch ($e2) {
-            }
-            try {
-              let dateTimeEnd = new Date('12/31/1890');
-              if (columnEnd > -1) {
-                dateTimeEnd = new Date(row[columnEnd]);
-                if (sucsess && dateTimeEnd > this.get_endRange()) {
-                  this.set_endRange(dateTimeEnd);
-                }
-              }
-            } catch ($e3) {
-            }
-          }
-        } catch ($e4) {
-        }
-      }
-    },
-    checkState: () => {
-    },
-    getMaxValue: function (column) {
-      let max = 0;
-      this._table$1.lock();
-      const $enum1 = ss.enumerate(this._table$1.rows);
-      while ($enum1.moveNext()) {
-        const row = $enum1.current;
-        try {
-          if (column > -1) {
-            const sucsess = false;
-            try {
-              const val = parseFloat(row[column]);
-              if (sucsess && val > max) {
-                max = val;
-              }
-            } catch ($e2) {
-            }
-          }
-        } catch ($e3) {
-        }
-      }
-      this._table$1.unlock();
-      return max;
-    },
-    getDomainValues: function (column) {
-      const domainValues = [];
-      this._table$1.lock();
-      const $enum1 = ss.enumerate(this._table$1.rows);
-      while ($enum1.moveNext()) {
-        const row = $enum1.current;
-        try {
-          if (column > -1) {
-            if (!(domainValues.indexOf(row[column]) >= 0)) {
-              domainValues.push(row[column]);
-            }
-          }
-        } catch ($e2) {
-        }
-      }
-      domainValues.sort();
-      this._table$1.unlock();
-      return domainValues;
-    },
-    get_barChartBitmask: function () {
-      return this._barChartBitmask$1;
-    },
-    set_barChartBitmask: function (value) {
-      this._barChartBitmask$1 = value;
-      return value;
-    },
-    prepVertexBuffer: function (renderContext, opacity) {
-      this._table$1.lock();
-      if (this.lineList != null) {
-        this.lineList.clear();
-      }
-      if (this.lineList2d != null) {
-        this.lineList2d.clear();
-      }
-      if (this.triangleList != null) {
-        this.triangleList.clear();
-      }
-      if (this.pointList != null) {
-        this.pointList.clear();
-      }
-      if (this.triangleList2d != null) {
-        this.triangleList2d.clear();
-      }
-      if (this.lineList == null) {
-        this.lineList = new LineList();
-      }
-      if (this.pointList == null) {
-        this.pointList = new PointList(renderContext);
-      }
-      this.lineList.timeSeries = this.timeSeries;
-      if (this.lineList2d == null) {
-        this.lineList2d = new LineList();
-        this.lineList2d.set_depthBuffered(false);
-      }
-      this.lineList.timeSeries = this.timeSeries;
-      if (this.triangleList == null) {
-        this.triangleList = new TriangleList();
-      }
-      if (this.triangleList2d == null) {
-        this.triangleList2d = new TriangleList();
-        this.triangleList2d.depthBuffered = false;
-      }
-      this.positions.length = 0;
-      let currentIndex = 0;
-      const colorLocal = this.get_color();
-      const ecliptic = Coordinates.meanObliquityOfEcliptic(SpaceTimeController.get_jNow()) / 180 * Math.PI;
-      const selectDomain = {};
-      const mr = 0;
-      if (!!mr) {
-        this._meanRadius$1 = mr;
-      }
-      let position = new Vector3d();
-      let pointSize = 0.0002;
-      let pointColor = Colors.get_white();
-      let pointStartTime = 0;
-      let pointEndTime = 0;
-      const $enum1 = ss.enumerate(this._table$1.rows);
-      while ($enum1.moveNext()) {
-        const row = $enum1.current;
-        try {
-          const selected = false;
-          if (this.geometryColumn > -1 || (!this.get_coordinatesType() && (this.lngColumn > -1 && this.latColumn > -1)) || ((this.get_coordinatesType() === 1) && (this.get_xAxisColumn() > -1 && this.get_yAxisColumn() > -1))) {
-            let Xcoord = 0;
-            let Ycoord = 0;
-            let Zcoord = 0;
-            let alt = 1;
-            let altitude = 0;
-            let distParces = 0;
-            let factor = this.getScaleFactor(this.get_altUnit(), 1);
-            if (this.altColumn === -1 || this.get_altType() === 3 || this.bufferIsFlat) {
-              alt = 1;
-              if ((this.astronomical & !this.bufferIsFlat) === 1) {
-                alt = 63239.6717 * 100;
-              }
-            } else {
-              if (!this.get_altType()) {
-                factor = -factor;
-              }
-              alt = 0;
-              try {
-                alt = parseFloat(row[this.altColumn]);
-              } catch ($e2) {
-              }
-              if (this.astronomical) {
-                factor = factor / (1000 * 149598000);
-                distParces = (alt * factor) / 206264.806;
-                altitude = (factor * alt);
-                alt = (factor * alt);
-              } else if (this.get_altType() === 2) {
-                altitude = (factor * alt);
-                alt = (factor * alt / this._meanRadius$1);
-              } else {
-                altitude = (factor * alt);
-                alt = 1 + (factor * alt / this._meanRadius$1);
-              }
-            }
-            if (!this.get_coordinatesType() && this.lngColumn > -1 && this.latColumn > -1) {
-              Xcoord = parseFloat(row[this.lngColumn]);
-              Ycoord = parseFloat(row[this.latColumn]);
-              if (this.astronomical) {
-                if (!this.get_raUnits()) {
-                  Xcoord *= 15;
-                }
-                if (this.bufferIsFlat) {
-                  Xcoord += 180;
-                }
-              }
-              const offset = 0;
-              const pos = Coordinates.geoTo3dDoubleRad(Ycoord, Xcoord, alt);
-              if (this.astronomical && !this.bufferIsFlat) {
-                pos.rotateX(ecliptic);
-              }
-              position = pos;
-              this.positions.push(position);
-            } else if (this.get_coordinatesType() === 1) {
-              const xyzScale = this.getScaleFactor(this.get_cartesianScale(), this.get_cartesianCustomScale()) / this._meanRadius$1;
-              if (this.get_zAxisColumn() > -1) {
-                Zcoord = parseFloat(row[this.get_zAxisColumn()]);
-              }
-              Xcoord = parseFloat(row[this.get_xAxisColumn()]);
-              Ycoord = parseFloat(row[this.get_yAxisColumn()]);
-              if (this.get_xAxisReverse()) {
-                Xcoord = -Xcoord;
-              }
-              if (this.get_yAxisReverse()) {
-                Ycoord = -Ycoord;
-              }
-              if (this.get_zAxisReverse()) {
-                Zcoord = -Zcoord;
-              }
-              position = new Vector3d((Xcoord * xyzScale), (Zcoord * xyzScale), (Ycoord * xyzScale));
-              this.positions.push(position);
-            }
-            switch (this.get__colorMap()) {
-              case 0:
-                pointColor = colorLocal;
-                break;
-              case 3:
-                if (this.get_colorMapColumn() > -1) {
-                  pointColor = this._parseColor$1(row[this.get_colorMapColumn()], colorLocal);
-                } else {
-                  pointColor = colorLocal;
-                }
-                break;
-              default:
-                break;
-            }
-            if (this.sizeColumn > -1) {
-              switch (this.pointScaleType) {
-                case 0:
-                  pointSize = parseFloat(row[this.sizeColumn]);
-                  break;
-                case 2:
-                  pointSize = Math.log(parseFloat(row[this.sizeColumn]));
-                  break;
-                case 1:
-                  var size = 0;
-                  try {
-                    pointSize = parseFloat(row[this.sizeColumn]);
-                    pointSize = Math.pow(2, pointSize);
-                  } catch ($e3) {
-                    pointSize = 0;
-                  }
-                  break;
-                case 4:
-                  var size = 0;
-                  try {
-                    size = parseFloat(row[this.sizeColumn]);
-                    if (!this.bufferIsFlat) {
-                      size = size - 5 * (Util.logN(distParces, 10) - 1);
-                      pointSize = (120000000 / Math.pow(1.6, size));
-                    } else {
-                      pointSize = (40 / Math.pow(1.6, size));
-                    }
-                  } catch ($e4) {
-                    pointSize = 0;
-                  }
-                  break;
-                case 3:
-                  pointSize = 1;
-                  break;
-                default:
-                  break;
-              }
-            } else {
-              pointSize = 0.2;
-            }
-            if (this.get_plotType() === 1) {
-              pointSize = 1;
-            }
-            if ((this.astronomical & !this.bufferIsFlat) === 1) {
-            }
-            if (this.startDateColumn > -1) {
-              let dateTime = new Date(row[this.startDateColumn]);
-              pointStartTime = (SpaceTimeController.utcToJulian(dateTime) - SpaceTimeController.utcToJulian(this.baseDate));
-              if (this.endDateColumn > -1) {
-                dateTime = new Date(row[this.endDateColumn]);
-                pointEndTime = (SpaceTimeController.utcToJulian(dateTime) - SpaceTimeController.utcToJulian(this.baseDate));
-              } else {
-                pointEndTime = pointStartTime;
-              }
-            }
-            this.pointList.addPoint(position, pointColor, new Dates(pointStartTime, pointEndTime), pointSize);
-            if (this.geometryColumn > -1) {
-              this._parseGeometry$1(row[this.geometryColumn], pointColor, pointColor, altitude, new Dates(pointStartTime, pointEndTime));
-            }
-            currentIndex++;
-          }
-        } catch ($e5) {
-        }
-        this.lines = false;
-      }
-      this._table$1.unlock();
-      this._dataDirty$1 = false;
-      this.dirty = false;
-      return false;
-    },
-    _parseGeometry$1: function (gs, lineColor, polyColor, alt, date) {
-      gs = ss.trim(gs).toLowerCase();
-      const index = gs.indexOf('(');
-      if (index < 0) {
-        return;
-      }
-      if (!ss.endsWith(gs, ')')) {
-        return;
-      }
-      const commandPart = ss.trim(gs.substring(0, index));
-      let parens = gs.substr(index);
-      const parts = commandPart.split(' ');
-      let command = null;
-      let mods = null;
-      if (parts.length > 0) {
-        const $enum1 = ss.enumerate(parts);
-        while ($enum1.moveNext()) {
-          const item = $enum1.current;
-          if (ss.emptyString(command)) {
-            command = item;
-          } else if (ss.emptyString(mods)) {
-            mods = item;
-          }
-        }
-      }
-      switch (command) {
-        case 'multipolygon':
-        case 'polygon':
-          this._parsePolygon$1(parens, mods, lineColor, polyColor, alt, date);
-          break;
-        case 'multilinestring':
-          this._parseLineString$1(parens, mods, lineColor, alt, false, date);
-          break;
-        case 'linestring':
-          this._parseLineString$1(parens, mods, lineColor, alt, true, date);
-          break;
-        case 'geometrycollection':
-          parens = parens.substring(1, parens.length - 2);
-          const shapes = UiTools.splitString(parens, ',');
-          const $enum2 = ss.enumerate(shapes);
-          while ($enum2.moveNext()) {
-            const shape = $enum2.current;
-            this._parseGeometry$1(shape, lineColor, polyColor, alt, date);
-          }
-          break;
-        default:
-          break;
-      }
-    },
-    _parsePolygon$1: function (parens, mods, lineColor, polyColor, alt, date) {
-      if (!ss.startsWith(parens, '(') && ss.endsWith(parens, ')')) {
-        return;
-      }
-      parens = parens.substring(1, parens.length - 2);
-      const shapes = UiTools.splitString(parens, ',');
-      const $enum1 = ss.enumerate(shapes);
-      while ($enum1.moveNext()) {
-        const shape = $enum1.current;
-        const lineList = new KmlLineList();
-        lineList.astronomical = this.astronomical;
-        lineList.meanRadius = this._meanRadius$1;
-        lineList.parseWkt(shape, mods, alt, date);
-        if (!alt) {
-          this._addPolygonFlat$1(false, lineList, 1, polyColor, lineColor, true, true, date);
-        } else {
-          this._addPolygon$1(false, lineList, 1, polyColor, lineColor, true, true, date);
-        }
-      }
-    },
-    _parseLineString$1: function (parens, mods, lineColor, alt, single, date) {
-      if (!ss.startsWith(parens, '(') && ss.endsWith(parens, ')')) {
-        return;
-      }
-      if (!single) {
-        parens = parens.substring(1, parens.length - 2);
-      }
-      const shapes = UiTools.splitString(parens, ',');
-      const $enum1 = ss.enumerate(shapes);
-      while ($enum1.moveNext()) {
-        const shape = $enum1.current;
-        const lineList = new KmlLineList();
-        lineList.astronomical = this.astronomical;
-        lineList.meanRadius = this._meanRadius$1;
-        lineList.parseWkt(shape, mods, alt, date);
-        this._addPolygon$1(false, lineList, 1, Colors.get_white(), lineColor, false, false, date);
-      }
-    },
-    _splitShapes$1: shapes => {
-      const shapeList = [];
-      let nesting = 0;
-      const current = 0;
-      while (current < shapes.length) {
-        if (shapes.substr(current, 1) === '(') {
-          nesting++;
-        }
-      }
-      return shapeList;
-    },
-    _addPolygon$1: function (sky, geo, lineWidth, polyColor, lineColor, extrude, fill, date) {
-      const vertexList = [];
-      const vertexListGround = [];
-      for (let i = 0; i < geo.pointList.length; i++) {
-        vertexList.push(Coordinates.geoTo3dDoubleRad(geo.pointList[i].lat, geo.pointList[i].lng, 1 + (geo.pointList[i].alt / this._meanRadius$1)));
-        vertexListGround.push(Coordinates.geoTo3dDoubleRad(geo.pointList[i].lat, geo.pointList[i].lng, 1));
-      }
-      for (let i = 0; i < (geo.pointList.length - 1); i++) {
-        if (sky) {
-        } else {
-          if (extrude) {
-            this.triangleList.addQuad(vertexList[i], vertexList[i + 1], vertexListGround[i], vertexListGround[i + 1], polyColor, date);
-          }
-          if (lineWidth > 0) {
-            if (extrude) {
-              this.lineList.addLine(vertexList[i], vertexList[i + 1], lineColor, date);
-            } else {
-              this.lineList2d.addLine(vertexList[i], vertexList[i + 1], lineColor, date);
-            }
-            if (extrude) {
-              this.lineList.addLine(vertexListGround[i], vertexListGround[i + 1], lineColor, date);
-              this.lineList.addLine(vertexList[i], vertexListGround[i], lineColor, date);
-              this.lineList.addLine(vertexList[i + 1], vertexListGround[i + 1], lineColor, date);
-            }
-          }
-        }
-      }
-      if (fill) {
-        const indexes = Tessellator.tesselateSimplePoly(vertexList);
-        for (let i = 0; i < indexes.length; i += 3) {
-          this.triangleList.addTriangle(vertexList[indexes[i]], vertexList[indexes[i + 1]], vertexList[indexes[i + 2]], polyColor, date);
-        }
-      }
-    },
-    _addPolygonFlat$1: function (sky, geo, lineWidth, polyColor, lineColor, extrude, fill, date) {
-      const vertexList = [];
-      for (let i = 0; i < geo.pointList.length; i++) {
-        vertexList.push(Coordinates.geoTo3dDoubleRad(geo.pointList[i].lat, geo.pointList[i].lng, 1 + (geo.pointList[i].alt / this._meanRadius$1)));
-      }
-      for (let i = 0; i < (geo.pointList.length - 1); i++) {
-        if (sky) {
-        } else {
-          if (lineWidth > 0) {
-            this.lineList2d.addLine(vertexList[i], vertexList[i + 1], lineColor, date);
-          }
-        }
-      }
-      if (fill) {
-        const indexes = Tessellator.tesselateSimplePoly(vertexList);
-        for (let i = 0; i < indexes.length; i += 3) {
-          this.triangleList2d.addSubdividedTriangles(vertexList[indexes[i]], vertexList[indexes[i + 1]], vertexList[indexes[i + 2]], polyColor, date, 2);
-        }
-      }
-    },
-    _parseColor$1: (colorText, defaultColor) => Color.load(colorText),
-    getScaleFactor: (AltUnit, custom) => {
-      let factor = 1;
-      switch (AltUnit) {
-        case 1:
-          factor = 1;
-          break;
-        case 2:
-          factor = 1 * 0.3048;
-          break;
-        case 3:
-          factor = (1 / 12) * 0.3048;
-          break;
-        case 4:
-          factor = 5280 * 0.3048;
-          break;
-        case 5:
-          factor = 1000;
-          break;
-        case 6:
-          factor = 1000 * 149598000;
-          break;
-        case 7:
-          factor = 1000 * 149598000 * 63239.6717;
-          break;
-        case 8:
-          factor = 1000 * 149598000 * 206264.806;
-          break;
-        case 9:
-          factor = 1000 * 149598000 * 206264.806 * 1000000;
-          break;
-        case 10:
-          factor = custom;
-          break;
-        default:
-          break;
-      }
-      return factor;
-    },
-    get__table: function () {
-      return this._table$1;
-    },
-    set__table: function (value) {
-      this._table$1 = value;
-      return value;
-    },
-    loadFromString: function (data, isUpdate, purgeOld, purgeAll, hasHeader) {
-      if (!isUpdate) {
-        this._table$1 = new Table();
-      }
-      this._table$1.lock();
-      this._table$1.loadFromString(data, isUpdate, purgeAll, hasHeader);
-      if (!isUpdate) {
-        this.guessHeaderAssignments();
-        if (this.astronomical && this.lngColumn > -1) {
-          const max = this.getMaxValue(this.lngColumn);
-          if (max > 24) {
-            this.set_raUnits(1);
-          }
-        }
-      }
-      if (purgeOld) {
-        this.purgeByTime();
-      }
-      this._table$1.unlock();
-    },
-    purgeByTime: function () {
-      if (this.startDateColumn < 0) {
-        return;
-      }
-      let columnToUse = this.startDateColumn;
-      if (this.endDateColumn > -1) {
-        columnToUse = this.endDateColumn;
-      }
-      let threasholdTime = SpaceTimeController.get_now();
-      const ts = ss.truncate(this.decay) * 24 * 60 * 60 * 1000;
-      threasholdTime = new Date(threasholdTime.getDate() - ts);
-      let count = this._table$1.rows.length;
-      for (let i = 0; i < count; i++) {
-        try {
-          const row = this._table$1.rows[i];
-          const colDate = new Date(row[columnToUse]);
-          if (colDate < threasholdTime) {
-            this._table$1.rows.splice(i, 1);
-            count--;
-            i--;
-          }
-        } catch ($e1) {
-        }
-      }
-    },
-    cleanUp: function () {
-      this.cleanUpBase();
-      this._table$1.lock();
-      Layer.prototype.cleanUp.call(this);
-      this._table$1.unlock();
-      this.dirty = true;
-    },
-    writeLayerProperties: function (xmlWriter) {
-      xmlWriter._writeAttributeString('TimeSeries', this.get_timeSeries().toString());
-      xmlWriter._writeAttributeString('BeginRange', Util.xmlDate(this.get_beginRange()));
-      xmlWriter._writeAttributeString('EndRange', Util.xmlDate(this.get_endRange()));
-      xmlWriter._writeAttributeString('Decay', this.get_decay().toString());
-      xmlWriter._writeAttributeString('CoordinatesType', Enums.toXml('CoordinatesTypes', this.get_coordinatesType()));
-      xmlWriter._writeAttributeString('LatColumn', this.get_latColumn().toString());
-      xmlWriter._writeAttributeString('LngColumn', this.get_lngColumn().toString());
-      xmlWriter._writeAttributeString('GeometryColumn', this.get_geometryColumn().toString());
-      xmlWriter._writeAttributeString('AltType', Enums.toXml('AltTypes', this.get_altType()));
-      xmlWriter._writeAttributeString('MarkerMix', Enums.toXml('MarkerMixes', this.get_markerMix()));
-      xmlWriter._writeAttributeString('ColorMap', Enums.toXml('ColorMaps', this.get__colorMap()));
-      xmlWriter._writeAttributeString('MarkerColumn', this.get_markerColumn().toString());
-      xmlWriter._writeAttributeString('ColorMapColumn', this.get_colorMapColumn().toString());
-      xmlWriter._writeAttributeString('PlotType', Enums.toXml('PlotTypes', this.get_plotType()));
-      xmlWriter._writeAttributeString('MarkerIndex', this.get_markerIndex().toString());
-      xmlWriter._writeAttributeString('MarkerScale', Enums.toXml('MarkerScales', this.get_markerScale()));
-      xmlWriter._writeAttributeString('AltUnit', this.get_altUnit().toString());
-      xmlWriter._writeAttributeString('AltColumn', this.get_altColumn().toString());
-      xmlWriter._writeAttributeString('StartDateColumn', this.get_startDateColumn().toString());
-      xmlWriter._writeAttributeString('EndDateColumn', this.get_endDateColumn().toString());
-      xmlWriter._writeAttributeString('SizeColumn', this.get_sizeColumn().toString());
-      xmlWriter._writeAttributeString('HyperlinkFormat', this.get_hyperlinkFormat());
-      xmlWriter._writeAttributeString('HyperlinkColumn', this.get_hyperlinkColumn().toString());
-      xmlWriter._writeAttributeString('ScaleFactor', this.get_scaleFactor().toString());
-      xmlWriter._writeAttributeString('PointScaleType', Enums.toXml('PointScaleTypes', this.get_pointScaleType()));
-      xmlWriter._writeAttributeString('ShowFarSide', this.get_showFarSide().toString());
-      xmlWriter._writeAttributeString('RaUnits', Enums.toXml('RAUnits', this.get_raUnits()));
-      xmlWriter._writeAttributeString('HoverTextColumn', this.get_nameColumn().toString());
-      xmlWriter._writeAttributeString('XAxisColumn', this.get_xAxisColumn().toString());
-      xmlWriter._writeAttributeString('XAxisReverse', this.get_xAxisReverse().toString());
-      xmlWriter._writeAttributeString('YAxisColumn', this.get_yAxisColumn().toString());
-      xmlWriter._writeAttributeString('YAxisReverse', this.get_yAxisReverse().toString());
-      xmlWriter._writeAttributeString('ZAxisColumn', this.get_zAxisColumn().toString());
-      xmlWriter._writeAttributeString('ZAxisReverse', this.get_zAxisReverse().toString());
-      xmlWriter._writeAttributeString('CartesianScale', Enums.toXml('AltUnits', this.get_cartesianScale()));
-      xmlWriter._writeAttributeString('CartesianCustomScale', this.get_cartesianCustomScale().toString());
-      xmlWriter._writeAttributeString('DynamicData', this.get_dynamicData().toString());
-      xmlWriter._writeAttributeString('AutoUpdate', this.get_autoUpdate().toString());
-      xmlWriter._writeAttributeString('DataSourceUrl', this.get_dataSourceUrl());
-    },
-    get_dynamicData: function () {
-      return this._dynamicData$1;
-    },
-    set_dynamicData: function (value) {
-      this._dynamicData$1 = value;
-      return value;
-    },
-    get_autoUpdate: function () {
-      return this._autoUpdate$1;
-    },
-    set_autoUpdate: function (value) {
-      this._autoUpdate$1 = value;
-      return value;
-    },
-    get_dataSourceUrl: function () {
-      return this._dataSourceUrl$1;
-    },
-    set_dataSourceUrl: function (value) {
-      this._dataSourceUrl$1 = value;
-      return value;
-    },
-    get_timeSeries: function () {
-      return this.timeSeries;
-    },
-    set_timeSeries: function (value) {
-      if (this.timeSeries !== value) {
-        this.version++;
-        this.timeSeries = value;
-      }
-      return value;
-    },
-    get_beginRange: function () {
-      return this._beginRange$1;
-    },
-    set_beginRange: function (value) {
-      if (!ss.compareDates(this._beginRange$1, value)) {
-        this.version++;
-        this._beginRange$1 = value;
-      }
-      return value;
-    },
-    get_endRange: function () {
-      return this._endRange$1;
-    },
-    set_endRange: function (value) {
-      if (!ss.compareDates(this._endRange$1, value)) {
-        this.version++;
-        this._endRange$1 = value;
-      }
-      return value;
-    },
-    initializeFromXml: function (node) {
-      this.set_timeSeries(ss.boolean(node.attributes.getNamedItem('TimeSeries').nodeValue));
-      this.set_beginRange(new Date(node.attributes.getNamedItem('BeginRange').nodeValue));
-      this.set_endRange(new Date(node.attributes.getNamedItem('EndRange').nodeValue));
-      this.set_decay(parseFloat(node.attributes.getNamedItem('Decay').nodeValue));
-      this.set_coordinatesType(Enums.parse('CoordinatesTypes', node.attributes.getNamedItem('CoordinatesType').nodeValue));
-      if (this.get_coordinatesType() < 0) {
-        this.set_coordinatesType(0);
-      }
-      this.set_latColumn(parseInt(node.attributes.getNamedItem('LatColumn').nodeValue));
-      this.set_lngColumn(parseInt(node.attributes.getNamedItem('LngColumn').nodeValue));
-      if (node.attributes.getNamedItem('GeometryColumn') != null) {
-        this.set_geometryColumn(parseInt(node.attributes.getNamedItem('GeometryColumn').nodeValue));
-      }
-      this.set_altType(Enums.parse('AltTypes', node.attributes.getNamedItem('AltType').nodeValue));
-      this.set_markerMix(0);
-      this.set__colorMap(Enums.parse('ColorMaps', node.attributes.getNamedItem('ColorMap').nodeValue));
-      this.set_markerColumn(parseInt(node.attributes.getNamedItem('MarkerColumn').nodeValue));
-      this.set_colorMapColumn(parseInt(node.attributes.getNamedItem('ColorMapColumn').nodeValue));
-      this.set_plotType(Enums.parse('PlotTypes', node.attributes.getNamedItem('PlotType').nodeValue));
-      this.set_markerIndex(parseInt(node.attributes.getNamedItem('MarkerIndex').nodeValue));
-      this.set_markerScale(Enums.parse('MarkerScales', node.attributes.getNamedItem('MarkerScale').nodeValue));
-      this.set_altUnit(Enums.parse('AltUnits', node.attributes.getNamedItem('AltUnit').nodeValue));
-      this.set_altColumn(parseInt(node.attributes.getNamedItem('AltColumn').nodeValue));
-      this.set_startDateColumn(parseInt(node.attributes.getNamedItem('StartDateColumn').nodeValue));
-      this.set_endDateColumn(parseInt(node.attributes.getNamedItem('EndDateColumn').nodeValue));
-      this.set_sizeColumn(parseInt(node.attributes.getNamedItem('SizeColumn').nodeValue));
-      this.set_hyperlinkFormat(node.attributes.getNamedItem('HyperlinkFormat').nodeValue);
-      this.set_hyperlinkColumn(parseInt(node.attributes.getNamedItem('HyperlinkColumn').nodeValue));
-      this.set_scaleFactor(parseFloat(node.attributes.getNamedItem('ScaleFactor').nodeValue));
-      this.set_pointScaleType(Enums.parse('PointScaleTypes', node.attributes.getNamedItem('PointScaleType').nodeValue));
-      if (node.attributes.getNamedItem('ShowFarSide') != null) {
-        this.set_showFarSide(ss.boolean(node.attributes.getNamedItem('ShowFarSide').nodeValue));
-      }
-      if (node.attributes.getNamedItem('RaUnits') != null) {
-        this.set_raUnits(Enums.parse('RAUnits', node.attributes.getNamedItem('RaUnits').nodeValue));
-      }
-      if (node.attributes.getNamedItem('HoverTextColumn') != null) {
-        this.set_nameColumn(parseInt(node.attributes.getNamedItem('HoverTextColumn').nodeValue));
-      }
-      if (node.attributes.getNamedItem('XAxisColumn') != null) {
-        this.set_xAxisColumn(parseInt(node.attributes.getNamedItem('XAxisColumn').nodeValue));
-        this.set_xAxisReverse(ss.boolean(node.attributes.getNamedItem('XAxisReverse').nodeValue));
-        this.set_yAxisColumn(parseInt(node.attributes.getNamedItem('YAxisColumn').nodeValue));
-        this.set_yAxisReverse(ss.boolean(node.attributes.getNamedItem('YAxisReverse').nodeValue));
-        this.set_zAxisColumn(parseInt(node.attributes.getNamedItem('ZAxisColumn').nodeValue));
-        this.set_zAxisReverse(ss.boolean(node.attributes.getNamedItem('ZAxisReverse').nodeValue));
-        this.set_cartesianScale(Enums.parse('AltUnits', node.attributes.getNamedItem('CartesianScale').nodeValue));
-        this.set_cartesianCustomScale(parseFloat(node.attributes.getNamedItem('CartesianCustomScale').nodeValue));
-      }
-      if (node.attributes.getNamedItem('DynamicData') != null) {
-        this.set_dynamicData(ss.boolean(node.attributes.getNamedItem('DynamicData').nodeValue));
-        this.set_autoUpdate(ss.boolean(node.attributes.getNamedItem('AutoUpdate').nodeValue));
-        this.set_dataSourceUrl(node.attributes.getNamedItem('DataSourceUrl').nodeValue);
-      }
-    },
-    get_decay: function () {
-      return this.decay;
-    },
-    set_decay: function (value) {
-      if (this.decay !== value) {
-        this.version++;
-        this.decay = value;
-      }
-      return value;
-    },
-    get_coordinatesType: function () {
-      return this._coordinatesType$1;
-    },
-    set_coordinatesType: function (value) {
-      if (this._coordinatesType$1 !== value) {
-        this.version++;
-        this._coordinatesType$1 = value;
-      }
-      return value;
-    },
-    get_latColumn: function () {
-      return this.latColumn;
-    },
-    set_latColumn: function (value) {
-      if (this.latColumn !== value) {
-        this.version++;
-        this.latColumn = value;
-      }
-      return value;
-    },
-    get_lngColumn: function () {
-      return this.lngColumn;
-    },
-    set_lngColumn: function (value) {
-      if (this.lngColumn !== value) {
-        this.version++;
-        this.lngColumn = value;
-      }
-      return value;
-    },
-    get_geometryColumn: function () {
-      return this.geometryColumn;
-    },
-    set_geometryColumn: function (value) {
-      if (this.geometryColumn !== value) {
-        this.version++;
-        this.geometryColumn = value;
-      }
-      return value;
-    },
-    get_xAxisColumn: function () {
-      return this._xAxisColumn$1;
-    },
-    set_xAxisColumn: function (value) {
-      if (this._xAxisColumn$1 !== value) {
-        this.version++;
-        this._xAxisColumn$1 = value;
-      }
-      return value;
-    },
-    get_yAxisColumn: function () {
-      return this._yAxisColumn$1;
-    },
-    set_yAxisColumn: function (value) {
-      if (this._yAxisColumn$1 !== value) {
-        this.version++;
-        this._yAxisColumn$1 = value;
-      }
-      return value;
-    },
-    get_zAxisColumn: function () {
-      return this._zAxisColumn$1;
-    },
-    set_zAxisColumn: function (value) {
-      if (this._zAxisColumn$1 !== value) {
-        this.version++;
-        this._zAxisColumn$1 = value;
-      }
-      return value;
-    },
-    get_xAxisReverse: function () {
-      return this._xAxisReverse$1;
-    },
-    set_xAxisReverse: function (value) {
-      if (this._xAxisReverse$1 !== value) {
-        this.version++;
-        this._xAxisReverse$1 = value;
-      }
-      return value;
-    },
-    get_yAxisReverse: function () {
-      return this._yAxisReverse$1;
-    },
-    set_yAxisReverse: function (value) {
-      if (this._yAxisReverse$1 !== value) {
-        this.version++;
-        this._yAxisReverse$1 = value;
-      }
-      return value;
-    },
-    get_zAxisReverse: function () {
-      return this._zAxisReverse$1;
-    },
-    set_zAxisReverse: function (value) {
-      if (this._zAxisReverse$1 !== value) {
-        this.version++;
-        this._zAxisReverse$1 = value;
-      }
-      return value;
-    },
-    get_altType: function () {
-      return this._altType$1;
-    },
-    set_altType: function (value) {
-      if (this._altType$1 !== value) {
-        this.version++;
-        this._altType$1 = value;
-      }
-      return value;
-    },
-    get_markerMix: function () {
-      return this._markerMix$1;
-    },
-    set_markerMix: function (value) {
-      if (this._markerMix$1 !== value) {
-        this.version++;
-        this._markerMix$1 = value;
-      }
-      return value;
-    },
-    get_raUnits: function () {
-      return this._raUnits$1;
-    },
-    set_raUnits: function (value) {
-      if (this._raUnits$1 !== value) {
-        this.version++;
-        this._raUnits$1 = value;
-      }
-      return value;
-    },
-    get__colorMap: function () {
-      return this._colorMap$1;
-    },
-    set__colorMap: function (value) {
-      if (this._colorMap$1 !== value) {
-        this.version++;
-        this._colorMap$1 = value;
-      }
-      return value;
-    },
-    get_markerColumn: function () {
-      return this._markerColumn$1;
-    },
-    set_markerColumn: function (value) {
-      if (this._markerColumn$1 !== value) {
-        this.version++;
-        this._markerColumn$1 = value;
-      }
-      return value;
-    },
-    get_colorMapColumn: function () {
-      return this._colorMapColumn$1;
-    },
-    set_colorMapColumn: function (value) {
-      if (this._colorMapColumn$1 !== value) {
-        this.version++;
-        this._colorMapColumn$1 = value;
-      }
-      return value;
-    },
-    get_plotType: function () {
-      return this._plotType$1;
-    },
-    set_plotType: function (value) {
-      if (this._plotType$1 !== value) {
-        this.version++;
-        this._plotType$1 = value;
-      }
-      return value;
-    },
-    get_markerIndex: function () {
-      return this._markerIndex$1;
-    },
-    set_markerIndex: function (value) {
-      if (this._markerIndex$1 !== value) {
-        this.version++;
-        this._markerIndex$1 = value;
-      }
-      return value;
-    },
-    get_showFarSide: function () {
-      return this._showFarSide$1;
-    },
-    set_showFarSide: function (value) {
-      if (this._showFarSide$1 !== value) {
-        this.version++;
-        this._showFarSide$1 = value;
-      }
-      return value;
-    },
-    get_markerScale: function () {
-      return this._markerScale$1;
-    },
-    set_markerScale: function (value) {
-      if (this._markerScale$1 !== value) {
-        this.version++;
-        this._markerScale$1 = value;
-      }
-      return value;
-    },
-    get_altUnit: function () {
-      return this._altUnit$1;
-    },
-    set_altUnit: function (value) {
-      if (this._altUnit$1 !== value) {
-        this.version++;
-        this._altUnit$1 = value;
-      }
-      return value;
-    },
-    get_cartesianScale: function () {
-      return this._cartesianScale$1;
-    },
-    set_cartesianScale: function (value) {
-      if (this._cartesianScale$1 !== value) {
-        this.version++;
-        this._cartesianScale$1 = value;
-      }
-      return value;
-    },
-    get_cartesianCustomScale: function () {
-      return this._cartesianCustomScale$1;
-    },
-    set_cartesianCustomScale: function (value) {
-      if (this._cartesianCustomScale$1 !== value) {
-        this.version++;
-        this._cartesianCustomScale$1 = value;
-      }
-      return value;
-    },
-    get_altColumn: function () {
-      return this.altColumn;
-    },
-    set_altColumn: function (value) {
-      if (this.altColumn !== value) {
-        this.version++;
-        this.altColumn = value;
-      }
-      return value;
-    },
-    get_startDateColumn: function () {
-      return this.startDateColumn;
-    },
-    set_startDateColumn: function (value) {
-      if (this.startDateColumn !== value) {
-        this.version++;
-        this.startDateColumn = value;
-      }
-      return value;
-    },
-    get_endDateColumn: function () {
-      return this.endDateColumn;
-    },
-    set_endDateColumn: function (value) {
-      if (this.endDateColumn !== value) {
-        this.version++;
-        this.endDateColumn = value;
-      }
-      return value;
-    },
-    get_sizeColumn: function () {
-      return this.sizeColumn;
-    },
-    set_sizeColumn: function (value) {
-      if (this.sizeColumn !== value) {
-        this.version++;
-        this.sizeColumn = value;
-      }
-      return value;
-    },
-    get_nameColumn: function () {
-      return this.nameColumn;
-    },
-    set_nameColumn: function (value) {
-      if (this.nameColumn !== value) {
-        this.version++;
-        this.nameColumn = value;
-      }
-      return value;
-    },
-    get_hyperlinkFormat: function () {
-      return this._hyperlinkFormat$1;
-    },
-    set_hyperlinkFormat: function (value) {
-      if (this._hyperlinkFormat$1 !== value) {
-        this.version++;
-        this._hyperlinkFormat$1 = value;
-      }
-      return value;
-    },
-    get_hyperlinkColumn: function () {
-      return this._hyperlinkColumn$1;
-    },
-    set_hyperlinkColumn: function (value) {
-      if (this._hyperlinkColumn$1 !== value) {
-        this.version++;
-        this._hyperlinkColumn$1 = value;
-      }
-      return value;
-    },
-    get_scaleFactor: function () {
-      return this.scaleFactor;
-    },
-    set_scaleFactor: function (value) {
-      if (this.scaleFactor !== value) {
-        this.version++;
-        this.scaleFactor = value;
-      }
-      return value;
-    },
-    get_pointScaleType: function () {
-      return this.pointScaleType;
-    },
-    set_pointScaleType: function (value) {
-      if (this.pointScaleType !== value) {
-        this.version++;
-        this.pointScaleType = value;
-      }
-      return value;
-    },
-    draw: function (renderContext, opacity, flat) {
-      const device = renderContext;
-      if (this.version !== this.lastVersion) {
-        this.cleanUp();
-      }
-      this.lastVersion = this.version;
-      if (this.bufferIsFlat !== flat) {
-        this.cleanUp();
-        this.bufferIsFlat = flat;
-      }
-      if (this.dirty) {
-        this.prepVertexBuffer(device, opacity);
-      }
-      const jNow = SpaceTimeController.get_jNow() - SpaceTimeController.utcToJulian(this.baseDate);
-      let adjustedScale = this.scaleFactor * 3;
-      if (flat && this.astronomical && (this._markerScale$1 === 1)) {
-        adjustedScale = (this.scaleFactor / (renderContext.viewCamera.zoom / 360));
-      }
-      if (this.triangleList2d != null) {
-        this.triangleList2d.decay = this.decay;
-        this.triangleList2d.sky = this.get_astronomical();
-        this.triangleList2d.timeSeries = this.timeSeries;
-        this.triangleList2d.jNow = jNow;
-        this.triangleList2d.draw(renderContext, opacity * this.get_opacity(), 1);
-      }
-      if (this.triangleList != null) {
-        this.triangleList.decay = this.decay;
-        this.triangleList.sky = this.get_astronomical();
-        this.triangleList.timeSeries = this.timeSeries;
-        this.triangleList.jNow = jNow;
-        this.triangleList.draw(renderContext, opacity * this.get_opacity(), 1);
-      }
-      if (this.pointList != null) {
-        this.pointList.depthBuffered = false;
-        this.pointList.showFarSide = this.get_showFarSide();
-        this.pointList.decay = (this.timeSeries) ? this.decay : 0;
-        this.pointList.sky = this.get_astronomical();
-        this.pointList.timeSeries = this.timeSeries;
-        this.pointList.jNow = jNow;
-        this.pointList.scale = (this._markerScale$1 === 1) ? adjustedScale : -adjustedScale;
-        switch (this._plotType$1) {
-          case 0:
-            this.pointList.draw(renderContext, opacity * this.get_opacity(), false);
-            break;
-          case 2:
-          case 1:
-            this.pointList.drawTextured(renderContext, PushPin.getPushPinTexture(35), opacity * this.get_opacity());
-            break;
-          case 3:
-            this.pointList.drawTextured(renderContext, PushPin.getPushPinTexture(67), opacity * this.get_opacity());
-            break;
-          case 5:
-          case 4:
-            this.pointList.drawTextured(renderContext, PushPin.getPushPinTexture(this._markerIndex$1), opacity * this.get_opacity());
-            break;
-          default:
-            break;
-        }
-        this.pointList.draw(renderContext, opacity * this.get_opacity(), false);
-      }
-      if (this.lineList != null) {
-        this.lineList.sky = this.get_astronomical();
-        this.lineList.decay = this.decay;
-        this.lineList.timeSeries = this.timeSeries;
-        this.lineList.jNow = jNow;
-        this.lineList.drawLines(renderContext, opacity * this.get_opacity());
-      }
-      if (this.lineList2d != null) {
-        this.lineList2d.sky = this.get_astronomical();
-        this.lineList2d.decay = this.decay;
-        this.lineList2d.timeSeries = this.timeSeries;
-        this.lineList2d.showFarSide = this.get_showFarSide();
-        this.lineList2d.jNow = jNow;
-        this.lineList2d.drawLines(renderContext, opacity * this.get_opacity());
-      }
-      return true;
-    },
-    cleanUpBase: function () {
-      if (this.lineList != null) {
-        this.lineList.clear();
-      }
-      if (this.lineList2d != null) {
-        this.lineList2d.clear();
-      }
-      if (this.triangleList2d != null) {
-        this.triangleList2d.clear();
-      }
-      if (this.pointList != null) {
-        this.pointList.clear();
-      }
-      if (this.triangleList != null) {
-        this.triangleList.clear();
-      }
-    }
-  };
 
   function TimeSeriesLayer() {
     this.isLongIndex = false;
@@ -9940,8 +6637,9 @@ let wwtlib = (() => {
     this.baseDate = new Date(2010, 0, 1, 12, 0, 0);
     this.dirty = true;
     this.lastVersion = 0;
-    Layer.call(this);
+    return new Layer(this);
   }
+
   TimeSeriesLayer.get__circleTexture$1 = () => TimeSeriesLayer._circleTexture$1;
   const TimeSeriesLayer$ = {
     get_dynamicData: function () {
@@ -10612,12 +7310,12 @@ let wwtlib = (() => {
   };
 
 
-
   function BitmapOverlay() {
     this._textureReady$1 = false;
     this._sprite$1 = new Sprite2d();
-    Overlay.call(this);
+    //Overlay.call(this);
   }
+
   BitmapOverlay.create = (owner, file) => {
     const temp = new BitmapOverlay();
     temp.set_owner(owner);
@@ -10718,6 +7416,7 @@ let wwtlib = (() => {
     this._ce$1 = null;
     Overlay.call(this);
   }
+
   TextOverlay.create = textObject => {
     const to = new TextOverlay();
     to.textObject = textObject;
@@ -10875,6 +7574,7 @@ let wwtlib = (() => {
     this._triangleStrip$1 = true;
     Overlay.call(this);
   }
+
   ShapeOverlay._create = (currentTourStop, shapeType) => {
     const overlay = new ShapeOverlay();
     overlay._shapeType$1 = shapeType;
@@ -11345,6 +8045,7 @@ let wwtlib = (() => {
     Overlay.call(this);
     this.isDesignTimeOnly = true;
   }
+
   AudioOverlay.create = (currentTourStop, file) => {
     const ao = new AudioOverlay();
     ao.set_owner(currentTourStop);
@@ -11486,6 +8187,7 @@ let wwtlib = (() => {
     this._playing$1 = true;
     Overlay.call(this);
   }
+
   const FlipbookOverlay$ = {
     getTypeName: () => 'TerraViewer.FlipbookOverlay',
     get_loopType: function () {
@@ -11673,15 +8375,11 @@ let wwtlib = (() => {
     }
   };
 
-  function ToolStripSeparator() {
-    ToolStripMenuItem.call(this);
-    this.name = '--------------------------------------';
-  }
-  const ToolStripSeparator$ = {};
 
   function FrameWizard() {
     Dialog.call(this);
   }
+
   const FrameWizard$ = {
     OK: frame => {
       LayerManager.referenceFrameWizardFinished(frame);
@@ -11691,6 +8389,7 @@ let wwtlib = (() => {
   function ReferenceFrameProps() {
     Dialog.call(this);
   }
+
   const ReferenceFrameProps$ = {
     OK: frame => {
       LayerManager.loadTree();
@@ -11700,6 +8399,7 @@ let wwtlib = (() => {
   function GreatCircleDialog() {
     Dialog.call(this);
   }
+
   const GreatCircleDialog$ = {
     OK: frame => {
     }
@@ -11708,6 +8408,7 @@ let wwtlib = (() => {
   function DataVizWizard() {
     Dialog.call(this);
   }
+
   const DataVizWizard$ = {
     OK: () => {
     }
@@ -11724,6 +8425,7 @@ let wwtlib = (() => {
     this._dec$1 = 0;
     Annotation.call(this);
   }
+
   const Circle$ = {
     get_fill: function () {
       return this._fill$1;
@@ -11859,6 +8561,7 @@ let wwtlib = (() => {
     this._fillColor$1 = Colors.get_white();
     Annotation.call(this);
   }
+
   const Poly$ = {
     addPoint: function (x, y) {
       Annotation.batchDirty = true;
@@ -11959,6 +8662,7 @@ let wwtlib = (() => {
     this._lineColor$1 = Colors.get_white();
     Annotation.call(this);
   }
+
   const PolyLine$ = {
     addPoint: function (x, y) {
       Annotation.batchDirty = true;
@@ -12028,6 +8732,7 @@ let wwtlib = (() => {
     ss.EventArgs.call(this);
     this.set_caption(caption);
   }
+
   const SlideChangedEventArgs$ = {
     get_caption: function () {
       return this._caption$2;
@@ -12047,6 +8752,7 @@ let wwtlib = (() => {
     this.set_dec(dec);
     this.set_zoom(zoom / 6);
   }
+
   const ArrivedEventArgs$ = {
     get_RA: function () {
       return this._ra$2;
@@ -12079,6 +8785,7 @@ let wwtlib = (() => {
     this.set_dec(dec);
     this.set_id(id);
   }
+
   const AnnotationClickEventArgs$ = {
     get_RA: function () {
       return this._ra$2;
@@ -12107,6 +8814,7 @@ let wwtlib = (() => {
     ss.EventArgs.call(this);
     this._url$2 = url;
   }
+
   const CollectionLoadedEventArgs$ = {
     get_url: function () {
       return this._url$2;
@@ -12118,326 +8826,320 @@ let wwtlib = (() => {
   };
 
 
-  const $exports = ss.module('wwtlib',
-    {
-      IFolder: [IFolder],
-      Sprite2d,
-      VertexPosition,
-      Table,
-      MinorPlanets,
-      TileCache,
-      DistanceCalc,
-      Triangle,
-      Util,
-      Wtml,
-      FolderUp,
-      ViewMoverSlew,
-      PositionTextureVertexBuffer,
-      KeplerVertexBuffer,
-      TimeSeriesLineVertexBuffer,
-      TimeSeriesPointVertexBuffer,
-      PositionColoredVertexBuffer,
-      PositionColoredTexturedVertexBuffer,
-      LayerCollection: [LayerCollection, LayerCollection$, Layer]
-    },
-    {
-      DAY_OF_WEEK,
-      EO,
-      CullMode,
-      PointScaleTypes,
-      DataTypes,
-      ScaleTypes,
-      AltUnits,
-      FadeType,
-      ReferenceFrames,
-      ReferenceFrameTypes,
-      CoordinatesTypes,
-      AltTypes,
-      MarkerMixes,
-      ColorMaps,
-      PlotTypes,
-      MarkerScales,
-      RAUnits,
-      Primitives,
-      Alignment,
-      StockSkyOverlayTypes,
-      OverlayAnchor,
-      AudioType,
-      ShapeType,
-      LoopTypes,
-      SelectionAnchor,
-      TextBorderStyle,
-      UserLevel,
-      TransitionType,
-      Keys,
-      DialogResult,
-      Formatting,
-      StateType,
-      SolarSystemObjects,
-      InterpolationType,
-      PointType,
-      LocationHint,
-      FolderGroup,
-      FolderRefreshType,
-      FolderType,
-      ThumbnailSize,
-      ProjectionType,
-      ImageSetType,
-      BandPass,
-      Classification,
-      GFX: [GFX, null, null],
-      ABR,
-      ACFT,
-      ASEP,
-      COR: [COR, {}, null],
-      C3D: [C3D, {}, null],
-      CT: [CT, {}, null],
-      CalD,
-      DT,
-      DYT: [DYT, {}, null],
-      CAAEarth: [CAAEarth, {}, null],
-      VSC: [VSC, {}, null],
-      CAAEclipticalElementDetails,
-      CAAEclipticalElements,
-      EPO,
-      EOE,
-      EPD,
-      EOD,
-      ELL: [ELL, {}, null],
-      EOT: [EOT, {}, null],
-      CAAFK5: [CAAFK5, {}, null],
-      GMD: [GMD, {}, null],
-      GMDS: [GMDS, {}, null],
-      GM: [GM, {}, null],
-      CAAGlobe: [CAAGlobe, {}, null],
-      IFR: [IFR, {}, null],
-      INTP: [INTP, {}, null],
-      CAAJupiter: [CAAJupiter, {}, null],
-      CAAKepler: [CAAKepler, {}, null],
-      CAAMars: [CAAMars, {}, null],
-      CAAMercury: [CAAMercury, {}, null],
-      CAAMoon: [CAAMoon, {}, null],
-      MoonCoefficient1,
-      MoonCoefficient2,
-      MIFR,
-      CAAMoonNodes: [CAAMoonNodes, {}, null],
-      CAAMoonPerigeeApogee: [CAAMoonPerigeeApogee, {}, null],
-      MPAC: [MPAC, {}, null],
-      CAAMoonPhases: [CAAMoonPhases, {}, null],
-      CAANeptune: [CAANeptune, {}, null],
-      CAANutation: [CAANutation, {}, null],
-      NUC: [NUC, {}, null],
-      CAATopocentricEclipticDetails: [CAATopocentricEclipticDetails, {}, null],
-      CAAParallax: [CAAParallax, {}, null],
-      CAAPhysicalJupiterDetails: [CAAPhysicalJupiterDetails, {}, null],
-      CAAPhysicalJupiter: [CAAPhysicalJupiter, {}, null],
-      CAAPhysicalMarsDetails: [CAAPhysicalMarsDetails, {}, null],
-      CAAPhysicalMars: [CAAPhysicalMars, {}, null],
-      CAAPhysicalSunDetails: [CAAPhysicalSunDetails, {}, null],
-      CAAPhysicalSun: [CAAPhysicalSun, {}, null],
-      CAAPluto: [CAAPluto, {}, null],
-      PlutoCoefficient1: [PlutoCoefficient1, {}, null],
-      PlutoCoefficient2: [PlutoCoefficient2, {}, null],
-      CAAPrecession: [CAAPrecession, {}, null],
-      CAARiseTransitSetDetails: [CAARiseTransitSetDetails, {}, null],
-      CAARiseTransitSet: [CAARiseTransitSet, {}, null],
-      CAASaturn: [CAASaturn, {}, null],
-      CAASaturnRingDetails: [CAASaturnRingDetails, {}, null],
-      CAASaturnRings: [CAASaturnRings, {}, null],
-      CAASidereal: [CAASidereal, {}, null],
-      CAAStellarMagnitudes: [CAAStellarMagnitudes, {}, null],
-      CAASun: [CAASun, {}, null],
-      CAAUranus: [CAAUranus, {}, null],
-      CAAVenus: [CAAVenus, {}, null],
-      AstroRaDec: [AstroRaDec, {}, null],
-      RiseSetDetails: [RiseSetDetails, {}, null],
-      AstroCalc: [AstroCalc, {}, null],
-      ShortIndexBuffer,
-      IndexBuffer,
-      Dates: [Dates, Dates$, null],
-      SimpleLineList: [SimpleLineList, SimpleLineList$, null],
-      OrbitLineList: [OrbitLineList, OrbitLineList$, null],
-      LineList: [LineList, LineList$, null],
-      TriangleList: [TriangleList, TriangleList$, null],
-      PointList,
-      TimeSeriesLineVertex,
-      TimeSeriesPointVertex,
-      SimpleLineShader,
-      SimpleLineShader2D,
-      OrbitLineShader,
-      LineShaderNormalDates,
-      TimeSeriesPointSpriteShader,
-      KeplerPointSpriteShader,
-      EllipseShader,
-      ModelShader,
-      ModelShaderTan,
-      TileShader,
-      ImageShader,
-      ImageShader2,
-      SpriteShader,
-      ShapeSpriteShader,
-      TextShader,
-      Tessellator,
-      Texture: [Texture, Texture$, null, ss.IDisposable],
-      Grids: [Grids, Grids$, null],
-      KeplerVertex: [KeplerVertex, KeplerVertex$, null],
-      Layer: [Layer, Layer$, null],
-      DomainValue: [DomainValue, DomainValue$, null],
-      LayerManager: [LayerManager, LayerManager$, null],
-      LayerMap: [LayerMap, LayerMap$, null],
-      SkyOverlays: [SkyOverlays, SkyOverlays$, null],
-      GroundOverlayLayer: [GroundOverlayLayer, GroundOverlayLayer$, null],
-      FrameTarget: [FrameTarget, FrameTarget$, null],
-      LayerUI: [LayerUI, LayerUI$, null],
-      LayerUIMenuItem: [LayerUIMenuItem, LayerUIMenuItem$, null],
-      LayerUITreeNode: [LayerUITreeNode, LayerUITreeNode$, null],
-      Group: [Group, Group$, null],
-      Mesh: [Mesh, Mesh$, null, ss.IDisposable],
-      Object3d: [Object3d, Object3d$, null],
-      ObjectNode: [ObjectNode, ObjectNode$, null],
-      Orbit,
-      EllipseRenderer,
-      ReferenceFrame: [ReferenceFrame, ReferenceFrame$, null],
-      KmlCoordinate: [KmlCoordinate, KmlCoordinate$, null],
-      KmlLineList: [KmlLineList, KmlLineList$, null],
-      PushPin: [PushPin, PushPin$, null],
-      VoTable: [VoTable, VoTable$, null],
-      VoRow: [VoRow, VoRow$, null],
-      VoColumn: [VoColumn, VoColumn$, null],
-      WcsImage,
-      KeplerianElements: [KeplerianElements, KeplerianElements$, null],
-      BodyAngles: [BodyAngles, BodyAngles$, null],
-      Planets: [Planets, Planets$, null],
-      Material: [Material, Material$, null],
-      RenderContext: [RenderContext, RenderContext$, null],
-      RenderTriangle: [RenderTriangle, RenderTriangle$, null],
-      ScriptInterface: [ScriptInterface, ScriptInterface$, null],
-      Settings: [Settings, Settings$, null, ISettings],
-      Text3dBatch: [Text3dBatch, Text3dBatch$, null],
-      GlyphItem: [GlyphItem, GlyphItem$, null],
-      GlyphCache: [GlyphCache, GlyphCache$, null, ss.IDisposable],
-      Text3d: [Text3d, Text3d$, null],
-      SpaceTimeController: [SpaceTimeController, SpaceTimeController$, null],
-      Star: [Star, Star$, null],
-      Galaxy: [Galaxy, Galaxy$, null],
-      Tour: [Tour, Tour$, null, IThumbnail],
-      FileEntry: [FileEntry, FileEntry$, null],
-      FileCabinet: [FileCabinet, FileCabinet$, null],
-      SettingParameter: [SettingParameter, SettingParameter$, null],
-      Overlay: [Overlay, Overlay$, null],
-      Selection: [Selection, Selection$, null],
-      TextObject: [TextObject, TextObject$, null],
-      TourDocument: [TourDocument, TourDocument$, null],
-      TourEditTab: [TourEditTab, TourEditTab$, null],
-      TourEditor: [TourEditor, TourEditor$, null, IUiController],
-      OverlayList: [OverlayList, OverlayList$, null],
-      TourEdit: [TourEdit, TourEdit$, null],
-      SoundEditor: [SoundEditor, SoundEditor$, null],
-      TourStopList: [TourStopList, TourStopList$, null],
-      TimeLine: [TimeLine, TimeLine$, null],
-      TourPlayer: [TourPlayer, TourPlayer$, null, IUiController],
-      MasterTime: [MasterTime, MasterTime$, null],
-      TourStop: [TourStop, TourStop$, null, ISettings],
-      LayerInfo: [LayerInfo, LayerInfo$, null],
-      UndoTourStopChange: [UndoTourStopChange, UndoTourStopChange$, null],
-      Undo: [Undo, Undo$, null],
-      UndoStep: [UndoStep, UndoStep$, null],
-      UndoTourSlidelistChange: [UndoTourSlidelistChange, UndoTourSlidelistChange$, null],
-      UndoTourPropertiesChange: [UndoTourPropertiesChange, UndoTourPropertiesChange$, null],
-      UiTools: [UiTools, UiTools$, null],
-      Rectangle: [Rectangle, Rectangle$, null],
-      Guid: [Guid, Guid$, null],
-      Enums,
-      Mouse: [Mouse, null, null],
-      Language,
-      Cursor: [Cursor, Cursor$, null],
-      Cursors: [Cursors, Cursors$, null],
-      SelectLink: [SelectLink, SelectLink$, null],
-      PopupVolume: [PopupVolume, PopupVolume$, null],
-      PopupColorPicker: [PopupColorPicker, PopupColorPicker$, null],
-      OverlayProperties: [OverlayProperties, OverlayProperties$, null],
-      BinaryReader: [BinaryReader, BinaryReader$, null],
-      Bitmap,
-      ColorPicker: [ColorPicker, ColorPicker$, null],
-      ContextMenuStrip: [ContextMenuStrip, ContextMenuStrip$, null],
-      ToolStripMenuItem: [ToolStripMenuItem, ToolStripMenuItem$, null],
-      TagMe: [TagMe, TagMe$, null],
-      Dialog: [Dialog, Dialog$, null],
-      Histogram: [Histogram, Histogram$, null],
-      SimpleInput: [SimpleInput, SimpleInput$, null],
-      XmlTextWriter: [XmlTextWriter, XmlTextWriter$, null],
-      VizLayer: [VizLayer, VizLayer$, null],
-      DataItem: [DataItem, DataItem$, null],
-      WebFile: [WebFile, WebFile$, null],
-      WWTControl: [WWTControl, WWTControl$, null],
-      WWTElementEvent: [WWTElementEvent, WWTElementEvent$, null],
-      Annotation: [Annotation, Annotation$, null],
-      BlendState,
-      CameraParameters: [CameraParameters, CameraParameters$, null],
-      Color,
-      Colors,
-      Constellations,
-      ConstellationFilter,
-      Coordinates: [Coordinates, Coordinates$, null],
-      PositionTexture: PositionTexture,
-      PositionColoredTextured: PositionColoredTextured,
-      PositionColored: PositionColored,
-      PositionNormalTexturedTangent: PositionNormalTexturedTangent,
-      Vector3d: Vector3d,
-      Vector2d: Vector2d,
-      Matrix3d: [Matrix3d, Matrix3d$, null],
-      Matrix2d: [Matrix2d, Matrix2d$, null],
-      DoubleUtilities: [DoubleUtilities, null, null],
-      PlaneD: [PlaneD, PlaneD$, null],
-      Vector4d: [Vector4d, Vector4d$, null],
-      PositionNormalTexturedX2: [PositionNormalTexturedX2, PositionNormalTexturedX2$, null],
-      PositionNormalTextured: [PositionNormalTextured, PositionNormalTextured$, null],
-      SphereHull: [SphereHull, SphereHull$, null],
-      ConvexHull: [ConvexHull, ConvexHull$, null],
-      Folder,
-      FolderBrowser: [FolderBrowser, FolderBrowser$, null],
-      Imageset: [Imageset, Imageset$, null],
-      ViewMoverKenBurnsStyle: [ViewMoverKenBurnsStyle, ViewMoverKenBurnsStyle$, null],
-      Place: [Place, Place$, null],
-      PositionVertexBuffer,
-      PositionNormalTexturedVertexBuffer,
-      PositionNormalTexturedTangentVertexBuffer,
-      FitsImage,
-      GridLayer: [GridLayer, GridLayer$, Layer],
-      ImageSetLayer: [ImageSetLayer, ImageSetLayer$, Layer],
-      Object3dLayer: [Object3dLayer, Object3dLayer$, Layer],
-      Object3dLayerUI: [Object3dLayerUI, Object3dLayerUI$, LayerUI],
-      OrbitLayer: [OrbitLayer, OrbitLayer$, Layer],
-      OrbitLayerUI: [OrbitLayerUI, OrbitLayerUI$, LayerUI],
-      SpreadSheetLayer: [SpreadSheetLayer, SpreadSheetLayer$, Layer],
-      TimeSeriesLayer: [TimeSeriesLayer, TimeSeriesLayer$, Layer],
-      VoTableLayer: [VoTableLayer, VoTableLayer$, Layer],
-      Tile,
-      PlotTile,
-      SkyImageTile,
-      TangentTile,
-      ToastTile,
-      BitmapOverlay: [BitmapOverlay, BitmapOverlay$, Overlay],
-      TextOverlay: [TextOverlay, TextOverlay$, Overlay],
-      ShapeOverlay: [ShapeOverlay, ShapeOverlay$, Overlay],
-      AudioOverlay: [AudioOverlay, AudioOverlay$, Overlay],
-      FlipbookOverlay: [FlipbookOverlay, FlipbookOverlay$, Overlay],
-      ToolStripSeparator: [ToolStripSeparator, ToolStripSeparator$, ToolStripMenuItem],
-      FrameWizard: [FrameWizard, FrameWizard$, Dialog],
-      ReferenceFrameProps: [ReferenceFrameProps, ReferenceFrameProps$, Dialog],
-      GreatCircleDialog: [GreatCircleDialog, GreatCircleDialog$, Dialog],
-      DataVizWizard: [DataVizWizard, DataVizWizard$, Dialog],
-      Circle: [Circle, Circle$, Annotation],
-      Poly: [Poly, Poly$, Annotation],
-      PolyLine: [PolyLine, PolyLine$, Annotation],
-      EquirectangularTile,
-      MercatorTile,
-      ISSLayer: [ISSLayer, ISSLayer$, Object3dLayer],
-      SlideChangedEventArgs: [SlideChangedEventArgs, SlideChangedEventArgs$, ss.EventArgs],
-      ArrivedEventArgs: [ArrivedEventArgs, ArrivedEventArgs$, ss.EventArgs],
-      AnnotationClickEventArgs: [AnnotationClickEventArgs, AnnotationClickEventArgs$, ss.EventArgs],
-      CollectionLoadedEventArgs: [CollectionLoadedEventArgs, CollectionLoadedEventArgs$, ss.EventArgs]
-    });
+  const $exports = ss.module('wwtlib', null, {
+    Sprite2d,
+    Table,
+    MinorPlanets,
+    TileCache,
+    DistanceCalc,
+    Triangle,
+    Util,
+    Wtml,
+    FolderUp,
+    ViewMoverSlew,
+    PositionTextureVertexBuffer,
+    KeplerVertexBuffer,
+    TimeSeriesLineVertexBuffer,
+    TimeSeriesPointVertexBuffer,
+    PositionColoredVertexBuffer,
+    PositionColoredTexturedVertexBuffer,
+    LayerCollection,
+    DAY_OF_WEEK,
+    EO,
+    CullMode,
+    PointScaleTypes,
+    DataTypes,
+    ScaleTypes,
+    AltUnits,
+    FadeType,
+    ReferenceFrames,
+    ReferenceFrameTypes,
+    CoordinatesTypes,
+    AltTypes,
+    MarkerMixes,
+    ColorMaps,
+    PlotTypes,
+    MarkerScales,
+    RAUnits,
+    Primitives,
+    Alignment,
+    StockSkyOverlayTypes,
+    OverlayAnchor,
+    AudioType,
+    ShapeType,
+    LoopTypes,
+    SelectionAnchor,
+    TextBorderStyle,
+    UserLevel,
+    TransitionType,
+    Keys,
+    DialogResult,
+    Formatting,
+    StateType,
+    SolarSystemObjects,
+    InterpolationType,
+    PointType,
+    LocationHint,
+    FolderGroup,
+    FolderRefreshType,
+    FolderType,
+    ThumbnailSize,
+    ProjectionType,
+    ImageSetType,
+    BandPass,
+    Classification,
+    GFX,
+    ABR,
+    ACFT,
+    ASEP,
+    COR,
+    C3D,
+    CT,
+    CalD,
+    DT,
+    DYT,
+    CAAEarth,
+    VSC,
+    CAAEclipticalElementDetails,
+    CAAEclipticalElements,
+    EPO,
+    EOE,
+    EPD,
+    EOD,
+    ELL,
+    EOT,
+    CAAFK5,
+    GMD,
+    GMDS,
+    GM,
+    CAAGlobe,
+    IFR,
+    INTP,
+    CAAJupiter,
+    CAAKepler,
+    CAAMars,
+    CAAMercury,
+    CAAMoon,
+    MoonCoefficient1,
+    MoonCoefficient2,
+    MIFR,
+    CAAMoonNodes,
+    CAAMoonPerigeeApogee,
+    MPAC,
+    CAAMoonPhases,
+    CAANeptune,
+    CAANutation,
+    NUC,
+    CAATopocentricEclipticDetails,
+    CAAParallax,
+    CAAPhysicalJupiterDetails,
+    CAAPhysicalJupiter,
+    CAAPhysicalMarsDetails,
+    CAAPhysicalMars,
+    CAAPhysicalSunDetails,
+    CAAPhysicalSun,
+    CAAPluto,
+    PlutoCoefficient1,
+    PlutoCoefficient2,
+    CAAPrecession,
+    CAARiseTransitSetDetails,
+    CAARiseTransitSet,
+    CAASaturn,
+    CAASaturnRingDetails,
+    CAASaturnRings,
+    CAASidereal,
+    CAAStellarMagnitudes,
+    CAASun,
+    CAAUranus,
+    CAAVenus,
+    AstroRaDec,
+    RiseSetDetails,
+    AstroCalc,
+    ShortIndexBuffer,
+    IndexBuffer,
+    Dates,
+    SimpleLineList,
+    OrbitLineList,
+    LineList,
+    TriangleList,
+    PointList,
+    TimeSeriesLineVertex,
+    TimeSeriesPointVertex,
+    SimpleLineShader,
+    SimpleLineShader2D,
+    OrbitLineShader,
+    LineShaderNormalDates,
+    TimeSeriesPointSpriteShader,
+    KeplerPointSpriteShader,
+    EllipseShader,
+    ModelShader,
+    ModelShaderTan,
+    TileShader,
+    ImageShader,
+    ImageShader2,
+    SpriteShader,
+    ShapeSpriteShader,
+    TextShader,
+    Tessellator,
+    Texture: [Texture, Texture$, null, ss.IDisposable],
+    Grids: [Grids, Grids$, null],
+    KeplerVertex: [KeplerVertex, KeplerVertex$, null],
+    Layer,
+    DomainValue,
+    LayerManager,
+    LayerMap: [LayerMap, LayerMap$, null],
+
+    LayerUI,
+    LayerUIMenuItem,
+    LayerUITreeNode,
+    Group,
+    Mesh,
+    Object3d,
+    Orbit,
+    EllipseRenderer,
+    ReferenceFrame: [ReferenceFrame, ReferenceFrame$, null],
+    PushPin: [PushPin, PushPin$, null],
+    VoTable: [VoTable, VoTable$, null],
+    VoRow: [VoRow, VoRow$, null],
+    VoColumn: [VoColumn, VoColumn$, null],
+    WcsImage,
+    KeplerianElements: [KeplerianElements, KeplerianElements$, null],
+    BodyAngles: [BodyAngles, BodyAngles$, null],
+    Planets: [Planets, Planets$, null],
+
+    RenderContext: [RenderContext, RenderContext$, null],
+    RenderTriangle: [RenderTriangle, RenderTriangle$, null],
+    ScriptInterface: [ScriptInterface, ScriptInterface$, null],
+    Settings: [Settings, Settings$, null, function () {
+    }],
+    Text3dBatch: [Text3dBatch, Text3dBatch$, null],
+    GlyphItem: [GlyphItem, GlyphItem$, null],
+    GlyphCache: [GlyphCache, GlyphCache$, null, ss.IDisposable],
+    Text3d: [Text3d, Text3d$, null],
+    SpaceTimeController: [SpaceTimeController, SpaceTimeController$, null],
+    Star: [Star, Star$, null],
+    Galaxy: [Galaxy, Galaxy$, null],
+    Tour: [Tour, Tour$, null, function () {
+    }],
+    FileCabinet,
+    SettingParameter: [SettingParameter, SettingParameter$, null],
+    Overlay: [Overlay, Overlay$, null],
+    Selection: [Selection, Selection$, null],
+    TextObject: [TextObject, TextObject$, null],
+    TourDocument,
+    TourEditTab: [TourEditTab, TourEditTab$, null],
+    TourEditor: [TourEditor, TourEditor$, null, function () {
+    }],
+    OverlayList: [OverlayList, OverlayList$, null],
+    TourEdit: [TourEdit, TourEdit$, null],
+    SoundEditor: [SoundEditor, SoundEditor$, null],
+    TourStopList: [TourStopList, TourStopList$, null],
+    TimeLine: [TimeLine, TimeLine$, null],
+    TourPlayer: [TourPlayer, TourPlayer$, null, function () {
+    }],
+    MasterTime: [MasterTime, MasterTime$, null],
+    TourStop: [TourStop, TourStop$, null, function () {
+    }],
+    LayerInfo: [LayerInfo, LayerInfo$, null],
+    UndoTourStopChange: [UndoTourStopChange, UndoTourStopChange$, null],
+    Undo: [Undo, Undo$, null],
+    UndoStep: [UndoStep, UndoStep$, null],
+    UndoTourSlidelistChange: [UndoTourSlidelistChange, UndoTourSlidelistChange$, null],
+    UndoTourPropertiesChange: [UndoTourPropertiesChange, UndoTourPropertiesChange$, null],
+    UiTools: [UiTools, UiTools$, null],
+    Rectangle: [Rectangle, Rectangle$, null],
+    Guid: [Guid, Guid$, null],
+    Enums,
+    Mouse: [Mouse, null, null],
+    Language,
+    Cursor,
+    Cursors,
+    SelectLink: [SelectLink, SelectLink$, null],
+    PopupVolume: [PopupVolume, PopupVolume$, null],
+    PopupColorPicker: [PopupColorPicker, PopupColorPicker$, null],
+    OverlayProperties: [OverlayProperties, OverlayProperties$, null],
+    BinaryReader: [BinaryReader, BinaryReader$, null],
+    Bitmap,
+    ColorPicker: [ColorPicker, ColorPicker$, null],
+    ContextMenuStrip,
+    ToolStripMenuItem,
+    TagMe: [TagMe, TagMe$, null],
+    Dialog: [Dialog, Dialog$, null],
+    Histogram: [Histogram, Histogram$, null],
+    SimpleInput: [SimpleInput, SimpleInput$, null],
+    XmlTextWriter: [XmlTextWriter, XmlTextWriter$, null],
+    VizLayer: [VizLayer, VizLayer$, null],
+    DataItem: [DataItem, DataItem$, null],
+    WebFile: [WebFile, WebFile$, null],
+    WWTControl: [WWTControl, WWTControl$, null],
+    WWTElementEvent: [WWTElementEvent, WWTElementEvent$, null],
+    Annotation: [Annotation, Annotation$, null],
+    BlendState,
+    CameraParameters: [CameraParameters, CameraParameters$, null],
+    Color,
+    Colors,
+    Constellations,
+    ConstellationFilter,
+    Coordinates: [Coordinates, Coordinates$, null],
+    PositionTexture: PositionTexture,
+    PositionColoredTextured: PositionColoredTextured,
+    PositionColored: PositionColored,
+    PositionNormalTexturedTangent: PositionNormalTexturedTangent,
+    Vector3d: Vector3d,
+    Vector2d: Vector2d,
+    Matrix3d: [Matrix3d, Matrix3d$, null],
+    Matrix2d: [Matrix2d, Matrix2d$, null],
+    DoubleUtilities: [DoubleUtilities, null, null],
+    PlaneD: [PlaneD, PlaneD$, null],
+    Vector4d: [Vector4d, Vector4d$, null],
+    PositionNormalTexturedX2: [PositionNormalTexturedX2, PositionNormalTexturedX2$, null],
+    PositionNormalTextured: [PositionNormalTextured, PositionNormalTextured$, null],
+    SphereHull: [SphereHull, SphereHull$, null],
+    ConvexHull: [ConvexHull, ConvexHull$, null],
+    Folder,
+    FolderBrowser: [FolderBrowser, FolderBrowser$, null],
+    Imageset,
+    ViewMoverKenBurnsStyle: [ViewMoverKenBurnsStyle, ViewMoverKenBurnsStyle$, null],
+    Place: [Place, Place$, null],
+    PositionVertexBuffer,
+    PositionNormalTexturedVertexBuffer,
+    PositionNormalTexturedTangentVertexBuffer,
+    FitsImage,
+    GridLayer,
+    ImageSetLayer,
+    Object3dLayer,
+    Object3dLayerUI,
+    OrbitLayer,
+    OrbitLayerUI,
+    SpreadSheetLayer,
+    TimeSeriesLayer: [TimeSeriesLayer, TimeSeriesLayer$, Layer],
+    VoTableLayer: [VoTableLayer, VoTableLayer$, Layer],
+    Tile,
+    PlotTile,
+    SkyImageTile,
+    TangentTile,
+    ToastTile,
+    BitmapOverlay: [BitmapOverlay, BitmapOverlay$, Overlay],
+    TextOverlay: [TextOverlay, TextOverlay$, Overlay],
+    ShapeOverlay: [ShapeOverlay, ShapeOverlay$, Overlay],
+    AudioOverlay: [AudioOverlay, AudioOverlay$, Overlay],
+    FlipbookOverlay: [FlipbookOverlay, FlipbookOverlay$, Overlay],
+    ToolStripSeparator,
+    FrameWizard: [FrameWizard, FrameWizard$, Dialog],
+    ReferenceFrameProps: [ReferenceFrameProps, ReferenceFrameProps$, Dialog],
+    GreatCircleDialog: [GreatCircleDialog, GreatCircleDialog$, Dialog],
+    DataVizWizard: [DataVizWizard, DataVizWizard$, Dialog],
+    Circle: [Circle, Circle$, Annotation],
+    Poly: [Poly, Poly$, Annotation],
+    PolyLine: [PolyLine, PolyLine$, Annotation],
+    EquirectangularTile,
+    MercatorTile,
+    ISSLayer,
+    SlideChangedEventArgs: [SlideChangedEventArgs, SlideChangedEventArgs$, ss.EventArgs],
+    ArrivedEventArgs: [ArrivedEventArgs, ArrivedEventArgs$, ss.EventArgs],
+    AnnotationClickEventArgs: [AnnotationClickEventArgs, AnnotationClickEventArgs$, ss.EventArgs],
+    CollectionLoadedEventArgs: [CollectionLoadedEventArgs, CollectionLoadedEventArgs$, ss.EventArgs]
+  });
 
   //region members
   AstroCalc._galDetails = new GMDS();
@@ -12542,8 +9244,8 @@ let wwtlib = (() => {
   Grids._downloadingGalaxy = false;
   Grids._eclipticCount = 0;
   Grids._eclipticYear = 0;
-  Grids._monthDays = [ 31, 28.2421, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
-  Grids._monthNames = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+  Grids._monthDays = [31, 28.2421, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  Grids._monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   Grids._eclipticTextYear = 0;
   KeplerVertex._sine = 0;
   KeplerVertex._cose = 1;
@@ -12583,7 +9285,7 @@ let wwtlib = (() => {
   Planets.showActualSize = Settings.get_active().get_actualPlanetScale();
   Planets.RC = (Math.PI / 180);
   Planets._jNow = 0;
-  Planets._planetAngles = [ new BodyAngles(286.13, 63.87, 84.176, 14.1844), new BodyAngles(281.0097, 61.4143, 329.548, 6.1385025), new BodyAngles(272.76, 67.16, 160.2, -1.4813688), new BodyAngles(317.68143, 52.8865, 176.63, 350.89198226), new BodyAngles(268.056595, 64.495303, 284.95, 870.536), new BodyAngles(40.589, 83.537, 38.9, 810.7939024), new BodyAngles(257.311, -15.175, 203.81, 501.1600928), new BodyAngles(299.36, 43.46, 253.18, 536.3128492), new BodyAngles(132.993, -6.163, 302.695, 56.3625225), new BodyAngles(269.9949, 66.5392, 38.3213, 13.17635815), new BodyAngles(268.05, 64.5, 200.39, 203.4889538), new BodyAngles(268.08, 64.51, 36.022, 101.3747235), new BodyAngles(268.2, 64.57, 44.064, 50.3176081), new BodyAngles(268.72, 64.83, 259.51, 21.5710715), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 90, 190.147, 360.9856235) ];
+  Planets._planetAngles = [new BodyAngles(286.13, 63.87, 84.176, 14.1844), new BodyAngles(281.0097, 61.4143, 329.548, 6.1385025), new BodyAngles(272.76, 67.16, 160.2, -1.4813688), new BodyAngles(317.68143, 52.8865, 176.63, 350.89198226), new BodyAngles(268.056595, 64.495303, 284.95, 870.536), new BodyAngles(40.589, 83.537, 38.9, 810.7939024), new BodyAngles(257.311, -15.175, 203.81, 501.1600928), new BodyAngles(299.36, 43.46, 253.18, 536.3128492), new BodyAngles(132.993, -6.163, 302.695, 56.3625225), new BodyAngles(269.9949, 66.5392, 38.3213, 13.17635815), new BodyAngles(268.05, 64.5, 200.39, 203.4889538), new BodyAngles(268.08, 64.51, 36.022, 101.3747235), new BodyAngles(268.2, 64.57, 44.064, 50.3176081), new BodyAngles(268.72, 64.83, 259.51, 21.5710715), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 0, 0, 0), new BodyAngles(0, 90, 190.147, 360.9856235)];
   Planets._lastPlanetCenterID = -2;
   Planets._orbitalSampleRate = 256;
   Planets._obliquity = 23.5 * Planets.RC;
@@ -12621,7 +9323,7 @@ let wwtlib = (() => {
   SpaceTimeController._syncToClock = true;
   SpaceTimeController._timeRate = 1;
   SpaceTimeController._altitude = 0;
-  Galaxy._eTypeBuckets = [ -3, -0.186, -0.168, -0.158, -0.15, -0.143, -0.137, -0.13, -0.123, -0.115, -0.104, -0.089, -0.068, -0.042, -0.011, 0.024, 0.064, 0.111, 0.169, 0.252, 3 ];
+  Galaxy._eTypeBuckets = [-3, -0.186, -0.168, -0.158, -0.15, -0.143, -0.137, -0.13, -0.123, -0.115, -0.104, -0.089, -0.068, -0.042, -0.011, 0.024, 0.064, 0.111, 0.169, 0.252, 3];
 
   TileCache._queue = {};
   TileCache._tiles = {};
@@ -12661,7 +9363,7 @@ let wwtlib = (() => {
   WWTControl._renderNeeded = false;
   WWTControl.constellationsFigures = null;
   WWTControl.constellationsBoundries = null;
-  WWTControl.solarSystemObjectsNames = [ 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Moon', 'Io', 'Europa', 'Ganymede', 'Callisto', 'IoShadow', 'EuropaShadow', 'GanymedeShadow', 'CallistoShadow', 'SunEclipsed', 'Earth', 'Custom', 'Undefined' ];
+  WWTControl.solarSystemObjectsNames = ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Moon', 'Io', 'Europa', 'Ganymede', 'Callisto', 'IoShadow', 'EuropaShadow', 'GanymedeShadow', 'CallistoShadow', 'SunEclipsed', 'Earth', 'Custom', 'Undefined'];
   WWTControl.singleton = new WWTControl();
   WWTControl.singleton.renderContext = new RenderContext();
   SpaceTimeController.last = ss.now();
@@ -12717,11 +9419,9 @@ let wwtlib = (() => {
   //endregion
   return $exports;
 })();
-/*wwtlib = Object.assign(wwtlib,
-  {Tile,
-  PlotTile,
-  SkyImageTile,
-  TangentTile,
-  ToastTile});*/
-window.wwtlib=wwtlib;
+const init = (lib) => {
+  //console.log('initing');
+  window.wwtlib = wwtlib;
+};
+init(wwtlib);
 export default wwtlib;

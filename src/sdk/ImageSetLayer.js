@@ -7,41 +7,44 @@ import {Util} from './Util';
 import {Imageset} from './Imageset';
 import {Enums} from './enums';
 import {Layer} from './Layers/Layer';
+import {FitsImage} from './Layers/FitsImage';
 
-export function ImageSetLayer() {
-  this._imageSet$1 = null;
-  this._lastScale$1 = 0;
-  this._min$1 = 0;
-  this._max$1 = 0;
-  this._extension$1 = '.txt';
-  this._overrideDefaultLayer$1 = false;
-  this._loaded$1 = false;
-  Layer.call(this);
-}
-ImageSetLayer.create = function(set) {
-  const isl = new ImageSetLayer();
-  isl._imageSet$1 = set;
-  return isl;
-};
-export const ImageSetLayer$ = {
-  get_imageSet: function () {
+
+
+export class ImageSetLayer extends Layer{
+  constructor() {
+    super();
+    this._imageSet$1 = null;
+    this._lastScale$1 = 0;
+    this._min$1 = 0;
+    this._max$1 = 0;
+    this._extension$1 = '.txt';
+    this._overrideDefaultLayer$1 = false;
+    this._loaded$1 = false;
+  }
+  static create(set) {
+    const isl = new ImageSetLayer();
+    isl._imageSet$1 = set;
+    return isl;
+  }
+  get_imageSet() {
     return this._imageSet$1;
-  },
-  set_imageSet: function (value) {
+  }
+  set_imageSet(value) {
     this._imageSet$1 = value;
     return value;
-  },
-  get_overrideDefaultLayer: function () {
+  }
+  get_overrideDefaultLayer() {
     return this._overrideDefaultLayer$1;
-  },
-  set_overrideDefaultLayer: function (value) {
+  }
+  set_overrideDefaultLayer(value) {
     this._overrideDefaultLayer$1 = value;
     return value;
-  },
-  getFitsImage: function () {
+  }
+  getFitsImage() {
     return ss.safeCast(this._imageSet$1.get_wcsImage(), FitsImage);
-  },
-  initializeFromXml: function (node) {
+  }
+  initializeFromXml(node) {
     const imageSetNode = Util.selectSingleNode(node, 'ImageSet');
     this._imageSet$1 = Imageset.fromXMLNode(imageSetNode);
     if (node.attributes.getNamedItem('Extension') != null) {
@@ -59,8 +62,8 @@ export const ImageSetLayer$ = {
     if (node.attributes.getNamedItem('OverrideDefault') != null) {
       this._overrideDefaultLayer$1 = ss.boolean(node.attributes.getNamedItem('OverrideDefault').nodeValue);
     }
-  },
-  draw: function (renderContext, opacity, flat) {
+  }
+  draw(renderContext, opacity, flat) {
     if (!this._loaded$1) {
       return false;
     }
@@ -69,8 +72,8 @@ export const ImageSetLayer$ = {
     renderContext.makeFrustum();
     renderContext.drawImageSet(this._imageSet$1, this.get_opacity() * opacity * 100);
     return true;
-  },
-  writeLayerProperties: function (xmlWriter) {
+  }
+  writeLayerProperties(xmlWriter) {
     if (this._imageSet$1.get_wcsImage() != null) {
       if (ss.canCast(this._imageSet$1.get_wcsImage(), FitsImage)) {
         this._extension$1 = '.fit';
@@ -87,44 +90,33 @@ export const ImageSetLayer$ = {
     }
     xmlWriter._writeAttributeString('OverrideDefault', this._overrideDefaultLayer$1.toString());
     Imageset.saveToXml(xmlWriter, this._imageSet$1, '');
-    Layer.prototype.writeLayerProperties.call(this, xmlWriter);
-  },
-  getTypeName: function () {
+    Layer.writeLayerProperties.call(this, xmlWriter);
+  }
+  static getTypeName() {
     return 'TerraViewer.ImageSetLayer';
-  },
-  cleanUp: function () {
-    Layer.prototype.cleanUp.call(this);
-  },
-  addFilesToCabinet: function (fc) {
+  }
+
+  addFilesToCabinet(fc) {
     if (ss.canCast(this._imageSet$1.get_wcsImage(), FitsImage)) {
       const fName = (this._imageSet$1.get_wcsImage()).get_filename();
       const fileName = fc.tempDirectory + ss.format('{0}\\{1}{2}', fc.get_packageID(), this.id.toString(), this._extension$1);
       fc.addFile(fileName, (this._imageSet$1.get_wcsImage()).sourceBlob);
     }
-  },
-  getParamNames: function () {
-    return Layer.prototype.getParamNames.call(this);
-  },
-  getParams: function () {
-    return Layer.prototype.getParams.call(this);
-  },
-  setParams: function (paramList) {
-    Layer.prototype.setParams.call(this, paramList);
-  },
-  setImageScale: function (scaleType, min, max) {
+  }
+  setImageScale(scaleType, min, max) {
     this._min$1 = min;
     this._max$1 = max;
     this._lastScale$1 = scaleType;
     if (ss.canCast(this._imageSet$1.get_wcsImage(), FitsImage)) {
       Histogram.updateScale(this, scaleType, min, max);
     }
-  },
-  setImageZ: function (z) {
+  }
+  setImageZ(z) {
     if (ss.canCast(this._imageSet$1.get_wcsImage(), FitsImage)) {
       Histogram.updateImage(this, z);
     }
-  },
-  loadData: function (tourDoc, filename) {
+  }
+  loadData(tourDoc, filename) {
     if (ss.startsWith(this._extension$1.toLowerCase(), '.fit')) {
       const blob = tourDoc.getFileBlob(ss.replaceString(filename, '.txt', this._extension$1));
       const fi = new FitsImage('image.fit', blob, ss.bind('doneLoading', this));
@@ -137,9 +129,9 @@ export const ImageSetLayer$ = {
     } else {
       this._loaded$1 = true;
     }
-  },
-  doneLoading: function (wcsImage) {
+  }
+  doneLoading(wcsImage) {
     this._loaded$1 = true;
   }
-};
+}
 

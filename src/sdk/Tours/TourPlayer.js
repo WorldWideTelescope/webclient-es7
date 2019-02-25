@@ -7,6 +7,7 @@ import {WWTControl} from '../WWTControl';
 import {CameraParameters} from '../CameraParameters';
 import {Vector2d} from '../Double3d';
 import {Util} from '../Util';
+import {ViewMoverKenBurnsStyle} from '../ViewMover';
 
 export function TourPlayer() {
   this._overlayBlend = BlendState.create(false, 1000);

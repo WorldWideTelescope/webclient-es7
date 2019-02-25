@@ -1,4 +1,5 @@
 import ss from './scriptsharp/ss';
+import {Vector2d} from './Double3d';
 
 
 const splitString = function(target, split) {
@@ -268,3 +269,37 @@ Mouse.offsetY = (canvas, e) => {
   }
   return me.pageY - y;
 };
+
+export function Cursor() {
+}
+
+Cursor.get_position = function () {
+  return new Vector2d();
+};
+Cursor.get_current = function () {
+  return document.body.style.cursor;
+};
+Cursor.set_current = function (value) {
+  document.body.style.cursor = value;
+  return value;
+};
+
+
+export function Cursors() {}
+
+Cursors.get_arrow = () => 'default';
+Cursors.get_cross = () => 'crosshair';
+Cursors.get_defaultV = () => 'default';
+Cursors.get_hand = () => 'grab';
+Cursors.get_help = () => 'help';
+Cursors.get_hSplit = () => 'row-resize';
+Cursors.get_iBeam = () => 'text';
+Cursors.get_no = () => 'not-allowed';
+Cursors.get_sizeAll = () => 'help';
+Cursors.get_sizeNESW = () => 'nwse-resize';
+Cursors.get_sizeNS = () => 'ns-resize';
+Cursors.get_sizeNWSE = () => 'nwse-resize';
+Cursors.get_sizeWE = () => 'ew-resize';
+Cursors.get_upArrow = () => 'help';
+Cursors.get_vSplit = () => 'col-resize';
+Cursors.get_waitCursor = () => 'wait';

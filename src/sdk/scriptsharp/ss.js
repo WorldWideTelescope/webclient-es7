@@ -451,6 +451,9 @@ function _ss() {
       // Create a function that invokes the specified function, in the
       // context of the specified object.
       binding = function() {
+        if (!fn){
+          return console.trace(arguments);
+        }
         return fn.apply(o, arguments);
       };
 

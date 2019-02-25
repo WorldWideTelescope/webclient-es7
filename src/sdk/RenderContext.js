@@ -676,3 +676,10 @@ export const RenderContext$ = {
   preDraw: function () {
   }
 };
+export function Material() {
+  this.specularSharpness = 0;
+  this.opacity = 0;
+  this.isDefault = false;
+}
+
+export const Material$ = {};

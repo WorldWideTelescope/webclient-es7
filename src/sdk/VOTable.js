@@ -59,10 +59,10 @@ export function VoTableLayer() {
   this.baseDate = new Date(2010, 0, 1, 12, 0, 0);
   this.dirty = true;
   this._filename$1 = '';
-  Layer.call(this);
   this._table$1 = null;
   this._filename$1 = '';
   this.set_plotType(2);
+  return new Layer(this);
 }
 VoTableLayer.get__circleTexture$1 = function() {
   return VoTableLayer._circleTexture$1;
