@@ -1,5 +1,6 @@
 import ss from '../scriptsharp/ss';
 import {Vector2d} from '../Double3d';
+import {EventArgs} from '../ScriptInterface';
 
 export class ContextMenuStrip{
   constructor(){
@@ -18,7 +19,7 @@ export class ContextMenuStrip{
   }
   static _menuItemClicked(e) {
     const me = e.currentTarget;
-    me.itemTag.click(me.itemTag, new ss.EventArgs());
+    me.itemTag.click(me.itemTag, new EventArgs());
   }
   _show(position) {
     const menu = document.getElementById('contextmenu');

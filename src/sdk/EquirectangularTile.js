@@ -3,7 +3,7 @@ import {PositionTexture} from './Double3d';
 import {RenderTriangle} from './RenderTriangle';
 import ss from './scriptsharp/ss';
 
-;
+
 export class EquirectangularTile extends Tile{
   constructor(){
     super();
@@ -264,3 +264,4 @@ export class EquirectangularTile extends Tile{
     return true;
   }
 }
+Object.assign(EquirectangularTile,Tile);

@@ -684,7 +684,7 @@ export class FitsImage extends WcsImage {
     return bmp;
   }
 }
-
+Object.assign(FitsImage,WcsImage);
 class ScaleMap {
   map() {
   }
@@ -706,6 +706,7 @@ class ScaleLinear extends ScaleMap {
     return Math.min(255, Math.max(0, ss.truncate(((val - this._min$1) / this._factor$1 * 255))));
   }
 }
+Object.assign(ScaleLinear,ScaleMap);
 
 class ScaleLog {
   constructor(min, max) {
@@ -740,6 +741,7 @@ class ScalePow extends ScaleMap {
     return Math.min(255, Math.max(0, ss.truncate((Math.pow((val - this._min$1) / this._factor$1 * 255, 2) * this._powFactor$1))));
   }
 }
+Object.assign(ScalePow,ScaleMap);
 
 class ScaleSqrt extends ScaleMap {
   constructor(min, max) {
@@ -757,6 +759,7 @@ class ScaleSqrt extends ScaleMap {
     return Math.min(255, Math.max(0, ss.truncate((Math.sqrt((val - this._min$1) / this._factor$1 * 255) * this._sqrtFactor$1))));
   }
 }
+Object.assign(ScaleSqrt,ScaleMap);
 
 class HistogramEqualization extends ScaleMap {
   constructor(image, min, max) {
@@ -782,3 +785,4 @@ class HistogramEqualization extends ScaleMap {
     return this._lookup$1[Math.min(10000 - 1, Math.max(0, ss.truncate(((val - this._min$1) / this._factor$1 * (10000 - 1)))))];
   }
 }
+Object.assign(HistogramEqualization,ScaleMap);

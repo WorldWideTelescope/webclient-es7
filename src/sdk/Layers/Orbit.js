@@ -158,7 +158,7 @@ export class OrbitLayer extends Layer{
     }
   }
 }
-
+Object.assign(OrbitLayer,Layer);
 
 
 export class OrbitLayerUI{

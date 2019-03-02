@@ -121,7 +121,7 @@ export class Folder{
           this.get_imagesets().push(Imageset.fromXMLNode(child));
           break;
         case 'Tour':
-          this.get_tours().push(Tour._fromXml(child));
+          this.get_tours().push(Overlay._fromXml(child));
           break;
       }
     }
@@ -174,7 +174,7 @@ export class Folder{
       this._proxyFolder.isProxy = true;
       this._proxyFolder.parent = this.parent;
     }
-    this._proxyFolder.loadFromUrl(this._urlField, this._childReadyCallback);
+    VoTable.loadFromUrl(this._urlField, this._childReadyCallback);
     this._childReadyCallback = null;
   }
   childLoadCallback(callback) {

@@ -37,13 +37,13 @@ export default {
           let root = ctrlInst.createFolder();
           let openCollectionsFolder;
           let collection;
-          root.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?W=WCExploreRoot',  () => {
+          VoTable.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?W=WCExploreRoot',  () => {
 
             if (util.getQSParam('wtml') != null) {
               openCollectionsFolder = ctrlInst.createFolder();
               openCollectionsFolder.set_name('Open Collections');
               collection = ctrlInst.createFolder();
-              collection.loadFromUrl(util.getQSParam('wtml'),  () => {
+              VoTable.loadFromUrl(util.getQSParam('wtml'),  () => {
                 collection.get_children();
                 openCollectionsFolder.addChildFolder(collection);
                 root.addChildFolder(openCollectionsFolder);
@@ -101,7 +101,7 @@ export default {
         commit('ensureOCFolder');
 
         let collection = ctrlInst.createFolder();
-        collection.loadFromUrl(url, function () {
+        VoTable.loadFromUrl(url, function () {
           //collection.get_children();
           collection.url = url;
           state.openCollectionsFolder.addChildFolder(collection);
@@ -123,7 +123,7 @@ export default {
         if (manualData) {
           encodedUrl += manualData;
         }
-        collection.loadFromUrl('//worldwidetelescope.org/WWTWeb/TileImage.aspx?imageurl=' + encodedUrl, function () {
+        VoTable.loadFromUrl('//worldwidetelescope.org/WWTWeb/TileImage.aspx?imageurl=' + encodedUrl, function () {
           if (Number(collection.get_children()[0].get_RA()) !== 0 || Number(collection.get_children()[0].get_dec()) !== 0) {
             state.openCollectionsFolder.addChildFolder(collection);
             dispatch('getChildren',collection).then((children) => {

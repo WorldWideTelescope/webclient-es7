@@ -78,7 +78,7 @@ export class Constellations {
     if (Constellations.artwork == null) {
       if (Constellations._artFile == null) {
         Constellations._artFile = new Folder();
-        Constellations._artFile.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?W=hevelius', Constellations._onArtReady);
+        VoTable.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?W=hevelius', Constellations._onArtReady);
       }
       return;
     }

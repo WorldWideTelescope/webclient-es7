@@ -160,4 +160,6 @@ export class TangentTile extends Tile {
     }
     return true;
   }
-};
+}
+
+Object.assign(TangentTile,Tile);

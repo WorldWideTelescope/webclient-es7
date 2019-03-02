@@ -371,3 +371,4 @@ export class MercatorTile extends Tile {
     return true;
   }
 }
+Object.assign(MercatorTile,Tile);

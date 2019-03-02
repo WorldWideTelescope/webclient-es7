@@ -4,8 +4,8 @@ import {Colors} from '../Color';
 import {Matrix3d, Vector3d} from '../Double3d';
 import ss from '../scriptsharp/ss';
 import {Object3d, Object3dLayer} from '../Layers/Object3d';
-import {Layer} from '../Layers/Layer';
 import {TourDocument} from '../Tours/TourDocument';
+import {Guid} from '../Util';
 
 export class ISSLayer extends Object3dLayer{
   constructor(){
@@ -54,11 +54,16 @@ export class ISSLayer extends Object3dLayer{
       }
     }
     this.object3d = ISSLayer._issmodel$2;
-    return Layer.draw.call(this, renderContext, opacity, flat);
+    return super.draw(renderContext, opacity, flat);
   }
   getPrimaryUI() {return null; }
   addFilesToCabinet(fc) {}
   loadData(doc, filename) {}
   cleanUp() {
   }
-};
+}
+ISSLayer.issGuid = Guid.fromString('00000001-0002-0003-0405-060708090a0b');
+ISSLayer._loading$2 = false;
+ISSLayer._issmodel$2 = null;
+ISSLayer._doc$2 = null;
+Object.assign(ISSLayer,Object3dLayer);

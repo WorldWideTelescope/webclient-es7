@@ -9,6 +9,9 @@ import {ImageSetLayer} from './ImageSetLayer';
 import {Imageset} from './Imageset';
 import {Util} from './Util';
 import {Folder} from './Folder';
+import {Annotation, Circle, Poly, PolyLine} from './Annotation';
+import {Wtml} from './WTML';
+import {FitsImage} from './Layers/FitsImage';
 
 
 export function ScriptInterface() {
@@ -27,7 +30,7 @@ export const ScriptInterface$ = {
   },
   _fireReady: function () {
     if (this.__ready != null) {
-      this.__ready(this, new ss.EventArgs());
+      this.__ready(this, new EventArgs());
     } else {
       this._missedReady = true;
     }
@@ -134,37 +137,37 @@ export const ScriptInterface$ = {
   },
   displayVoTableLayer: function (layer) {
     if (this.__voTableDisplay != null) {
-      this.__voTableDisplay(layer, new ss.EventArgs());
+      this.__voTableDisplay(layer, new EventArgs());
     }
   },
   refreshLayerManagerNow: function () {
     if (this.__refreshLayerManager != null) {
-      this.__refreshLayerManager(null, new ss.EventArgs());
+      this.__refreshLayerManager(null, new EventArgs());
     }
   },
   _fireTourReady: function () {
     if (this.__tourReady != null) {
-      this.__tourReady(this, new ss.EventArgs());
+      this.__tourReady(this, new EventArgs());
     }
   },
   _fireTourPaused: function () {
     if (this.__tourPaused != null) {
-      this.__tourPaused(this, new ss.EventArgs());
+      this.__tourPaused(this, new EventArgs());
     }
   },
   _fireTourResume: function () {
     if (this.__tourResumed != null) {
-      this.__tourResumed(this, new ss.EventArgs());
+      this.__tourResumed(this, new EventArgs());
     }
   },
   _fireTourEnded: function () {
     if (this.__tourEnded != null) {
-      this.__tourEnded(this, new ss.EventArgs());
+      this.__tourEnded(this, new EventArgs());
     }
   },
   _fireImageryLoaded: function () {
     if (this.__imageryLoaded != null) {
-      this.__imageryLoaded(this, new ss.EventArgs());
+      this.__imageryLoaded(this, new EventArgs());
     }
   },
   _fireClick: function (ra, dec) {
@@ -362,4 +365,111 @@ export const ScriptInterface$ = {
   }
 };
 
+export class EventArgs {
+  constructor(){}
+  static Empty() {
+    return new EventArgs();
+  }
+}
+class  CancelEventArgs {
+  constructor() {
+    this.cancel = false;
+  }
+}
+
+
+export class SlideChangedEventArgs extends EventArgs{
+  constructor(caption) {
+    super();
+    this.set_caption(caption);
+  }
+  get_caption() {
+    return this._caption$2;
+  }
+  set_caption(value) {
+    this._caption$2 = value;
+    return value;
+  }
+}
+
+export class ArrivedEventArgs extends EventArgs{
+  constructor(ra, dec, zoom) {
+    super();
+    this._ra$2 = 0;
+    this._dec$2 = 0;
+    this._zoom$2 = 0;
+    this.set_RA(ra * 15);
+    this.set_dec(dec);
+    this.set_zoom(zoom / 6);
+  }
+  get_RA() {
+    return this._ra$2;
+  }
+  set_RA(value) {
+    this._ra$2 = value;
+    return value;
+  }
+  get_dec() {
+    return this._dec$2;
+  }
+  set_dec(value) {
+    this._dec$2 = value;
+    return value;
+  }
+  get_zoom() {
+    return this._zoom$2;
+  }
+  set_zoom(value) {
+    this._zoom$2 = value;
+    return value;
+  }
+}
+
+export class AnnotationClickEventArgs extends EventArgs{
+  constructor(ra, dec, id) {
+    super();
+    this._ra$2 = 0;
+    this._dec$2 = 0;
+    this.set_RA(ra * 15);
+    this.set_dec(dec);
+    this.set_id(id);
+  }
+  get_RA() {
+    return this._ra$2;
+  }
+  set_RA(value) {
+    this._ra$2 = value;
+    return value;
+  }
+  get_dec() {
+    return this._dec$2;
+  }
+  set_dec(value) {
+    this._dec$2 = value;
+    return value;
+  }
+  get_id() {
+    return this._id$2;
+  }
+  set_id(value) {
+    this._id$2 = value;
+    return value;
+  }
+}
+
+export class CollectionLoadedEventArgs extends EventArgs {
+  constructor(url) {
+    super();
+    this._url$2 = url;
+  }
+
+  get_url() {
+    return this._url$2;
+  }
+
+  set_url(value) {
+    this._url$2 = value;
+    return value;
+  }
+}
 

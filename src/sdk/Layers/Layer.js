@@ -61,7 +61,7 @@ export class Layer {
     newLayer.initFromXml(layerNode);
     return newLayer;
   }
-  static getPrimaryUI() {
+  getPrimaryUI() {
     return null;
   }
   getFileStreamUrl(filename) {
@@ -150,13 +150,13 @@ export class Layer {
   static preDraw(renderContext, opacity) {
     return true;
   }
-  static upadteData(data, purgeOld, purgeAll, hasHeader) {
+  upadteData(data, purgeOld, purgeAll, hasHeader) {
     return true;
   }
   static canCopyToClipboard() {
     return false;
   }
-  static copyToClipboard() {
+  copyToClipboard() {
     return;
   }
   getParams() {
@@ -174,7 +174,7 @@ export class Layer {
       this.color = Color.fromArgb((paramList[3] * 255), (paramList[0] * 255), (paramList[1] * 255), (paramList[2] * 255));
     }
   }
-  static getParamNames() {
+  getParamNames() {
     return ['Color.Red', 'Color.Green', 'Color.Blue', 'Color.Alpha', 'Opacity'];
   }
   getEditUI() {
@@ -254,7 +254,7 @@ export class Layer {
     Layer.writeLayerProperties(xmlWriter);
     xmlWriter._writeEndElement();
   }
-  static writeLayerProperties(xmlWriter) {
+  writeLayerProperties(xmlWriter) {
     return;
   }
   initializeFromXml(node) {
@@ -294,10 +294,10 @@ export class Layer {
     }
     this.initializeFromXml(node);
   }
-  static loadData(doc, filename) {
+  loadData(doc, filename) {
     return;
   }
-  static addFilesToCabinet(fc) {
+  addFilesToCabinet(fc) {
     return;
   }
   getStringFromGzipBlob(blob, dataReady) {
@@ -318,6 +318,7 @@ export class LayerCollection extends Layer{
     return Layer.draw.call(this, renderContext, opacity, false);
   }
 }
+Object.assign(LayerCollection,Layer);
 
 export function DomainValue(text, markerIndex) {
   this.markerIndex = 4;

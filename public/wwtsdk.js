@@ -1514,7 +1514,7 @@ function module(name, implementation, exports) {
   global.define ? global.define('ss', [], _ss) : _export();
 })(this);
 
-"use strict";
+"use strict"; 
 
 window.wwtlib = function(){
   var $global = this;
@@ -1602,7 +1602,8 @@ window.wwtlib = function(){
     lightYears: 7, 
     parsecs: 8, 
     megaParsecs: 9, 
-    custom: 10
+    custom: 10, 
+    kiloParsecs: 11
   };
 
 
@@ -8035,6 +8036,7 @@ window.wwtlib = function(){
       this._colors.length = 0;
       this._points.length = 0;
       this._dates.length = 0;
+      this._sizes.length = 0;
       this._emptyPointBuffer();
     },
     _emptyPointBuffer: function() {
@@ -11886,7 +11888,7 @@ window.wwtlib = function(){
       lifeTimeMenu.click = LayerManager._lifeTimeMenu_Click;
       showViewer.click = LayerManager._showViewer_Click;
       LayerManager._contextMenu.items.push(renameMenu);
-      if (!selectedLayer.get_opened() && selectedLayer.getPrimaryUI() != null && OrbitLayerUI.get_hasTreeViewNodes()) {
+      if (!selectedLayer.get_opened() && selectedLayer.getPrimaryUI() != null && selectedLayer.getPrimaryUI().get_hasTreeViewNodes()) {
         LayerManager._contextMenu.items.push(Expand);
       }
       if (selectedLayer.get_opened()) {
@@ -11939,7 +11941,7 @@ window.wwtlib = function(){
       var newLight = ToolStripMenuItem.create('Add Light');
       var addFeedMenu = ToolStripMenuItem.create(Language.getLocalizedText(956, 'Add OData/table feed as Layer'));
       var addWmsLayer = ToolStripMenuItem.create(Language.getLocalizedText(987, 'New WMS Layer'));
-      var addGirdLayer = ToolStripMenuItem.create(Language.getLocalizedText(1300, 'New Lat/Lng Grid'));
+      var addGridLayer = ToolStripMenuItem.create(Language.getLocalizedText(1300, 'New Lat/Lng Grid'));
       var addGreatCircle = ToolStripMenuItem.create(Language.getLocalizedText(988, 'New Great Circle'));
       var importTLE = ToolStripMenuItem.create(Language.getLocalizedText(989, 'Import Orbital Elements'));
       var addMpc = ToolStripMenuItem.create(Language.getLocalizedText(1301, 'Add Minor Planet'));
@@ -11968,7 +11970,7 @@ window.wwtlib = function(){
       deleteFrameMenu.click = LayerManager._deleteFrameMenu_Click;
       popertiesMenu.click = LayerManager._framePropertiesMenu_Click;
       addGreatCircle.click = LayerManager._addGreatCircle_Click;
-      addGirdLayer.click = LayerManager._addGirdLayer_Click;
+      addGridLayer.click = LayerManager._addGirdLayer_Click;
       var convertToOrbit = ToolStripMenuItem.create('Extract Orbit Layer');
       if (map.frame.reference !== 19) {
         if ((WWTControl.singleton.get_solarSystemMode() | WWTControl.singleton.sandboxMode) === 1) {
@@ -12015,7 +12017,7 @@ window.wwtlib = function(){
       }
       if (!Sky) {
         LayerManager._contextMenu.items.push(addGreatCircle);
-        LayerManager._contextMenu.items.push(addGirdLayer);
+        LayerManager._contextMenu.items.push(addGridLayer);
       }
       if ((map.frame.reference !== 19 && map.frame.name === 'Sun') || (map.frame.reference === 19 && map.parent != null && map.parent.frame.name === 'Sun')) {
         LayerManager._contextMenu.items.push(addMpc);
@@ -17254,8 +17256,8 @@ window.wwtlib = function(){
         for (var y = 0; y < maxY; y++) {
           var tile = TileCache.getTile(layer.get_baseLevel(), x, y, layer, null);
           if (tile != null) {
-            if (Tile.isPointInTile(viewLat, viewLong)) {
-              return Tile.getSurfacePointAltitude(viewLat, viewLong, false);
+            if (tile.isPointInTile(viewLat, viewLong)) {
+              return tile.getSurfacePointAltitude(viewLat, viewLong, false);
             }
           }
         }
@@ -21799,7 +21801,7 @@ window.wwtlib = function(){
       var $enum2 = ss.enumerate(referencedFrames);
       while ($enum2.moveNext()) {
         var item = $enum2.current;
-        Imageset.saveToXml(xmlWriter);
+        item.saveToXml(xmlWriter);
       }
       xmlWriter._writeEndElement();
       xmlWriter._writeStartElement('Layers');
@@ -21807,7 +21809,7 @@ window.wwtlib = function(){
       while ($enum3.moveNext()) {
         var id = $enum3.current;
         if (ss.keyExists(LayerManager.get_layerList(), id)) {
-          Imageset.saveToXml(xmlWriter);
+          LayerManager.get_layerList()[id].saveToXml(xmlWriter);
         }
       }
       xmlWriter._writeEndElement();
@@ -23970,7 +23972,7 @@ window.wwtlib = function(){
       var $enum1 = ss.enumerate(this.selection.selectionSet);
       while ($enum1.moveNext()) {
         var overlay = $enum1.current;
-        Imageset.saveToXml(writer, true);
+        overlay.saveToXml(writer, true);
       }
       writer._writeEndElement();
       this.clipboardData = writer.body;
@@ -26353,17 +26355,17 @@ window.wwtlib = function(){
       var $enum1 = ss.enumerate(this._overlays);
       while ($enum1.moveNext()) {
         var overlay = $enum1.current;
-        Imageset.saveToXml(xmlWriter, false);
+        overlay.saveToXml(xmlWriter, false);
       }
       xmlWriter._writeEndElement();
       if (this._musicTrack != null) {
         xmlWriter._writeStartElement('MusicTrack');
-        Imageset.saveToXml(xmlWriter, false);
+        this._musicTrack.saveToXml(xmlWriter, false);
         xmlWriter._writeEndElement();
       }
       if (this._voiceTrack != null) {
         xmlWriter._writeStartElement('VoiceTrack');
-        Imageset.saveToXml(xmlWriter, false);
+        this._voiceTrack.saveToXml(xmlWriter, false);
         xmlWriter._writeEndElement();
       }
       this._writeLayerList(xmlWriter);
@@ -29023,23 +29025,28 @@ window.wwtlib = function(){
         }
         this.renderContext.drawImageSet(this.renderContext.get_backgroundImageset(), 100);
         if (this.renderContext.get_foregroundImageset() != null) {
-          if (this.renderContext.viewCamera.opacity !== 100 && this.renderContext.gl == null) {
-            if (this._foregroundCanvas.width !== this.renderContext.width || this._foregroundCanvas.height !== this.renderContext.height) {
-              this._foregroundCanvas.width = ss.truncate(this.renderContext.width);
-              this._foregroundCanvas.height = ss.truncate(this.renderContext.height);
-            }
-            var saveDevice = this.renderContext.device;
-            this._fgDevice.clearRect(0, 0, this.renderContext.width, this.renderContext.height);
-            this.renderContext.device = this._fgDevice;
-            this.renderContext.drawImageSet(this.renderContext.get_foregroundImageset(), 100);
-            this.renderContext.device = saveDevice;
-            this.renderContext.device.save();
-            this.renderContext.device.globalAlpha = this.renderContext.viewCamera.opacity / 100;
-            this.renderContext.device.drawImage(this._foregroundCanvas, 0, 0);
-            this.renderContext.device.restore();
+          if (this.renderContext.get_foregroundImageset().get_dataSetType() !== this.renderContext.get_backgroundImageset().get_dataSetType()) {
+            this.renderContext.set_foregroundImageset(null);
           }
           else {
-            this.renderContext.drawImageSet(this.renderContext.get_foregroundImageset(), this.renderContext.viewCamera.opacity);
+            if (this.renderContext.viewCamera.opacity !== 100 && this.renderContext.gl == null) {
+              if (this._foregroundCanvas.width !== this.renderContext.width || this._foregroundCanvas.height !== this.renderContext.height) {
+                this._foregroundCanvas.width = ss.truncate(this.renderContext.width);
+                this._foregroundCanvas.height = ss.truncate(this.renderContext.height);
+              }
+              var saveDevice = this.renderContext.device;
+              this._fgDevice.clearRect(0, 0, this.renderContext.width, this.renderContext.height);
+              this.renderContext.device = this._fgDevice;
+              this.renderContext.drawImageSet(this.renderContext.get_foregroundImageset(), 100);
+              this.renderContext.device = saveDevice;
+              this.renderContext.device.save();
+              this.renderContext.device.globalAlpha = this.renderContext.viewCamera.opacity / 100;
+              this.renderContext.device.drawImage(this._foregroundCanvas, 0, 0);
+              this.renderContext.device.restore();
+            }
+            else {
+              this.renderContext.drawImageSet(this.renderContext.get_foregroundImageset(), this.renderContext.viewCamera.opacity);
+            }
           }
         }
         if (this.renderType === 2 && Settings.get_active().get_showSolarSystem()) {
@@ -29942,6 +29949,7 @@ window.wwtlib = function(){
       if (instant || (Math.abs(this.renderContext.viewCamera.lat - cameraParams.lat) < 1E-12 && Math.abs(this.renderContext.viewCamera.lng - cameraParams.lng) < 1E-12 && Math.abs(this.renderContext.viewCamera.zoom - cameraParams.zoom) < 1E-12)) {
         this.set__mover(null);
         this.renderContext.targetCamera = cameraParams.copy();
+        this.renderContext.viewCamera = this.renderContext.targetCamera.copy();
         if (this.renderContext.space && Settings.get_active().get_galacticMode()) {
           var gPoint = Coordinates.j2000toGalactic(this.renderContext.viewCamera.get_RA() * 15, this.renderContext.viewCamera.get_dec());
           this.renderContext.targetAlt = this.renderContext.alt = gPoint[1];
@@ -29953,7 +29961,6 @@ window.wwtlib = function(){
           this.renderContext.targetAz = this.renderContext.az = currentAltAz.get_az();
         }
         this._mover_Midpoint();
-        this._moving = true;
       }
       else {
         this.set__mover(ViewMoverSlew.create(this.renderContext.viewCamera, cameraParams));
@@ -35738,6 +35745,7 @@ window.wwtlib = function(){
     this._magnitude = 0;
     this._distnace = 0;
     this.angularSize = 60;
+    this.annotation = '';
     this._thumbNail = null;
     this._studyImageset = null;
     this._backgroundImageSet = null;
@@ -35806,6 +35814,9 @@ window.wwtlib = function(){
     }
     if (place.attributes.getNamedItem('Rotation') != null) {
       newPlace._camParams.rotation = parseFloat(place.attributes.getNamedItem('Rotation').nodeValue);
+    }
+    if (place.attributes.getNamedItem('Annotation') != null) {
+      newPlace.annotation = place.attributes.getNamedItem('Annotation').nodeValue;
     }
     if (place.attributes.getNamedItem('Angle') != null) {
       newPlace._camParams.angle = parseFloat(place.attributes.getNamedItem('Angle').nodeValue);
@@ -35977,6 +35988,13 @@ window.wwtlib = function(){
     },
     set_zoomLevel: function(value) {
       this._camParams.zoom = value;
+      return value;
+    },
+    get_annotation: function() {
+      return this.annotation;
+    },
+    set_annotation: function(value) {
+      this.annotation = value;
       return value;
     },
     get_studyImageset: function() {
@@ -37557,7 +37575,7 @@ window.wwtlib = function(){
       }
     },
     getParamNames: function() {
-      return Object3dLayer.getParamNames.call(this);
+      return Layer.prototype.getParamNames.call(this);
     },
     getParams: function() {
       return Layer.prototype.getParams.call(this);
@@ -38668,6 +38686,7 @@ window.wwtlib = function(){
       this.loadFromString(ss.safeCast(data, String), true, purgeOld, purgeAll, hasHeader);
       this.computeDateDomainRange(-1, -1);
       this._dataDirty$1 = true;
+      this.dirty = true;
       return true;
     },
     loadData: function(tourDoc, filename) {
@@ -38773,7 +38792,7 @@ window.wwtlib = function(){
         var row = $enum1.current;
         try {
           if (columnStart > -1) {
-            var sucsess = false;
+            var sucsess = true;
             var dateTimeStart = new Date('12/31/2100');
             try {
               dateTimeStart = new Date(row[columnStart]);
@@ -38810,7 +38829,7 @@ window.wwtlib = function(){
         var row = $enum1.current;
         try {
           if (column > -1) {
-            var sucsess = false;
+            var sucsess = true;
             try {
               var val = parseFloat(row[column]);
               if (sucsess && val > max) {
@@ -39871,7 +39890,6 @@ window.wwtlib = function(){
           default:
             break;
         }
-        this.pointList.draw(renderContext, opacity * this.get_opacity(), false);
       }
       if (this.lineList != null) {
         this.lineList.sky = this.get_astronomical();
@@ -41991,15 +42009,15 @@ window.wwtlib = function(){
         var f32array = new Float32Array(9 * 5);
         var buffer = f32array;
         var index = 0;
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
         Tile.prepDevice.bufferData(34962, f32array, 35044);
         for (var i = 0; i < 4; i++) {
           index = 0;
@@ -42154,15 +42172,15 @@ window.wwtlib = function(){
         var f32array = new Float32Array(9 * 5);
         var buffer = f32array;
         var index = 0;
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
-        index = Tile.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(bottomCenter, 0.5, 1));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomLeft, 0, 1));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(this.bottomRight, 1, 1));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(center, 0.5, 0.5));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(leftCenter, 0, 0.5));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(rightCenter, 1, 0.5));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(topCenter, 0.5, 0));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topLeft, 0, 0));
+        index = this.addVertex(buffer, index, PositionTexture.createPos(this.topRight, 1, 0));
         Tile.prepDevice.bufferData(34962, f32array, 35044);
         for (var i = 0; i < 4; i++) {
           index = 0;
@@ -42413,8 +42431,8 @@ window.wwtlib = function(){
         for (var ii = 0; ii < 4; ii++) {
           var child = this.children[ii];
           if (child != null) {
-            if (Tile.isPointInTile(lat, lng)) {
-              var retVal = Tile.getSurfacePointAltitude(lat, lng, meters);
+            if (child.isPointInTile(lat, lng)) {
+              var retVal = child.getSurfacePointAltitude(lat, lng, meters);
               if (!!retVal) {
                 return retVal;
               }
@@ -42638,11 +42656,11 @@ window.wwtlib = function(){
           while ($enum3.moveNext()) {
             var pt = $enum3.current;
             if (this.demTile) {
-              index = Tile.addVertex(buffer, index, this._getMappedVertex(pt));
+              index = this.addVertex(buffer, index, this._getMappedVertex(pt));
               this.demIndex++;
             }
             else {
-              index = Tile.addVertex(buffer, index, pt);
+              index = this.addVertex(buffer, index, pt);
             }
           }
           if (this.demTile) {
@@ -44397,7 +44415,7 @@ window.wwtlib = function(){
           var $enum1 = ss.enumerate(verts);
           while ($enum1.moveNext()) {
             var pt = $enum1.current;
-            index = Tile.addVertex(buffer, index, pt);
+            index = this.addVertex(buffer, index, pt);
           }
           Tile.prepDevice.bufferData(34962, f32array, 35044);
           for (var y2 = 0; y2 < 2; y2++) {
@@ -44493,7 +44511,7 @@ window.wwtlib = function(){
         var $enum1 = ss.enumerate(verts);
         while ($enum1.moveNext()) {
           var pt = $enum1.current;
-          index = Tile.addVertex(buffer, index, pt);
+          index = this.addVertex(buffer, index, pt);
         }
         Tile.prepDevice.bufferData(34962, f32array, 35044);
         for (var y2 = 0; y2 < 2; y2++) {
@@ -44652,8 +44670,8 @@ window.wwtlib = function(){
         while ($enum1.moveNext()) {
           var child = $enum1.current;
           if (child != null) {
-            if (Tile.isPointInTile(lat, lng)) {
-              var retVal = Tile.getSurfacePointAltitude(lat, lng, meters);
+            if (child.isPointInTile(lat, lng)) {
+              var retVal = child.getSurfacePointAltitude(lat, lng, meters);
               if (!!retVal) {
                 return retVal;
               }
@@ -44813,7 +44831,7 @@ window.wwtlib = function(){
         var $enum1 = ss.enumerate(verts);
         while ($enum1.moveNext()) {
           var pt = $enum1.current;
-          index = Tile.addVertex(buffer, index, pt);
+          index = this.addVertex(buffer, index, pt);
         }
         Tile.prepDevice.bufferData(34962, f32array, 35044);
         for (var y2 = 0; y2 < 2; y2++) {

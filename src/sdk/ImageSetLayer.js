@@ -134,4 +134,4 @@ export class ImageSetLayer extends Layer{
     this._loaded$1 = true;
   }
 }
-
+Object.assign(ImageSetLayer,Layer);

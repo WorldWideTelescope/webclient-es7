@@ -9,6 +9,9 @@ import {Util} from '../Util';
 import {UiTools} from '../UITools';
 import {Tessellator} from '../Graphics/Tessellator';
 import {Enums} from '../enums';
+import {Table} from './Table';
+import {Tile} from '../Tile';
+import {Planets} from '../Planets';
 
 
 export class SpreadSheetLayer extends Layer {
@@ -69,7 +72,7 @@ export class SpreadSheetLayer extends Layer {
     this.baseDate = new Date(2010, 0, 1, 12, 0, 0);
     this.dirty = true;
     this.lastVersion = 0;
-    return new Layer(this);
+
   }
 
   static _getDatafromFeed$1() {
@@ -245,7 +248,7 @@ export class SpreadSheetLayer extends Layer {
       const row = $enum1.current;
       try {
         if (columnStart > -1) {
-          const sucsess = false;
+          const sucsess = 1;
           let dateTimeStart = new Date('12/31/2100');
           try {
             dateTimeStart = new Date(row[columnStart]);
@@ -281,7 +284,7 @@ export class SpreadSheetLayer extends Layer {
       const row = $enum1.current;
       try {
         if (column > -1) {
-          const sucsess = false;
+          const sucsess = 1;
           try {
             const val = parseFloat(row[column]);
             if (sucsess && val > max) {
@@ -1457,6 +1460,7 @@ export class SpreadSheetLayer extends Layer {
     }
   }
 }
+Object.assign(SpreadSheetLayer,Layer);
 
 function KmlCoordinate() {
   this.lat = 0;
@@ -1511,4 +1515,39 @@ class KmlLineList {
     point.alt /= this.pointList.length;
     return point;
   }
-};
+}
+
+
+
+export class PushPin {
+  static getPushPinTexture(pinId) {
+    let texture = null;
+    if (ss.keyExists(PushPin._pinTextureCache, pinId)) {
+      return PushPin._pinTextureCache[pinId];
+    }
+    try {
+      texture = Tile.prepDevice.createTexture();
+      Tile.prepDevice.bindTexture(3553, texture);
+      const row = Math.floor(pinId / 16);
+      const col = pinId % 16;
+      const temp = document.createElement('canvas');
+      temp.height = 32;
+      temp.width = 32;
+      const ctx = temp.getContext('2d');
+      ctx.drawImage(PushPin._pins.imageElement, (col * 32), (row * 32), 32, 32, 0, 0, 32, 32);
+      const image = temp;
+      Tile.prepDevice.texParameteri(3553, 10242, 33071);
+      Tile.prepDevice.texParameteri(3553, 10243, 33071);
+      Tile.prepDevice.texImage2D(3553, 0, 6408, 6408, 5121, image);
+      Tile.prepDevice.texParameteri(3553, 10241, 9985);
+      Tile.prepDevice.generateMipmap(3553);
+      Tile.prepDevice.bindTexture(3553, null);
+      PushPin._pinTextureCache[pinId] = texture;
+    } catch ($e1) {
+    }
+    return texture;
+  }
+}
+
+PushPin._pinTextureCache = {};
+PushPin._pins = Planets.loadPlanetTexture('//cdn.worldwidetelescope.org/webclient/images/pins.png');

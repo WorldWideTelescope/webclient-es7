@@ -8,6 +8,7 @@ import {CameraParameters} from '../CameraParameters';
 import {Vector2d} from '../Double3d';
 import {Util} from '../Util';
 import {ViewMoverKenBurnsStyle} from '../ViewMover';
+import {EventArgs} from '../ScriptInterface';
 
 export function TourPlayer() {
   this._overlayBlend = BlendState.create(false, 1000);
@@ -338,7 +339,7 @@ export const TourPlayer$ = {
       } else {
         WWTControl.singleton._freezeView();
         if (TourPlayer.__tourEnded != null) {
-          TourPlayer.__tourEnded(this, new ss.EventArgs());
+          TourPlayer.__tourEnded(this, new EventArgs());
         }
         this.showEndTourPopup();
         WWTControl.singleton._hideUI(false);

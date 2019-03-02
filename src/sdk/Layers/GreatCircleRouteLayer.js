@@ -14,7 +14,7 @@ export class GreatCirlceRouteLayer extends Layer{
     this._lngEnd$1 = 0;
     this._width$1 = 4;
     this._percentComplete$1 = 100;
-    return new Layer(this);
+
   }
 
   static getTypeName () {return 'TerraViewer.GreatCirlceRouteLayer';}
@@ -158,3 +158,4 @@ export class GreatCirlceRouteLayer extends Layer{
     this._percentComplete$1 = parseFloat(node.attributes.getNamedItem('PercentComplete').nodeValue);
   }
 }
+Object.assign(GreatCirlceRouteLayer,Layer);

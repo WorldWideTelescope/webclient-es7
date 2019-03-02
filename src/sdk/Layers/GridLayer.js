@@ -11,3 +11,4 @@ export class GridLayer extends Layer{
     return true;
   }
 }
+Object.assign(GridLayer,Layer);

@@ -564,7 +564,7 @@ export class ToastTile extends Tile {
     return true;
   }
 }
-
+Object.assign(ToastTile,Tile);
 export class DistanceCalc {
   static lineToPoint(l0, l1, p) {
     const v = Vector3d.subtractVectors(l1, l0);

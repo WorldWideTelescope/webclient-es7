@@ -365,7 +365,7 @@ export class Object3dLayer extends Layer{
     paramList[13] = this.get_opacity();
     return paramList;
   }
-  static getParamNames() {
+  getParamNames() {
     return ['Heading', 'Pitch', 'Roll', 'Scale.X', 'Scale.Y', 'Scale.Z', 'Translate.X', 'Translate.Y', 'Translate.Z', 'Colors.Red', 'Colors.Green', 'Colors.Blue', 'Colors.Alpha', 'Opacity'];
   }
   setParams(paramList) {
@@ -392,7 +392,7 @@ export class Object3dLayer extends Layer{
   }
   fireChanged() {
     if (this.__propertiesChanged$1 != null) {
-      this.__propertiesChanged$1(this, new ss.EventArgs());
+      this.__propertiesChanged$1(this, new EventArgs());
     }
   }
   getEditUI() {
@@ -675,6 +675,7 @@ export class Object3dLayer extends Layer{
     return false;
   }
 };
+Object.assign(Object3dLayer,Layer);
 
 export class Group {
   constructor() {
@@ -1068,7 +1069,7 @@ export class Object3d {
     }
     return tangents;
   }
-  static _calculateVertexNormals(vertexList, indexList, creaseAngleRad) {
+  _calculateVertexNormals(vertexList, indexList, creaseAngleRad) {
     const vertexCount = vertexList.length;
     const triangleCount = Math.floor(indexList.length / 3);
     const vertexInstanceCounts = new Array(vertexCount);
@@ -1131,7 +1132,7 @@ export class Object3d {
       this._meshNormalMaps.push(null);
     }
   }
-  static _loadColorChunk(br) {
+  _loadColorChunk(br) {
     const chunkID = br.readUInt16();
     const chunkLength = br.readUInt32();
     let color = Colors.get_black();
@@ -1147,7 +1148,7 @@ export class Object3d {
     }
     return color;
   }
-  static _loadPercentageChunk(br) {
+  _loadPercentageChunk(br) {
     const chunkID = br.readUInt16();
     const chunkLength = br.readUInt32();
     let percentage = 0;
@@ -1484,7 +1485,7 @@ export class Object3d {
     } catch ($e2) {
     }
   }
-  static _getIndexies(data) {
+  _getIndexies(data) {
     const parts = ss.trim(data).split('/');
     const indecies = new Array(3);
     if (ss.emptyString(data)) {
@@ -1517,46 +1518,39 @@ export class Object3d {
     chunck.readAsArrayBuffer(blob);
   }
   _read3dsFromBin(br, scale) {
-    let i;
-    let sectionID;
-    let sectionLength;
-    let name = '';
-    let material = '';
-    let triangleCount = 0;
-    let vertexCount = 0;
-    const vertexList = [];
-    const indexList = [];
-    const attribList = [];
-    const materialNames = [];
-    let currentMaterialIndex = -1;
-    let currentMaterial = new Material();
-    let attributeID = 0;
-    let count = 0;
-    let lastID = 0;
-    const exit = false;
-    let normalMapFound = false;
-    const offsetX = 0;
-    const offsetY = 0;
-    const offsetZ = 0;
-    const objects = [];
-    let currentObject = null;
-    const objHierarchy = [];
-    const objNames = [];
-    const objectTable = {};
-    let dummyCount = 0;
-    const length = br.get_length() - 1;
-    let startMapIndex = 0;
-    let startTriangleIndex = 0;
+    var i;
+    var sectionID;
+    var sectionLength;
+    var name = '';
+    var material = '';
+    var triangleCount = 0;
+    var vertexCount = 0;
+    var vertexList = [];
+    var indexList = [];
+    var attribList = [];
+    var materialNames = [];
+    var currentMaterialIndex = -1;
+    var currentMaterial = new Material();
+    var attributeID = 0;
+    var count = 0;
+    var lastID = 0;
+    var exit = false;
+    var normalMapFound = false;
+    var offsetX = 0;
+    var offsetY = 0;
+    var offsetZ = 0;
+    var objects = [];
+    var currentObject = null;
+    var objHierarchy = [];
+    var objNames = [];
+    var objectTable = {};
+    var dummyCount = 0;
+    var length = br.get_length() - 1;
+    var startMapIndex = 0;
+    var startTriangleIndex = 0;
     while (br.get_position() < length && !exit) {
       sectionID = br.readUInt16();
       sectionLength = br.readUInt32();
-      let triCount;
-      let textureFilename;
-      let nameId;
-      let nameBlockLength;
-      let b1,b2;
-      let path;
-      let level;
       switch (sectionID) {
         case 19789:
           break;
@@ -1564,7 +1558,7 @@ export class Object3d {
           break;
         case 16384:
           name = '';
-          let b;
+          var b;
           do {
             b = br.readByte();
             if (b > 0) {
@@ -1585,30 +1579,30 @@ export class Object3d {
         case 16656:
           vertexCount = br.readUInt16();
           for (i = 0; i < vertexCount; i++) {
-            const x = br.readSingle() - offsetX;
-            const y = br.readSingle() - offsetY;
-            const z = br.readSingle() - offsetZ;
-            let vert = PositionNormalTextured._create(x * scale, z * scale, y * scale, 0, 0, 0, 0, 0);
+            var x = br.readSingle() - offsetX;
+            var y = br.readSingle() - offsetY;
+            var z = br.readSingle() - offsetZ;
+            var vert = PositionNormalTextured._create(x * scale, z * scale, y * scale, 0, 0, 0, 0, 0);
             vertexList.push(vert);
           }
           break;
         case 16672:
-          triCount = br.readUInt16();
+          var triCount = br.readUInt16();
           triangleCount += triCount;
           for (i = 0; i < triCount; i++) {
-            const aa = br.readUInt16() + startMapIndex;
-            const bb = br.readUInt16() + startMapIndex;
-            const cc = br.readUInt16() + startMapIndex;
+            var aa = br.readUInt16() + startMapIndex;
+            var bb = br.readUInt16() + startMapIndex;
+            var cc = br.readUInt16() + startMapIndex;
             indexList.push(cc);
             indexList.push(bb);
             indexList.push(aa);
-            const flags = br.readUInt16();
+            var flags = br.readUInt16();
           }
           break;
         case 16688:
           material = '';
           i = 0;
-
+          var b1;
           do {
             b1 = br.readByte();
             if (b1 > 0) {
@@ -1616,8 +1610,8 @@ export class Object3d {
             }
             i++;
           } while (!!b1);
-          triCount = br.readUInt16();
-          const applyList = new Array(triCount);
+          var triCount = br.readUInt16();
+          var applyList = new Array(triCount);
           attributeID = Object3d._getMaterialID(material, materialNames);
           for (i = 0; i < triCount; i++) {
             applyList[i] = br.readUInt16() + startTriangleIndex;
@@ -1627,14 +1621,14 @@ export class Object3d {
           break;
         case 16704:
           count = br.readUInt16();
-          for (let i = 0; i < count; i++) {
-            let vert = vertexList[startMapIndex + i];
-            const texCoord = new Vector2d(br.readSingle(), (this.flipV) ? (1 - br.readSingle()) : br.readSingle());
+          for (i = 0; i < count; i++) {
+            var vert = vertexList[startMapIndex + i];
+            var texCoord = new Vector2d(br.readSingle(), (this.flipV) ? (1 - br.readSingle()) : br.readSingle());
             vertexList[startMapIndex + i] = PositionNormalTextured.createUV(vert.get_position(), new Vector3d(), texCoord);
           }
           break;
         case 16736:
-          const mat = new Array(12);
+          var mat = new Array(12);
           for (i = 0; i < 12; i++) {
             mat[i] = br.readSingle();
           }
@@ -1646,8 +1640,9 @@ export class Object3d {
         case 45055:
           break;
         case 40960:
-          let matName = '';
+          var matName = '';
           i = 0;
+          var b2;
           do {
             b2 = br.readByte();
             if (b2 > 0) {
@@ -1668,23 +1663,24 @@ export class Object3d {
           currentMaterial.opacity = 1;
           break;
         case 40976:
-          currentMaterial.ambient = Object3d._loadColorChunk(br);
+          currentMaterial.ambient = this._loadColorChunk(br);
           break;
         case 40992:
-          currentMaterial.diffuse = Object3d._loadColorChunk(br);
+          currentMaterial.diffuse = this._loadColorChunk(br);
           break;
         case 41008:
-          currentMaterial.specular = Object3d._loadColorChunk(br);
+          currentMaterial.specular = this._loadColorChunk(br);
           break;
         case 41024:
-          currentMaterial.specularSharpness = 1 + 2 * Object3d._loadPercentageChunk(br);
+          currentMaterial.specularSharpness = 1 + 2 * this._loadPercentageChunk(br);
           currentMaterial.specularSharpness = Math.max(10, currentMaterial.specularSharpness);
           break;
         case 41472:
           break;
         case 41728:
-          textureFilename = '';
+          var textureFilename = '';
           i = 0;
+          var b2;
           do {
             b2 = br.readByte();
             if (b2 > 0) {
@@ -1692,26 +1688,29 @@ export class Object3d {
             }
             i++;
           } while (!!b2);
-          path = this.filename.substring(0, this.filename.lastIndexOf('\\') + 1);
+          var path = this.filename.substring(0, this.filename.lastIndexOf('\\') + 1);
           try {
-            let tex = this._tourDocument.getCachedTexture2d(path + textureFilename);
+            var tex = this._tourDocument.getCachedTexture2d(path + textureFilename);
             if (tex != null) {
               this._meshTextures.push(tex);
               this.meshFilenames.push(textureFilename);
               currentMaterial.diffuse = Colors.get_white();
-            } else {
+            }
+            else {
               this._meshTextures.push(null);
             }
-          } catch ($e1) {
+          }
+          catch ($e1) {
             this._meshTextures.push(null);
           }
           break;
         case 41520:
-          const percentage = Object3d._loadPercentageChunk(br);
-          nameId = br.readUInt16();
-          nameBlockLength = br.readUInt32();
-          textureFilename = '';
+          var percentage = this._loadPercentageChunk(br);
+          var nameId = br.readUInt16();
+          var nameBlockLength = br.readUInt32();
+          var textureFilename = '';
           i = 0;
+          var b2;
           do {
             b2 = br.readByte();
             if (b2 > 0) {
@@ -1719,27 +1718,29 @@ export class Object3d {
             }
             i++;
           } while (!!b2);
-          path = this.filename.substring(0, this.filename.lastIndexOf('\\') + 1);
+          var path = this.filename.substring(0, this.filename.lastIndexOf('\\') + 1);
           try {
-            let tex = this._tourDocument.getCachedTexture2d(path + textureFilename);
+            var tex = this._tourDocument.getCachedTexture2d(path + textureFilename);
             if (tex != null) {
               this._meshNormalMaps.push(tex);
               this.meshFilenames.push(textureFilename);
               normalMapFound = true;
-            } else {
+            }
+            else {
               this._meshNormalMaps.push(null);
             }
-          } catch ($e2) {
+          }
+          catch ($e2) {
             this._meshNormalMaps.push(null);
           }
           break;
         case 41476:
-          const strength = Object3d._loadPercentageChunk(br);
-          nameId = br.readUInt16();
-          nameBlockLength = br.readUInt32();
-          textureFilename = '';
+          var strength = this._loadPercentageChunk(br);
+          var nameId = br.readUInt16();
+          var nameBlockLength = br.readUInt32();
+          var textureFilename = '';
           i = 0;
-
+          var b2;
           do {
             b2 = br.readByte();
             if (b2 > 0) {
@@ -1747,18 +1748,20 @@ export class Object3d {
             }
             i++;
           } while (!!b2);
-          path = this.filename.substring(0, this.filename.lastIndexOf('\\') + 1);
+          var path = this.filename.substring(0, this.filename.lastIndexOf('\\') + 1);
           try {
-            let tex = this._tourDocument.getCachedTexture2d(path + textureFilename);
+            var tex = this._tourDocument.getCachedTexture2d(path + textureFilename);
             if (tex != null) {
               this._meshSpecularTextures.push(tex);
               this.meshFilenames.push(textureFilename);
-              const gray = ss.truncate((255.99 * strength / 100));
+              var gray = ss.truncate((255.99 * strength / 100));
               currentMaterial.specular = Color.fromArgb(255, gray, gray, gray);
-            } else {
+            }
+            else {
               this._meshSpecularTextures.push(null);
             }
-          } catch ($e3) {
+          }
+          catch ($e3) {
             this._meshSpecularTextures.push(null);
           }
           break;
@@ -1769,7 +1772,7 @@ export class Object3d {
         case 45072:
           name = '';
           i = 0;
-
+          var b1;
           do {
             b1 = br.readByte();
             if (b1 > 0) {
@@ -1777,15 +1780,16 @@ export class Object3d {
             }
             i++;
           } while (!!b1);
-          const dum1 = br.readUInt16();
-          const dum2 = br.readUInt16();
-          level = br.readUInt16();
+          var dum1 = br.readUInt16();
+          var dum2 = br.readUInt16();
+          var level = br.readUInt16();
           if (level === 65535) {
             level = -1;
           }
           if (ss.startsWith(name, '$')) {
             dummyCount++;
-          } else {
+          }
+          else {
             objNames.push(name);
           }
           objHierarchy.push(level);
@@ -1796,7 +1800,7 @@ export class Object3d {
         case 45073:
           name = '';
           i = 0;
-
+          var b1;
           do {
             b1 = br.readByte();
             if (b1 > 0) {
@@ -1807,7 +1811,7 @@ export class Object3d {
           objNames.push('$$$' + name);
           break;
         case 45075:
-          const points = new Array(3);
+          var points = new Array(3);
           for (i = 0; i < 3; i++) {
             points[i] = br.readSingle();
           }
@@ -1816,7 +1820,7 @@ export class Object3d {
           }
           break;
         case 45088:
-          const pos = new Array(8);
+          var pos = new Array(8);
           for (i = 0; i < 8; i++) {
             pos[i] = br.readSingle();
           }
@@ -1831,32 +1835,32 @@ export class Object3d {
     if (currentMaterialIndex > -1) {
       this._addMaterial(currentMaterial);
     }
-    const degtorag = Math.PI / 180;
-    const creaseAngleRad = ((this.smooth) ? 70 * degtorag : 45 * degtorag);
-    const vertexNormals = this._calculateVertexNormalsMerged(vertexList, indexList, creaseAngleRad);
-    const newVertexList = [];
-    const newVertexCount = triangleCount * 3;
-    for (let vertexIndex = 0; vertexIndex < newVertexCount; ++vertexIndex) {
-      let v = vertexList[indexList[vertexIndex]];
+    var degtorag = Math.PI / 180;
+    var creaseAngleRad = ((this.smooth) ? 70 * degtorag : 45 * degtorag);
+    var vertexNormals = this._calculateVertexNormalsMerged(vertexList, indexList, creaseAngleRad);
+    var newVertexList = [];
+    var newVertexCount = triangleCount * 3;
+    for (var vertexIndex = 0; vertexIndex < newVertexCount; ++vertexIndex) {
+      var v = vertexList[indexList[vertexIndex]];
       v.set_normal(vertexNormals[vertexIndex]);
       newVertexList.push(v);
     }
-    const newIndexList = [];
-    const $enum4 = ss.enumerate(objects);
+    var newIndexList = [];
+    var $enum4 = ss.enumerate(objects);
     while ($enum4.moveNext()) {
-      let node = $enum4.current;
-      const materialGroups = [];
+      var node = $enum4.current;
+      var materialGroups = [];
       for (i = 0; i < node.applyLists.length; i++) {
-        const matId = node.applyListsIndex[i];
-        const startIndex = newIndexList.length;
-        const $enum5 = ss.enumerate(node.applyLists[i]);
+        var matId = node.applyListsIndex[i];
+        var startIndex = newIndexList.length;
+        var $enum5 = ss.enumerate(node.applyLists[i]);
         while ($enum5.moveNext()) {
-          const triangleIndex = $enum5.current;
+          var triangleIndex = $enum5.current;
           newIndexList.push((triangleIndex * 3));
           newIndexList.push((triangleIndex * 3 + 1));
           newIndexList.push((triangleIndex * 3 + 2));
         }
-        const group = new Group();
+        var group = new Group();
         group.startIndex = startIndex;
         group.indexCount = node.applyLists[i].length * 3;
         group.materialIndex = matId;
@@ -1864,18 +1868,18 @@ export class Object3d {
       }
       node.drawGroup = materialGroups;
     }
-    const nodeStack = new ss.Stack();
-    const nodeTreeRoot = [];
-    const rootDummy = new ObjectNode();
+    var nodeStack = new ss.Stack();
+    var nodeTreeRoot = [];
+    var rootDummy = new ObjectNode();
     rootDummy.name = 'Root';
     rootDummy.parent = null;
     rootDummy.level = -1;
     rootDummy.drawGroup = null;
-    let currentLevel = -1;
+    var currentLevel = -1;
     nodeStack.push(rootDummy);
     nodeTreeRoot.push(rootDummy);
     for (i = 0; i < objHierarchy.length; i++) {
-      let level = objHierarchy[i];
+      var level = objHierarchy[i];
       if (level <= currentLevel) {
         while (level <= nodeStack.peek().level && nodeStack.count > 1) {
           nodeStack.pop();
@@ -1883,14 +1887,15 @@ export class Object3d {
         currentLevel = level;
       }
       if (ss.startsWith(objNames[i], '$$$')) {
-        const dummy = new ObjectNode();
+        var dummy = new ObjectNode();
         dummy.name = ss.replaceString(objNames[i], '$$$', '');
         dummy.parent = nodeStack.peek();
         dummy.parent.children.push(dummy);
         dummy.level = currentLevel = level;
         dummy.drawGroup = null;
         nodeStack.push(dummy);
-      } else {
+      }
+      else {
         objectTable[objNames[i]].level = currentLevel = level;
         objectTable[objNames[i]].parent = nodeStack.peek();
         objectTable[objNames[i]].parent.children.push(objectTable[objNames[i]]);
@@ -1898,30 +1903,31 @@ export class Object3d {
       }
     }
     if (!objHierarchy.length) {
-      const $enum6 = ss.enumerate(objects);
+      var $enum6 = ss.enumerate(objects);
       while ($enum6.moveNext()) {
-        let node = $enum6.current;
+        var node = $enum6.current;
         rootDummy.children.push(node);
         node.parent = rootDummy;
       }
     }
     if (normalMapFound) {
-      const tangentIndexList = [];
-      for (let tangentIndex = 0; tangentIndex < newVertexCount; ++tangentIndex) {
+      var tangentIndexList = [];
+      for (var tangentIndex = 0; tangentIndex < newVertexCount; ++tangentIndex) {
         tangentIndexList.push(tangentIndex);
       }
-      const tangents = this._calculateVertexTangents(newVertexList, tangentIndexList, creaseAngleRad);
-      const vertices = new Array(newVertexList.length);
-      let vertexIndex = 0;
-      const $enum7 = ss.enumerate(newVertexList);
+      var tangents = this._calculateVertexTangents(newVertexList, tangentIndexList, creaseAngleRad);
+      var vertices = new Array(newVertexList.length);
+      var vertexIndex = 0;
+      var $enum7 = ss.enumerate(newVertexList);
       while ($enum7.moveNext()) {
-        let v = $enum7.current;
-        const tvertex = new PositionNormalTexturedTangent(v.get_position(), v.get_normal(), new Vector2d(v.tu, v.tv), tangents[vertexIndex]);
+        var v = $enum7.current;
+        var tvertex = new PositionNormalTexturedTangent(v.get_position(), v.get_normal(), new Vector2d(v.tu, v.tv), tangents[vertexIndex]);
         vertices[vertexIndex] = tvertex;
         ++vertexIndex;
       }
       this._mesh = Mesh.createTangent(vertices, newIndexList);
-    } else {
+    }
+    else {
       this._mesh = Mesh.create(newVertexList, newIndexList);
     }
     this.objects = nodeTreeRoot;
@@ -1948,44 +1954,44 @@ export class Object3d {
       }
     }
   }
-  static setupLighting(renderContext) {
-    const objPosition = new Vector3d(renderContext.get_world().get_offsetX(), renderContext.get_world().get_offsetY(), renderContext.get_world().get_offsetZ());
-    const objToLight = Vector3d.subtractVectors(objPosition, renderContext.get_reflectedLightPosition());
-    const sunPosition = Vector3d.subtractVectors(renderContext.get_sunPosition(), renderContext.get_reflectedLightPosition());
-    const cosPhaseAngle = (sunPosition.length() <= 0) ? 1 : Vector3d.dot(objToLight, sunPosition) / (objToLight.length() * sunPosition.length());
-    let reflectedLightFactor = Math.max(0, cosPhaseAngle);
+  setupLighting(renderContext) {
+    var objPosition = new Vector3d(renderContext.get_world().get_offsetX(), renderContext.get_world().get_offsetY(), renderContext.get_world().get_offsetZ());
+    var objToLight = Vector3d.subtractVectors(objPosition, renderContext.get_reflectedLightPosition());
+    var sunPosition = Vector3d.subtractVectors(renderContext.get_sunPosition(), renderContext.get_reflectedLightPosition());
+    var cosPhaseAngle = (sunPosition.length() <= 0) ? 1 : Vector3d.dot(objToLight, sunPosition) / (objToLight.length() * sunPosition.length());
+    var reflectedLightFactor = Math.max(0, cosPhaseAngle);
     reflectedLightFactor = Math.sqrt(reflectedLightFactor);
-    let hemiLightFactor = 0;
-    let sunlightFactor = 1;
+    var hemiLightFactor = 0;
+    var sunlightFactor = 1;
     if (renderContext.get_occludingPlanetRadius() > 0) {
-      const objAltitude = Vector3d.subtractVectors(objPosition, renderContext.get_occludingPlanetPosition()).length() - renderContext.get_occludingPlanetRadius();
+      var objAltitude = Vector3d.subtractVectors(objPosition, renderContext.get_occludingPlanetPosition()).length() - renderContext.get_occludingPlanetRadius();
       hemiLightFactor = Math.max(0, Math.min(1, 1 - (objAltitude / renderContext.get_occludingPlanetRadius()) * 300));
       reflectedLightFactor *= (1 - hemiLightFactor);
-      const sunToPlanet = Vector3d.subtractVectors(renderContext.get_occludingPlanetPosition(), renderContext.get_sunPosition());
-      const objToPlanet = Vector3d.subtractVectors(renderContext.get_occludingPlanetPosition(), objPosition);
-      const hemiLightDirection = new Vector3d(-objToPlanet.x, -objToPlanet.y, -objToPlanet.z);
+      var sunToPlanet = Vector3d.subtractVectors(renderContext.get_occludingPlanetPosition(), renderContext.get_sunPosition());
+      var objToPlanet = Vector3d.subtractVectors(renderContext.get_occludingPlanetPosition(), objPosition);
+      var hemiLightDirection = new Vector3d(-objToPlanet.x, -objToPlanet.y, -objToPlanet.z);
       hemiLightDirection.normalize();
       renderContext.set_hemisphereLightUp(hemiLightDirection);
-      const objToSun = Vector3d.subtractVectors(renderContext.get_sunPosition(), objPosition);
-      const sunPlanetDistance = sunToPlanet.length();
-      const t = -Vector3d.dot(objToSun, sunToPlanet) / (sunPlanetDistance * sunPlanetDistance);
+      var objToSun = Vector3d.subtractVectors(renderContext.get_sunPosition(), objPosition);
+      var sunPlanetDistance = sunToPlanet.length();
+      var t = -Vector3d.dot(objToSun, sunToPlanet) / (sunPlanetDistance * sunPlanetDistance);
       if (t > 1) {
-        const shadowAxisPoint = Vector3d.addVectors(renderContext.get_sunPosition(), Vector3d.multiplyScalar(sunToPlanet, t));
-        const d = Vector3d.subtractVectors(shadowAxisPoint, objPosition).length();
-        const s = Vector3d.subtractVectors(shadowAxisPoint, renderContext.get_sunPosition()).length();
-        const solarRadius = 0.004645784;
-        const penumbraRadius = renderContext.get_occludingPlanetRadius() + (t - 1) * (renderContext.get_occludingPlanetRadius() + solarRadius);
-        let umbraRadius = renderContext.get_occludingPlanetRadius() + (t - 1) * (renderContext.get_occludingPlanetRadius() - solarRadius);
+        var shadowAxisPoint = Vector3d.addVectors(renderContext.get_sunPosition(), Vector3d.multiplyScalar(sunToPlanet, t));
+        var d = Vector3d.subtractVectors(shadowAxisPoint, objPosition).length();
+        var s = Vector3d.subtractVectors(shadowAxisPoint, renderContext.get_sunPosition()).length();
+        var solarRadius = 0.004645784;
+        var penumbraRadius = renderContext.get_occludingPlanetRadius() + (t - 1) * (renderContext.get_occludingPlanetRadius() + solarRadius);
+        var umbraRadius = renderContext.get_occludingPlanetRadius() + (t - 1) * (renderContext.get_occludingPlanetRadius() - solarRadius);
         if (d < penumbraRadius) {
-          let minimumShadow = 0;
+          var minimumShadow = 0;
           if (umbraRadius < 0) {
-            const occlusion = Math.pow(1 / (1 - umbraRadius), 2);
+            var occlusion = Math.pow(1 / (1 - umbraRadius), 2);
             umbraRadius = 0;
             minimumShadow = 1 - occlusion;
           }
-          const u = Math.max(0, umbraRadius);
+          var u = Math.max(0, umbraRadius);
           sunlightFactor = Math.max(minimumShadow, (d - u) / (penumbraRadius - u));
-          const gray = ss.truncate((255.99 * sunlightFactor));
+          var gray = ss.truncate((255.99 * sunlightFactor));
           renderContext.set_sunlightColor(Color.fromArgb(255, gray, gray, gray));
           hemiLightFactor *= sunlightFactor;
         }
@@ -2001,37 +2007,38 @@ export class Object3d {
     if (this._dirty && !this.issLayer) {
       this._reload();
     }
-    const oldWorld = renderContext.get_world();
-    const offset = this._mesh.boundingSphere.center;
-    let unitScale = 1;
+    var oldWorld = renderContext.get_world();
+    var offset = this._mesh.boundingSphere.center;
+    var unitScale = 1;
     if (this._mesh.boundingSphere.radius > 0) {
       unitScale = 1 / this._mesh.boundingSphere.radius;
     }
     renderContext.set_world(Matrix3d.multiplyMatrix(Matrix3d.multiplyMatrix(Matrix3d.translation(new Vector3d(-offset.x, -offset.y, -offset.z)), Matrix3d._scaling(unitScale, unitScale, unitScale)), oldWorld));
-    const worldView = Matrix3d.multiplyMatrix(renderContext.get_world(), renderContext.get_view());
-    const v = worldView.transform(Vector3d.get_empty());
-    const scaleFactor = Math.sqrt(worldView.get_m11() * worldView.get_m11() + worldView.get_m22() * worldView.get_m22() + worldView.get_m33() * worldView.get_m33()) / unitScale;
-    const dist = v.length();
-    const radius = scaleFactor;
-    const viewportHeight = ss.truncate(renderContext.height);
-    const p11 = renderContext.get_projection().get_m11();
-    const p34 = renderContext.get_projection().get_m34();
-    const p44 = renderContext.get_projection().get_m44();
-    const w = Math.abs(p34) * dist + p44;
-    const pixelsPerUnit = (p11 / w) * viewportHeight;
-    const radiusInPixels = (radius * pixelsPerUnit);
+    var worldView = Matrix3d.multiplyMatrix(renderContext.get_world(), renderContext.get_view());
+    var v = worldView.transform(Vector3d.get_empty());
+    var scaleFactor = Math.sqrt(worldView.get_m11() * worldView.get_m11() + worldView.get_m22() * worldView.get_m22() + worldView.get_m33() * worldView.get_m33()) / unitScale;
+    var dist = v.length();
+    var radius = scaleFactor;
+    var viewportHeight = ss.truncate(renderContext.height);
+    var p11 = renderContext.get_projection().get_m11();
+    var p34 = renderContext.get_projection().get_m34();
+    var p44 = renderContext.get_projection().get_m44();
+    var w = Math.abs(p34) * dist + p44;
+    var pixelsPerUnit = (p11 / w) * viewportHeight;
+    var radiusInPixels = (radius * pixelsPerUnit);
     if (radiusInPixels < 0.5) {
       return;
     }
-    const savedSunlightColor = renderContext.get_sunlightColor();
-    const savedReflectedColor = renderContext.get_reflectedLightColor();
-    const savedHemiColor = renderContext.get_hemisphereLightColor();
+    var savedSunlightColor = renderContext.get_sunlightColor();
+    var savedReflectedColor = renderContext.get_reflectedLightColor();
+    var savedHemiColor = renderContext.get_hemisphereLightColor();
     if (Settings.get_current().get_solarSystemLighting()) {
-      Object3d.setupLighting(renderContext);
+      this.setupLighting(renderContext);
       if (!this.useCurrentAmbient) {
         renderContext.set_ambientLightColor(Color.fromArgb(255, 11, 11, 11));
       }
-    } else {
+    }
+    else {
       renderContext.set_sunlightColor(Colors.get_black());
       renderContext.set_reflectedLightColor(Colors.get_black());
       renderContext.set_hemisphereLightColor(Colors.get_black());
@@ -2041,12 +2048,12 @@ export class Object3d {
       return;
     }
     ModelShader.minLightingBrightness = 0.1;
-    const count = this._meshMaterials.length;
+    var count = this._meshMaterials.length;
     this._mesh.beginDrawing(renderContext);
     if (count > 0) {
-      for (let i = 0; i < this._meshMaterials.length; i++) {
+      for (var i = 0; i < this._meshMaterials.length; i++) {
         if (this._meshMaterials[i].isDefault) {
-          const mat = this._meshMaterials[i];
+          var mat = this._meshMaterials[i];
           mat.diffuse = this.color;
           mat.ambient = this.color;
           this._meshMaterials[i] = mat;
@@ -2054,20 +2061,23 @@ export class Object3d {
         renderContext.setMaterial(this._meshMaterials[i], this._meshTextures[i], this._meshSpecularTextures[i], this._meshNormalMaps[i], opacity);
         if (this._mesh.vertexBuffer != null) {
           ModelShader.use(renderContext, this._mesh.vertexBuffer.vertexBuffer, this._mesh.indexBuffer.buffer, (this._meshTextures[i] != null) ? this._meshTextures[i].texture2d : null, opacity, false, 32);
-        } else {
+        }
+        else {
           ModelShader.use(renderContext, this._mesh.tangentVertexBuffer.vertexBuffer, this._mesh.indexBuffer.buffer, (this._meshTextures[i] != null) ? this._meshTextures[i].texture2d : null, opacity, false, 44);
         }
         Layer.preDraw();
         this._mesh.drawSubset(renderContext, i);
       }
-    } else {
+    }
+    else {
       Layer.preDraw();
-      for (let i = 0; i < this._meshTextures.length; i++) {
+      for (var i = 0; i < this._meshTextures.length; i++) {
         if (this._meshTextures[i] != null) {
           renderContext.set_mainTexture(this._meshTextures[i]);
           if (this._mesh.vertexBuffer != null) {
             ModelShader.use(renderContext, this._mesh.vertexBuffer.vertexBuffer, this._mesh.indexBuffer.buffer, (this._meshTextures[i] != null) ? this._meshTextures[i].texture2d : null, opacity, false, 32);
-          } else {
+          }
+          else {
             ModelShader.use(renderContext, this._mesh.tangentVertexBuffer.vertexBuffer, this._mesh.indexBuffer.buffer, (this._meshTextures[i] != null) ? this._meshTextures[i].texture2d : null, opacity, false, 44);
           }
         }

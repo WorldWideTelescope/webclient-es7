@@ -237,3 +237,4 @@ export class PlotTile extends Tile{
     this.demArray = null;
   }
 };
+Object.assign(PlotTile,Tile);

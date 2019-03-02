@@ -7,6 +7,7 @@ import {Layer} from '../Layers/Layer';
 import {Texture} from '../Graphics/Texture';
 import {ViewMoverSlew} from '../ViewMover';
 import {FileCabinet} from './FileCabilnet';
+import {Imageset} from '../Imageset';
 
 
 export class TourDocument {
@@ -136,7 +137,7 @@ export class TourDocument {
     while ($enum1.moveNext()) {
       const tourStop = $enum1.current;
       if (tourStop.nodeName === 'TourStop') {
-        this.addTourStop(TourStop._fromXml(this, tourStop));
+        this.addTourStop(Overlay._fromXml(this, tourStop));
       }
     }
     const Frames = Util.selectSingleNode(root, 'ReferenceFrames');
@@ -218,7 +219,7 @@ export class TourDocument {
   getTourXML() {
     const xmlWriter = new XmlTextWriter();
     xmlWriter.formatting = 1;
-    xmlWriter._writeProcessingInstruction('xml', 'version=\'1.0\' encoding=\'UTF-8\'');
+    xmlWriter._writeProcessingInstruction('xml', `version='1.0' encoding='UTF-8'`);
     xmlWriter._writeStartElement('Tour');
     xmlWriter._writeAttributeString('ID', this._id);
     xmlWriter._writeAttributeString('Title', this._title);

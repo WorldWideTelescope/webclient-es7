@@ -8,170 +8,175 @@ import {Enums} from '../enums';
 import ss from '../scriptsharp/ss';
 import {SpaceTimeController} from '../SpaceTimeController';
 
-export function ReferenceFrame() {
-  this._systemGenerated = false;
-  this.meanAnomoly = 0;
-  this.orbitalYears = 0;
-  this.observingLocation = false;
-  this.reference = 18;
-  this.parentsRoationalBase = false;
-  this.referenceFrameType = 0;
-  this.meanRadius = 6371000;
-  this.oblateness = 0.0033528;
-  this.heading = 0;
-  this.pitch = 0;
-  this.roll = 0;
-  this.scale = 1;
-  this.tilt = 0;
-  this.translation = new Vector3d();
-  this.lat = 0;
-  this.lng = 0;
-  this.altitude = 0;
-  this.rotationalPeriod = 0;
-  this.zeroRotationDate = 0;
-  this.representativeColor = Colors.get_white();
-  this.showAsPoint = false;
-  this.showOrbitPath = false;
-  this.stationKeeping = true;
-  this.semiMajorAxis = 0;
-  this.semiMajorAxisUnits = 1;
-  this.eccentricity = 0;
-  this.inclination = 0;
-  this.argumentOfPeriapsis = 0;
-  this.longitudeOfAscendingNode = 0;
-  this.meanAnomolyAtEpoch = 0;
-  this.meanDailyMotion = 0;
-  this.epoch = 0;
-  this._orbit = null;
-  this._elements = new EOE();
-  this.worldMatrix = new Matrix3d();
-  this.worldMatrix = Matrix3d.get_identity();
-}
-ReferenceFrame.isTLECheckSumGood = function(line) {
-  if (line.length !== 69) {
-    return false;
+export class ReferenceFrame {
+  constructor() {
+    this._systemGenerated = false;
+    this.meanAnomoly = 0;
+    this.orbitalYears = 0;
+    this.observingLocation = false;
+    this.reference = 18;
+    this.parentsRoationalBase = false;
+    this.referenceFrameType = 0;
+    this.meanRadius = 6371000;
+    this.oblateness = 0.0033528;
+    this.heading = 0;
+    this.pitch = 0;
+    this.roll = 0;
+    this.scale = 1;
+    this.tilt = 0;
+    this.translation = new Vector3d();
+    this.lat = 0;
+    this.lng = 0;
+    this.altitude = 0;
+    this.rotationalPeriod = 0;
+    this.zeroRotationDate = 0;
+    this.representativeColor = Colors.get_white();
+    this.showAsPoint = false;
+    this.showOrbitPath = false;
+    this.stationKeeping = true;
+    this.semiMajorAxis = 0;
+    this.semiMajorAxisUnits = 1;
+    this.eccentricity = 0;
+    this.inclination = 0;
+    this.argumentOfPeriapsis = 0;
+    this.longitudeOfAscendingNode = 0;
+    this.meanAnomolyAtEpoch = 0;
+    this.meanDailyMotion = 0;
+    this.epoch = 0;
+    this._orbit = null;
+    this._elements = new EOE();
+    this.worldMatrix = new Matrix3d();
+    this.worldMatrix = Matrix3d.get_identity();
   }
-  let checksum = 0;
-  for (let i = 0; i < 68; i++) {
-    switch (line.substr(i, 1)) {
-      case '1':
-        checksum += 1;
-        break;
-      case '2':
-        checksum += 2;
-        break;
-      case '3':
-        checksum += 3;
-        break;
-      case '4':
-        checksum += 4;
-        break;
-      case '5':
-        checksum += 5;
-        break;
-      case '6':
-        checksum += 6;
-        break;
-      case '7':
-        checksum += 7;
-        break;
-      case '8':
-        checksum += 8;
-        break;
-      case '9':
-        checksum += 9;
-        break;
-      case '-':
-        checksum += 1;
-        break;
+
+  static isTLECheckSumGood(line) {
+    if (line.length !== 69) {
+      return false;
     }
-  }
-  return (checksum % 10).toString() === line.charAt(68).toString();
-};
-ReferenceFrame.toTLEExponential = function(num, size) {
-  let exp = num.toExponential(size);
-  if (exp.length < size + 6) {
-    exp = exp.substring(0, size + 4) + '0' + exp.substr(size + 4, 1);
-  }
-  return exp;
-};
-ReferenceFrame.tleNumberString = function(num, left, right) {
-  let formated = num.toFixed(right);
-  let point = formated.indexOf('.');
-  if (point === -1) {
-    point = formated.length;
-    formated += '.0';
-  }
-  const len = formated.length - point - 1;
-  const fill = '00000000';
-  formated = fill.substr(0, left - point) + formated + fill.substr(0, right - len);
-  return formated;
-};
-ReferenceFrame.computeTLECheckSum = function(line) {
-  if (line.length !== 68) {
-    return '0';
-  }
-  let checksum = 0;
-  for (let i = 0; i < 68; i++) {
-    switch (line[i]) {
-      case '1':
-        checksum += 1;
-        break;
-      case '2':
-        checksum += 2;
-        break;
-      case '3':
-        checksum += 3;
-        break;
-      case '4':
-        checksum += 4;
-        break;
-      case '5':
-        checksum += 5;
-        break;
-      case '6':
-        checksum += 6;
-        break;
-      case '7':
-        checksum += 7;
-        break;
-      case '8':
-        checksum += 8;
-        break;
-      case '9':
-        checksum += 9;
-        break;
-      case '-':
-        checksum += 1;
-        break;
+    let checksum = 0;
+    for (let i = 0; i < 68; i++) {
+      switch (line.substr(i, 1)) {
+        case '1':
+          checksum += 1;
+          break;
+        case '2':
+          checksum += 2;
+          break;
+        case '3':
+          checksum += 3;
+          break;
+        case '4':
+          checksum += 4;
+          break;
+        case '5':
+          checksum += 5;
+          break;
+        case '6':
+          checksum += 6;
+          break;
+        case '7':
+          checksum += 7;
+          break;
+        case '8':
+          checksum += 8;
+          break;
+        case '9':
+          checksum += 9;
+          break;
+        case '-':
+          checksum += 1;
+          break;
+      }
     }
+    return (checksum % 10).toString() === line.charAt(68).toString();
   }
-  return ((checksum % 10));
-};
-export const ReferenceFrame$ = {
-  get_representativeColor: function () {
+
+  static toTLEExponential(num, size) {
+    let exp = num.toExponential(size);
+    if (exp.length < size + 6) {
+      exp = exp.substring(0, size + 4) + '0' + exp.substr(size + 4, 1);
+    }
+    return exp;
+  }
+
+  static tleNumberString(num, left, right) {
+    let formated = num.toFixed(right);
+    let point = formated.indexOf('.');
+    if (point === -1) {
+      point = formated.length;
+      formated += '.0';
+    }
+    const len = formated.length - point - 1;
+    const fill = '00000000';
+    formated = fill.substr(0, left - point) + formated + fill.substr(0, right - len);
+    return formated;
+  }
+
+  static computeTLECheckSum(line) {
+    if (line.length !== 68) {
+      return '0';
+    }
+    let checksum = 0;
+    for (let i = 0; i < 68; i++) {
+      switch (line[i]) {
+        case '1':
+          checksum += 1;
+          break;
+        case '2':
+          checksum += 2;
+          break;
+        case '3':
+          checksum += 3;
+          break;
+        case '4':
+          checksum += 4;
+          break;
+        case '5':
+          checksum += 5;
+          break;
+        case '6':
+          checksum += 6;
+          break;
+        case '7':
+          checksum += 7;
+          break;
+        case '8':
+          checksum += 8;
+          break;
+        case '9':
+          checksum += 9;
+          break;
+        case '-':
+          checksum += 1;
+          break;
+      }
+    }
+    return ((checksum % 10));
+  }
+
+  get_representativeColor() {
     return this.representativeColor;
-  },
-  set_representativeColor: function (value) {
+  }
+  set_representativeColor(value) {
     if (value !== this.representativeColor) {
       this.representativeColor = value;
       this._orbit = null;
     }
     return value;
-  },
-  get_orbit: function () {
+  }
+  get_orbit() {
     return this._orbit;
-  },
-  set_orbit: function (value) {
+  }
+  set_orbit(value) {
     this._orbit = value;
     return value;
-  },
-  getIndentifier: function () {
+  }
+  getIndentifier() {
     return this.name;
-  },
-  importTrajectory: function (filename) {
-  },
-  saveToXml: function (xmlWriter) {
+  }
+  importTrajectory(filename) {
+  }
+  saveToXml(xmlWriter) {
     xmlWriter._writeStartElement('ReferenceFrame');
     xmlWriter._writeAttributeString('Name', this.name);
     xmlWriter._writeAttributeString('Parent', this.parent);
@@ -209,8 +214,8 @@ export const ReferenceFrame$ = {
       xmlWriter._writeAttributeString('Epoch', this.epoch.toString());
     }
     xmlWriter._writeEndElement();
-  },
-  initializeFromXml: function (node) {
+  }
+  initializeFromXml(node) {
     this.name = node.attributes.getNamedItem('Name').nodeValue;
     this.parent = node.attributes.getNamedItem('Parent').nodeValue;
     this.referenceFrameType = Enums.parse('ReferenceFrameTypes', node.attributes.getNamedItem('ReferenceFrameType').nodeValue);
@@ -248,8 +253,8 @@ export const ReferenceFrame$ = {
       this.meanDailyMotion = parseFloat(node.attributes.getNamedItem('MeanDailyMotion').nodeValue);
       this.epoch = parseFloat(node.attributes.getNamedItem('Epoch').nodeValue);
     }
-  },
-  fromTLE: function (line1, line2, gravity) {
+  }
+  fromTLE(line1, line2, gravity) {
     this.epoch = SpaceTimeController._twoLineDateToJulian(line1.substr(18, 14));
     this.eccentricity = parseFloat('0.' + line2.substr(26, 7));
     this.inclination = parseFloat(line2.substr(8, 8));
@@ -261,8 +266,8 @@ export const ReferenceFrame$ = {
     const part = (86400 / revs) / (Math.PI * 2);
     this.semiMajorAxis = Math.pow((part * part) * gravity, 1 / 3);
     this.semiMajorAxisUnits = 1;
-  },
-  toTLE: function () {
+  }
+  toTLE() {
     const line1 = new ss.StringBuilder();
     line1.append('1 99999U 00111AAA ');
     line1.append(SpaceTimeController.julianToTwoLineDate(this.epoch));
@@ -285,8 +290,8 @@ export const ReferenceFrame$ = {
     line2.append(ReferenceFrame.computeTLECheckSum(line2.toString()));
     line2.appendLine('');
     return line1.toString() + line2.toString();
-  },
-  get_elements: function () {
+  }
+  get_elements() {
     this._elements.a = this.semiMajorAxis;
     this._elements.e = this.eccentricity;
     this._elements.i = this.inclination;
@@ -300,12 +305,12 @@ export const ReferenceFrame$ = {
     }
     this._elements.t = this.epoch - (this.meanAnomolyAtEpoch / this._elements.n);
     return this._elements;
-  },
-  set_elements: function (value) {
+  }
+  set_elements(value) {
     this._elements = value;
     return value;
-  },
-  computeFrame: function (renderContext) {
+  }
+  computeFrame(renderContext) {
     switch (this.referenceFrameType) {
       case 1:
         this._computeOrbital(renderContext);
@@ -319,8 +324,8 @@ export const ReferenceFrame$ = {
       default:
         break;
     }
-  },
-  useRotatingParentFrame: function () {
+  }
+  useRotatingParentFrame() {
     switch (this.referenceFrameType) {
       case 1:
       case 2:
@@ -329,10 +334,10 @@ export const ReferenceFrame$ = {
       default:
         return true;
     }
-  },
-  _computeFixedRectangular: function (renderContext) {
-  },
-  _computeFixedSherical: function (renderContext) {
+  }
+  _computeFixedRectangular(renderContext) {
+  }
+  _computeFixedSherical(renderContext) {
     if (this.observingLocation) {
       this.lat = SpaceTimeController.get_location().get_lat();
       this.lng = SpaceTimeController.get_location().get_lng();
@@ -351,10 +356,10 @@ export const ReferenceFrame$ = {
     this.worldMatrix.translate(new Vector3d(1 + (this.altitude / renderContext.get_nominalRadius()), 0, 0));
     this.worldMatrix._multiply(Matrix3d._rotationZ(this.lat / 180 * Math.PI));
     this.worldMatrix._multiply(Matrix3d._rotationY(-(this.lng + 180) / 180 * Math.PI));
-  },
-  _computeFrameTrajectory: function (renderContext) {
-  },
-  _computeOrbital: function (renderContext) {
+  }
+  _computeFrameTrajectory(renderContext) {
+  }
+  _computeOrbital(renderContext) {
     const ee = this.get_elements();
     let point = ELL.calculateRectangularJD(SpaceTimeController.get_jNow(), ee);
     this.meanAnomoly = ee.meanAnnomolyOut;
@@ -417,5 +422,5 @@ export const ReferenceFrame$ = {
       this.worldMatrix = Matrix3d.multiplyMatrix(look, this.worldMatrix);
     }
   }
-};
+}
 

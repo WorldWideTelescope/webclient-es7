@@ -194,3 +194,5 @@ export class SkyImageTile extends Tile{
     return true;
   }
 };
+
+Object.assign(SkyImageTile,Tile);
