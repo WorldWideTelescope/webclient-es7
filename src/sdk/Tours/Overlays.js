@@ -121,10 +121,10 @@ export class Overlay{
     this._linkID = value;
     return value;
   }
-  play() {  },
-  pause() {  },
-  stop(){  },
-  seek(time){  },
+  play() {  }
+  pause() {  }
+  stop(){  }
+  seek(time){  }
   makePosition(centerX, centerY, offsetX, offsetY, angle) {
     centerX -= 960;
     centerY -= 558;
@@ -418,7 +418,7 @@ export class Overlay{
     xmlWriter._writeEndElement();
   }
   getTypeName() {
-    return 'TerraViewer.Overlay'
+    return 'TerraViewer.Overlay';
   }
   addFilesToCabinet(fc) {
   }
@@ -477,7 +477,7 @@ export class BitmapOverlay extends Overlay{
     owner.get_owner().addCachedFile(file.name, file);
     return temp;
   }
-  getTypeName() {return 'TerraViewer.BitmapOverlay'}
+  getTypeName() {return 'TerraViewer.BitmapOverlay';}
   copy(owner) {
     const newBmpOverlay = new BitmapOverlay();
     newBmpOverlay.set_owner(owner);
@@ -573,7 +573,7 @@ export class TextOverlay extends Overlay{
     to._calculateTextSize$1();
     return to;
   }
-  getTypeName(){return 'TerraViewer.TextOverlay'}
+  getTypeName(){return 'TerraViewer.TextOverlay';}
   get_color() {
     return Overlay.prototype.get_color.call(this);
   }
@@ -1192,7 +1192,6 @@ export class AudioOverlay extends Overlay{
     this._position$1 = 0;
     this._audioReady$1 = false;
     this._trackType$1 = 0;
-    Overlay.call(this);
     this.isDesignTimeOnly = true;
   }
   static create (currentTourStop, file) {
@@ -1280,7 +1279,7 @@ export class AudioOverlay extends Overlay{
     }
   }
   cleanUp() {
-    Overlay.prototype.cleanUp.call(this);
+    super.cleanUp(this);
     if (this._audio$1 != null) {
       this._audio$1.pause();
       this._audio$1.src = null;
