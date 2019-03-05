@@ -5,55 +5,55 @@ import {Constellations} from './Constellation';
 import {Color} from './Color';
 import {Util} from './Util';
 
-export function Star(input) {
-  this.magnitude = 0;
-  this.RA = 0;
-  this.dec = 0;
-  this.BMV = 0;
-  this.id = 0;
-  this.absoluteMagnitude = 0;
-  this.par = 0;
-  this.distance = 0;
-  const sa = input.split('\t');
-  this.id = parseInt(ss.replaceString(sa[0], 'HIP', ''));
-  this.dec = parseFloat(sa[3]);
-  this.RA = parseFloat(sa[2]) / 15;
-  if (sa.length > 4) {
-    try {
-      if (sa[4].toUpperCase() !== 'NULL' && !!sa[4]) {
-        this.magnitude = parseFloat(sa[4]);
+export class Star{
+  constructor(input) {
+    this.magnitude = 0;
+    this.RA = 0;
+    this.dec = 0;
+    this.BMV = 0;
+    this.id = 0;
+    this.absoluteMagnitude = 0;
+    this.par = 0;
+    this.distance = 0;
+    const sa = input.split('\t');
+    this.id = parseInt(ss.replaceString(sa[0], 'HIP', ''));
+    this.dec = parseFloat(sa[3]);
+    this.RA = parseFloat(sa[2]) / 15;
+    if (sa.length > 4) {
+      try {
+        if (sa[4].toUpperCase() !== 'NULL' && !!sa[4]) {
+          this.magnitude = parseFloat(sa[4]);
+        }
+      }
+      catch ($e1) {
       }
     }
-    catch ($e1) {
+    if (sa.length > 5) {
+      try {
+        this.BMV = parseFloat(sa[5]);
+        this._makeColor(this.BMV);
+      }
+      catch ($e2) {
+      }
+    }
+    if (sa.length > 6) {
+      this.par = parseFloat(sa[6]);
+      this._makeDistanceAndMagnitude();
     }
   }
-  if (sa.length > 5) {
-    try {
-      this.BMV = parseFloat(sa[5]);
-      this._makeColor(this.BMV);
-    }
-    catch ($e2) {
-    }
-  }
-  if (sa.length > 6) {
-    this.par = parseFloat(sa[6]);
-    this._makeDistanceAndMagnitude();
-  }
-}
-export const Star$ = {
-  get_name: function () {
+  get_name() {
     return 'HIP' + this.id.toString();
-  },
-  get_coordinates: function () {
+  }
+  get_coordinates() {
     return Coordinates.fromRaDec(this.RA, this.dec);
-  },
-  get_asPlace: function () {
+  }
+  get_asPlace() {
     const place = Place.create(this.get_name(), this.dec, this.RA, 1, Constellations.containment.findConstellationForPoint(this.RA, this.dec), 4, -1);
     place.set_magnitude(this.magnitude);
     place.set_distance(this.distance);
     return place;
-  },
-  stars: function (input, newish) {
+  }
+  stars(input, newish) {
     const sa = input.split('\t');
     this.id = parseInt(sa[0]);
     this.RA = parseFloat(sa[1]) / 15;
@@ -70,13 +70,13 @@ export const Star$ = {
       } catch ($e2) {
       }
     }
-  },
-  _makeDistanceAndMagnitude: function () {
+  }
+  _makeDistanceAndMagnitude() {
     this.distance = 1 / (this.par / 1000);
     this.absoluteMagnitude = this.magnitude - 5 * (Util.logN(this.distance, 10) - 1);
     this.distance *= 206264.806;
-  },
-  _makeColor: function (bmv) {
+  }
+  _makeColor(bmv) {
     let c = 4294967295;
     if (bmv <= -0.32) {
       c = 4288854271;
@@ -158,4 +158,36 @@ export const Star$ = {
     this.col = Color.fromInt(c);
   }
 };
+
+
+export class Galaxy{
+  constructor(br) {
+    this.RA = 0;
+    this.dec = 0;
+    this.distance = 0;
+    this.type = 0;
+    this.eTypeBucket = 0;
+    this.size = 5;
+    this.sdssID = 0;
+    this.sdssID = br.readInt64();
+    this.RA = br.readSingle();
+    this.dec = br.readSingle();
+    this.distance = br.readSingle();
+    this.eTypeBucket = br.readByte();
+    this.size = br.readSingle();
+  }
+  static getEType (value) {
+    let a = 0;
+    let b = Galaxy._eTypeBuckets.length - 1;
+    while (b - a > 1) {
+      const m = (a + b) / 2;
+      if (value > Galaxy._eTypeBuckets[m]) {
+        a = m;
+      } else {
+        b = m;
+      }
+    }
+    return a;
+  }
+}
 

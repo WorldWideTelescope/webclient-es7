@@ -1,6 +1,3 @@
-
-// wwtlib.RenderContext
-
 import {Matrix3d, PlaneD, Vector3d} from './Double3d';
 import {Colors} from './Color';
 import ss from './scriptsharp/ss';
@@ -16,131 +13,133 @@ import {TileShader} from './Graphics/Shaders';
 import {CameraParameters} from './CameraParameters';
 import {RenderTriangle} from './RenderTriangle';
 
-export function RenderContext() {
-  this.height = 0;
-  this.width = 0;
-  this.lighting = false;
-  this._viewPoint = new Vector3d();
-  this.space = false;
-  this._fovAngle = 0;
-  this._fovScale = 0;
-  this._nominalRadius = 6378137;
-  this._mainTexture = null;
-  this.viewMover = null;
-  this.viewCamera = new CameraParameters();
-  this.targetCamera = new CameraParameters();
-  this.alt = 0;
-  this.az = 0;
-  this.targetAlt = 0;
-  this.targetAz = 0;
-  this._targetHeight = 1;
-  this.targetAltitude = 0;
-  this._galactic = true;
-  this._galacticMatrix = new Matrix3d(-0.4838350155, -0.0548755604, -0.8734370902, 0, 0.7469822445, 0.4941094279, -0.44482963, 0, 0.4559837762, -0.867666149, -0.1980763734, 0, 0, 0, 0, 1);
-  this._firstTimeInit = false;
-  this._useSolarSystemTilt = true;
-  this.customTrackingParams = new CameraParameters();
-  this._cameraOffset = new Vector3d();
-  this._fovLocal = (Math.PI / 4);
-  this.perspectiveFov = Math.PI / 4;
-  this.nearPlane = 0;
-  this._frustumDirty = true;
-  this._frustum = new Array(6);
-  this._ambientLightColor = Colors.get_black();
-  this._hemiLightColor = Colors.get_black();
-  this._hemiLightUp = new Vector3d();
-  this._sunlightColor = Colors.get_white();
-  this._sunPosition = new Vector3d();
-  this._reflectedLightColor = Colors.get_black();
-  this._reflectedLightPosition = new Vector3d();
-  this._occludingPlanetRadius = 0;
-  this._occludingPlanetPosition = new Vector3d();
-  this._lightingStateDirty = true;
-  this._twoSidedLighting = false;
-  this.cameraPosition = new Vector3d();
-  this._skyColor = 'Blue';
-  for (let i = 0; i < 6; i++) {
-    this._frustum[i] = new PlaneD(0, 0, 0, 0);
+export class RenderContext{
+  constructor() {
+    this.height = 0;
+    this.width = 0;
+    this.lighting = false;
+    this._viewPoint = new Vector3d();
+    this.space = false;
+    this._fovAngle = 0;
+    this._fovScale = 0;
+    this._nominalRadius = 6378137;
+    this._mainTexture = null;
+    this.viewMover = null;
+    this.viewCamera = new CameraParameters();
+    this.targetCamera = new CameraParameters();
+    this.alt = 0;
+    this.az = 0;
+    this.targetAlt = 0;
+    this.targetAz = 0;
+    this._targetHeight = 1;
+    this.targetAltitude = 0;
+    this._galactic = true;
+    this._galacticMatrix = new Matrix3d(-0.4838350155, -0.0548755604, -0.8734370902, 0, 0.7469822445, 0.4941094279, -0.44482963, 0, 0.4559837762, -0.867666149, -0.1980763734, 0, 0, 0, 0, 1);
+    this._firstTimeInit = false;
+    this._useSolarSystemTilt = true;
+    this.customTrackingParams = new CameraParameters();
+    this._cameraOffset = new Vector3d();
+    this._fovLocal = (Math.PI / 4);
+    this.perspectiveFov = Math.PI / 4;
+    this.nearPlane = 0;
+    this._frustumDirty = true;
+    this._frustum = new Array(6);
+    this._ambientLightColor = Colors.get_black();
+    this._hemiLightColor = Colors.get_black();
+    this._hemiLightUp = new Vector3d();
+    this._sunlightColor = Colors.get_white();
+    this._sunPosition = new Vector3d();
+    this._reflectedLightColor = Colors.get_black();
+    this._reflectedLightPosition = new Vector3d();
+    this._occludingPlanetRadius = 0;
+    this._occludingPlanetPosition = new Vector3d();
+    this._lightingStateDirty = true;
+    this._twoSidedLighting = false;
+    this.cameraPosition = new Vector3d();
+    this._skyColor = 'Blue';
+    for (let i = 0; i < 6; i++) {
+      this._frustum[i] = new PlaneD(0, 0, 0, 0);
+    }
   }
-}
-RenderContext.create = function(device) {
+
+  static create (device) {
   const temp = new RenderContext();
   temp.device = device;
   temp.viewCamera.zoom = 700;
   temp.viewCamera.target = 65536;
   return temp;
-};
-RenderContext._getTilesYForLevel = function(layer, level) {
-  let maxY = 1;
-  switch (layer.get_projection()) {
-    case 0:
-      maxY = Math.pow(2, level);
-      break;
-    case 1:
-      maxY = (Math.pow(2, level) * (180 / layer.get_baseTileDegrees()));
-      break;
-    case 2:
-      maxY = Math.pow(2, level);
-      break;
-    case 4:
+  }
+  static _getTilesYForLevel (layer, level) {
+    let maxY = 1;
+    switch (layer.get_projection()) {
+      case 0:
+        maxY = Math.pow(2, level);
+        break;
+      case 1:
+        maxY = (Math.pow(2, level) * (180 / layer.get_baseTileDegrees()));
+        break;
+      case 2:
+        maxY = Math.pow(2, level);
+        break;
+      case 4:
+        maxY = 1;
+        break;
+      default:
+        maxY = Math.pow(2, level);
+        break;
+    }
+    if (maxY === Number.POSITIVE_INFINITY) {
       maxY = 1;
-      break;
-    default:
-      maxY = Math.pow(2, level);
-      break;
+    }
+    return maxY;
   }
-  if (maxY === Number.POSITIVE_INFINITY) {
-    maxY = 1;
-  }
-  return maxY;
-};
-RenderContext._getTilesXForLevel = function(layer, level) {
-  let maxX = 1;
-  switch (layer.get_projection()) {
-    case 6:
-    case 3:
-      maxX = Math.pow(2, level);
-      break;
-    case 0:
-      maxX = Math.pow(2, level) * ss.truncate((layer.get_baseTileDegrees() / 360));
-      break;
-    case 1:
-      maxX = Math.pow(2, level) * ss.truncate((360 / layer.get_baseTileDegrees()));
-      break;
-    case 2:
-      if (layer.get_widthFactor() === 1) {
-        maxX = Math.pow(2, level) * 2;
-      }
-      else {
+  static _getTilesXForLevel (layer, level) {
+    let maxX = 1;
+    switch (layer.get_projection()) {
+      case 6:
+      case 3:
         maxX = Math.pow(2, level);
-      }
-      break;
-    case 5:
-      maxX = 1;
-      break;
-    case 4:
-      maxX = 1;
-      break;
-    default:
-      maxX = Math.pow(2, level) * 2;
-      break;
+        break;
+      case 0:
+        maxX = Math.pow(2, level) * ss.truncate((layer.get_baseTileDegrees() / 360));
+        break;
+      case 1:
+        maxX = Math.pow(2, level) * ss.truncate((360 / layer.get_baseTileDegrees()));
+        break;
+      case 2:
+        if (layer.get_widthFactor() === 1) {
+          maxX = Math.pow(2, level) * 2;
+        }
+        else {
+          maxX = Math.pow(2, level);
+        }
+        break;
+      case 5:
+        maxX = 1;
+        break;
+      case 4:
+        maxX = 1;
+        break;
+      default:
+        maxX = Math.pow(2, level) * 2;
+        break;
+    }
+    return maxX;
   }
-  return maxX;
-};
-export const RenderContext$ = {
-  save: function () {
+
+  save () {
     if (this.gl != null) {
     } else {
       this.device.save();
     }
-  },
-  restore: function () {
+  }
+  restore () {
     if (this.gl != null) {
     } else {
       this.device.restore();
     }
-  },
-  clear: function () {
+  }
+  clear () {
     if (this.gl != null) {
       this.gl.viewport(0, 0, ss.truncate(this.width), ss.truncate(this.height));
       this.gl.clear(16384 | 256);
@@ -150,115 +149,115 @@ export const RenderContext$ = {
       this.device.fillRect(0, 0, this.width, this.height);
       this.device.restore();
     }
-  },
-  get_viewPoint: function () {
+  }
+  get_viewPoint () {
     return this._viewPoint;
-  },
-  get_RA: function () {
+  }
+  get_RA () {
     return ((((180 - (this.viewCamera.lng - 180)) / 15) % 24) + 48) % 24;
-  },
-  rAtoViewLng: function (ra) {
+  }
+  rAtoViewLng (ra) {
     return 180 - (ra / 24 * 360) - 180;
-  },
-  get_dec: function () {
+  }
+  get_dec () {
     return this.viewCamera.lat;
-  },
-  get_fovAngle: function () {
+  }
+  get_fovAngle () {
     return this._fovAngle;
-  },
-  get_fovScale: function () {
+  }
+  get_fovScale () {
     return this._fovScale;
-  },
-  set_fovScale: function (value) {
+  }
+  set_fovScale (value) {
     this._fovScale = value;
     return value;
-  },
-  get_view: function () {
+  }
+  get_view () {
     return this._view;
-  },
-  set_view: function (value) {
+  }
+  set_view (value) {
     this._view = value;
     this._frustumDirty = true;
     return value;
-  },
-  get_viewBase: function () {
+  }
+  get_viewBase () {
     return this._viewBase;
-  },
-  set_viewBase: function (value) {
+  }
+  set_viewBase (value) {
     this._viewBase = value;
     return value;
-  },
-  get_projection: function () {
+  }
+  get_projection () {
     return this._projection;
-  },
-  set_projection: function (value) {
+  }
+  set_projection (value) {
     this._projection = value;
     this._frustumDirty = true;
     return value;
-  },
-  get_world: function () {
+  }
+  get_world () {
     return this._world;
-  },
-  set_world: function (value) {
+  }
+  set_world (value) {
     this._world = value;
     this._frustumDirty = true;
     return value;
-  },
-  _getScreenTexture: function () {
+  }
+  _getScreenTexture () {
     const tex = null;
     return tex;
-  },
-  get_worldBase: function () {
+  }
+  get_worldBase () {
     return this._worldBase;
-  },
-  set_worldBase: function (value) {
+  }
+  set_worldBase (value) {
     this._worldBase = value;
     return value;
-  },
-  get_worldBaseNonRotating: function () {
+  }
+  get_worldBaseNonRotating () {
     return this._worldBaseNonRotating;
-  },
-  set_worldBaseNonRotating: function (value) {
+  }
+  set_worldBaseNonRotating (value) {
     this._worldBaseNonRotating = value;
     return value;
-  },
-  get_nominalRadius: function () {
+  }
+  get_nominalRadius () {
     return this._nominalRadius;
-  },
-  set_nominalRadius: function (value) {
+  }
+  set_nominalRadius (value) {
     this._nominalRadius = value;
     return value;
-  },
-  get_mainTexture: function () {
+  }
+  get_mainTexture () {
     return this._mainTexture;
-  },
-  set_mainTexture: function (value) {
+  }
+  set_mainTexture (value) {
     if (value != null) {
       this._mainTexture = value;
       this.gl.bindTexture(3553, this._mainTexture.texture2d);
     }
     return value;
-  },
-  onTarget: function (place) {
+  }
+  onTarget (place) {
     return ((Math.abs(this.viewCamera.lat - this.targetCamera.lat) < 1E-12 && Math.abs(this.viewCamera.lng - this.targetCamera.lng) < 1E-12 && Math.abs(this.viewCamera.zoom - this.targetCamera.zoom) < 1E-12) && this.viewMover == null);
-  },
-  setTexture: function (texture) {
-  },
-  get_backgroundImageset: function () {
+  }
+  setTexture (texture) {
+  }
+  get_backgroundImageset () {
     return this._backgroundImageset;
-  },
-  set_backgroundImageset: function (value) {
+  }
+  set_backgroundImageset (value) {
     this._backgroundImageset = value;
     return value;
-  },
-  get_foregroundImageset: function () {
+  }
+  get_foregroundImageset () {
     return this._foregroundImageset;
-  },
-  set_foregroundImageset: function (value) {
+  }
+  set_foregroundImageset (value) {
     this._foregroundImageset = value;
     return value;
-  },
-  drawImageSet: function (imageset, opacity) {
+  }
+  drawImageSet (imageset, opacity) {
     const maxX = RenderContext._getTilesXForLevel(imageset, imageset.get_baseLevel());
     const maxY = RenderContext._getTilesYForLevel(imageset, imageset.get_baseLevel());
     for (let x = 0; x < maxX; x++) {
@@ -269,8 +268,8 @@ export const RenderContext$ = {
         }
       }
     }
-  },
-  getScaledAltitudeForLatLong: function (viewLat, viewLong) {
+  }
+  getScaledAltitudeForLatLong (viewLat, viewLong) {
     const layer = this.get_backgroundImageset();
     if (layer == null) {
       return 0;
@@ -288,8 +287,8 @@ export const RenderContext$ = {
       }
     }
     return 0;
-  },
-  _setupMatricesLand3d: function () {
+  }
+  _setupMatricesLand3d () {
     this.lighting = false;
     this.space = false;
     RenderTriangle.cullInside = false;
@@ -333,8 +332,8 @@ export const RenderContext$ = {
     this.set_projection(Matrix3d.perspectiveFovLH((Math.PI / 4), this.width / this.height, m_nearPlane, back));
     this._setMatrixes();
     this.makeFrustum();
-  },
-  setupMatricesSpace3d: function (canvasWidth, canvasHeight) {
+  }
+  setupMatricesSpace3d (canvasWidth, canvasHeight) {
     this.lighting = false;
     if (!this._firstTimeInit) {
       this._galacticMatrix = Matrix3d.get_identity();
@@ -398,38 +397,38 @@ export const RenderContext$ = {
     this.set_projection(Matrix3d.perspectiveFovLH(localZoomFactor / 343.774, canvasWidth / canvasHeight, 0.1, -2));
     this._setMatrixes();
     this.makeFrustum();
-  },
-  get_solarSystemTrack: function () {
+  }
+  get_solarSystemTrack () {
     return this.viewCamera.target;
-  },
-  set_solarSystemTrack: function (value) {
+  }
+  set_solarSystemTrack (value) {
     this.viewCamera.target = value;
     return value;
-  },
-  get_solarSystemCameraDistance: function () {
+  }
+  get_solarSystemCameraDistance () {
     return (4 * (this.viewCamera.zoom / 9)) + 1E-06;
-  },
-  get_sandboxMode: function () {
+  }
+  get_sandboxMode () {
     if (this._backgroundImageset == null) {
       return false;
     }
     return this._backgroundImageset.get_dataSetType() === 5;
-  },
-  get_trackingFrame: function () {
+  }
+  get_trackingFrame () {
     return this.viewCamera.targetReferenceFrame;
-  },
-  set_trackingFrame: function (value) {
+  }
+  set_trackingFrame (value) {
     this.viewCamera.targetReferenceFrame = value;
     return value;
-  },
-  get_fovLocal: function () {
+  }
+  get_fovLocal () {
     return this._fovLocal;
-  },
-  set_fovLocal: function (value) {
+  }
+  set_fovLocal (value) {
     this._fovLocal = value;
     return value;
-  },
-  setupMatricesOverlays: function () {
+  }
+  setupMatricesOverlays () {
     this.set_world(Matrix3d.get_identity());
     const lookAtAdjust = Matrix3d.get_identity();
     const lookFrom = new Vector3d(0, 0, 0);
@@ -442,8 +441,8 @@ export const RenderContext$ = {
     const back = 10000;
     this.nearPlane = 0.1;
     this.set_projection(Matrix3d.perspectiveFovLH(this._fovLocal, this.width / this.height, this.nearPlane, back));
-  },
-  setupMatricesSolarSystem: function (forStars) {
+  }
+  setupMatricesSolarSystem (forStars) {
     this.lighting = Settings.get_active().get_solarSystemLighting();
     this.space = false;
     if (this.get_solarSystemTrack() !== 20 && this.get_solarSystemTrack() !== 65536) {
@@ -526,95 +525,95 @@ export const RenderContext$ = {
     this._fovScale = (this._fovAngle / this.height) * 3600;
     this._setMatrixes();
     this.makeFrustum();
-  },
-  _setMatrixes: function () {
-  },
-  get_frustum: function () {
+  }
+  _setMatrixes () {
+  }
+  get_frustum () {
     return this._frustum;
-  },
-  get_ambientLightColor: function () {
+  }
+  get_ambientLightColor () {
     return this._ambientLightColor;
-  },
-  set_ambientLightColor: function (value) {
+  }
+  set_ambientLightColor (value) {
     this._ambientLightColor = value;
     this._lightingStateDirty = true;
     return value;
-  },
-  get_hemisphereLightColor: function () {
+  }
+  get_hemisphereLightColor () {
     return this._hemiLightColor;
-  },
-  set_hemisphereLightColor: function (value) {
+  }
+  set_hemisphereLightColor (value) {
     this._hemiLightColor = value;
     this._lightingStateDirty = true;
     return value;
-  },
-  get_hemisphereLightUp: function () {
+  }
+  get_hemisphereLightUp () {
     return this._hemiLightUp;
-  },
-  set_hemisphereLightUp: function (value) {
+  }
+  set_hemisphereLightUp (value) {
     this._hemiLightUp = value;
     this._lightingStateDirty = true;
     return value;
-  },
-  get_sunlightColor: function () {
+  }
+  get_sunlightColor () {
     return this._sunlightColor;
-  },
-  set_sunlightColor: function (value) {
+  }
+  set_sunlightColor (value) {
     this._sunlightColor = value;
     this._lightingStateDirty = true;
     return value;
-  },
-  get_sunPosition: function () {
+  }
+  get_sunPosition () {
     return this._sunPosition;
-  },
-  set_sunPosition: function (value) {
+  }
+  set_sunPosition (value) {
     this._sunPosition = value;
     this._lightingStateDirty = true;
     return value;
-  },
-  get_reflectedLightColor: function () {
+  }
+  get_reflectedLightColor () {
     return this._reflectedLightColor;
-  },
-  set_reflectedLightColor: function (value) {
+  }
+  set_reflectedLightColor (value) {
     if (this._reflectedLightColor !== value) {
       this._reflectedLightColor = value;
       this._lightingStateDirty = true;
     }
     return value;
-  },
-  get_reflectedLightPosition: function () {
+  }
+  get_reflectedLightPosition () {
     return this._reflectedLightPosition;
-  },
-  set_reflectedLightPosition: function (value) {
+  }
+  set_reflectedLightPosition (value) {
     this._reflectedLightPosition = value;
     this._lightingStateDirty = true;
     return value;
-  },
-  get_occludingPlanetRadius: function () {
+  }
+  get_occludingPlanetRadius () {
     return this._occludingPlanetRadius;
-  },
-  set_occludingPlanetRadius: function (value) {
+  }
+  set_occludingPlanetRadius (value) {
     this._occludingPlanetRadius = value;
     return value;
-  },
-  get_occludingPlanetPosition: function () {
+  }
+  get_occludingPlanetPosition () {
     return this._occludingPlanetPosition;
-  },
-  set_occludingPlanetPosition: function (value) {
+  }
+  set_occludingPlanetPosition (value) {
     this._occludingPlanetPosition = value;
     return value;
-  },
-  get_twoSidedLighting: function () {
+  }
+  get_twoSidedLighting () {
     return this._twoSidedLighting;
-  },
-  set_twoSidedLighting: function (value) {
+  }
+  set_twoSidedLighting (value) {
     if (value !== this._twoSidedLighting) {
       this._twoSidedLighting = value;
       this._lightingStateDirty = true;
     }
     return value;
-  },
-  makeFrustum: function () {
+  }
+  makeFrustum () {
     this.WV = Matrix3d.multiplyMatrix(this.get_world(), this.get_view());
     const viewProjection = Matrix3d.multiplyMatrix(this.WV, this.get_projection());
     this.WVP = viewProjection.clone();
@@ -651,8 +650,8 @@ export const RenderContext$ = {
     this.WVP.scale(new Vector3d(this.width / 2, -this.height / 2, 1));
     this.WVP.translate(new Vector3d(this.width / 2, this.height / 2, 0));
     this._setMatrixes();
-  },
-  _initGL: function () {
+  }
+  _initGL () {
     if (this.gl == null) {
       return;
     }
@@ -660,26 +659,26 @@ export const RenderContext$ = {
     Tile.uvMultiple = 1;
     Tile.demEnabled = true;
     TileShader.init(this);
-  },
-  freezeView: function () {
+  }
+  freezeView () {
     this.targetAlt = this.alt;
     this.targetAz = this.az;
     this.targetCamera = this.viewCamera.copy();
-  },
-  _setVertexBuffer: function (vertexBuffer) {
-  },
-  _setIndexBuffer: function (indexBuffer) {
-  },
-  setMaterial: function (material, diffuseTex, specularTex, normalMap, opacity) {
-    this.set_mainTexture(diffuseTex);
-  },
-  preDraw: function () {
   }
-};
+  _setVertexBuffer (vertexBuffer) {
+  }
+  _setIndexBuffer (indexBuffer) {
+  }
+  setMaterial (material, diffuseTex, specularTex, normalMap, opacity) {
+    this.set_mainTexture(diffuseTex);
+  }
+  preDraw () {
+  }
+}
+
 export function Material() {
   this.specularSharpness = 0;
   this.opacity = 0;
   this.isDefault = false;
 }
 
-export const Material$ = {};

@@ -559,6 +559,7 @@ export class BitmapOverlay extends Overlay{
     this._filename$1 = bitmap.attributes.getNamedItem('Filename').nodeValue;
   }
 }
+Object.assign(BitmapOverlay,Overlay);
 
 export class TextOverlay extends Overlay{
   constructor() {
@@ -716,6 +717,7 @@ export class TextOverlay extends Overlay{
     }
   }
 }
+Object.assign(TextOverlay,Overlay);
 
 export class ShapeOverlay extends Overlay{
   constructor() {
@@ -1182,6 +1184,7 @@ export class ShapeOverlay extends Overlay{
     this._shapeType$1 = Enums.parse('ShapeType', shape.attributes.getNamedItem('ShapeType').nodeValue);
   }
 }
+Object.assign(ShapeOverlay,Overlay);
 
 export class AudioOverlay extends Overlay{
   constructor()  {
@@ -1319,6 +1322,7 @@ export class AudioOverlay extends Overlay{
     }
   }
 }
+Object.assign(AudioOverlay,Overlay);
 
 export class FlipbookOverlay extends Overlay{
   constructor() {
@@ -1336,4 +1340,189 @@ export class FlipbookOverlay extends Overlay{
     this._timeStart$1 = ss.now();
     this._playing$1 = true;
   }
+  getTypeName(){ return 'TerraViewer.FlipbookOverlay'}
+  get_loopType() {
+    return this._loopType$1;
+  }
+  set_loopType(value) {
+    this._loopType$1 = value;
+    return value;
+  }
+  get_startFrame() {
+    return this._startFrame$1;
+  }
+  set_startFrame(value) {
+    this._startFrame$1 = value;
+    return value;
+  }
+  get_frameSequence() {
+    return this._frameSequence$1;
+  }
+  set_frameSequence(value) {
+    if (this._frameSequence$1 !== value) {
+      this._frameSequence$1 = value;
+      this._framesList$1 = [];
+      if (!ss.emptyString(this._frameSequence$1)) {
+        try {
+          const parts = this._frameSequence$1.split(',');
+          const $enum1 = ss.enumerate(parts);
+          while ($enum1.moveNext()) {
+            const part = $enum1.current;
+            const x = parseInt(ss.trim(part));
+            this._framesList$1.push(x);
+          }
+        } catch ($e2) {
+        }
+      }
+    }
+    return value;
+  }
+  get_frames() {
+    return this._frames$1;
+  }
+  set_frames(value) {
+    this._frames$1 = value;
+    return value;
+  }
+  get_framesX() {
+    return this._framesX$1;
+  }
+  set_framesX(value) {
+    this._framesX$1 = value;
+    return value;
+  }
+  get_framesY() {
+    return this._framesY$1;
+  }
+  set_framesY(value) {
+    this._framesY$1 = value;
+    return value;
+  }
+  copy(owner) {
+    const newFlipbookOverlay = new FlipbookOverlay();
+    newFlipbookOverlay.set_owner(owner);
+    newFlipbookOverlay._filename$1 = this._filename$1;
+    newFlipbookOverlay.set_x(this.get_x());
+    newFlipbookOverlay.set_y(this.get_y());
+    newFlipbookOverlay.set_width(this.get_width());
+    newFlipbookOverlay.set_height(this.get_height());
+    newFlipbookOverlay.set_color(this.get_color());
+    newFlipbookOverlay.set_opacity(this.get_opacity());
+    newFlipbookOverlay.set_rotationAngle(this.get_rotationAngle());
+    newFlipbookOverlay.set_name(this.get_name() + ' - Copy');
+    newFlipbookOverlay.set_startFrame(this.get_startFrame());
+    newFlipbookOverlay.set_frames(this.get_frames());
+    newFlipbookOverlay.set_loopType(this.get_loopType());
+    newFlipbookOverlay.set_frameSequence(this.get_frameSequence());
+    newFlipbookOverlay.set_framesX(this.get_framesX());
+    newFlipbookOverlay.set_framesY(this.get_framesY());
+    return newFlipbookOverlay;
+  }
+  cleanUp() {
+    this.texture = null;
+  }
+  initializeTexture() {
+    const $this = this;
+
+    try {
+      const colorKey = ss.endsWith(this._filename$1.toLowerCase(), '.jpg');
+      this.texture = this.get_owner().get_owner().getCachedTexture(this._filename$1, () => {
+        $this._textureReady$1 = true;
+      });
+    } catch ($e1) {
+    }
+  }
+  addFilesToCabinet(fc) {
+    fc.addFile(this.get_owner().get_owner().get_workingDirectory() + this._filename$1, this.get_owner().get_owner().getFileBlob(this._filename$1));
+  }
+  writeOverlayProperties(xmlWriter) {
+    xmlWriter._writeStartElement('Flipbook');
+    xmlWriter._writeAttributeString('Filename', this._filename$1);
+    xmlWriter._writeAttributeString('Frames', this._frames$1.toString());
+    xmlWriter._writeAttributeString('Loop', Enums.toXml('LoopTypes', this._loopType$1));
+    xmlWriter._writeAttributeString('FramesX', this._framesX$1.toString());
+    xmlWriter._writeAttributeString('FramesY', this._framesY$1.toString());
+    xmlWriter._writeAttributeString('StartFrame', this._startFrame$1.toString());
+    if (!ss.emptyString(this._frameSequence$1)) {
+      xmlWriter._writeAttributeString('FrameSequence', this._frameSequence$1);
+    }
+    xmlWriter._writeEndElement();
+  }
+  initializeFromXml(node) {
+    const flipbook = Util.selectSingleNode(node, 'Flipbook');
+    this._filename$1 = flipbook.attributes.getNamedItem('Filename').nodeValue;
+    this._frames$1 = parseInt(flipbook.attributes.getNamedItem('Frames').nodeValue);
+    this._loopType$1 = Enums.parse('LoopTypes', flipbook.attributes.getNamedItem('Loop').nodeValue);
+    if (flipbook.attributes.getNamedItem('FramesX') != null) {
+      this.set_framesX(parseInt(flipbook.attributes.getNamedItem('FramesX').nodeValue));
+    }
+    if (flipbook.attributes.getNamedItem('FramesY') != null) {
+      this.set_framesY(parseInt(flipbook.attributes.getNamedItem('FramesY').nodeValue));
+    }
+    if (flipbook.attributes.getNamedItem('StartFrame') != null) {
+      this.set_startFrame(parseInt(flipbook.attributes.getNamedItem('StartFrame').nodeValue));
+    }
+    if (flipbook.attributes.getNamedItem('FrameSequence') != null) {
+      this.set_frameSequence(flipbook.attributes.getNamedItem('FrameSequence').nodeValue);
+    }
+  }
+  play() {
+    this._playing$1 = true;
+    this._timeStart$1 = ss.now();
+  }
+  pause() {
+    this._playing$1 = false;
+  }
+  stop() {
+    this._playing$1 = false;
+    this._currentFrame$1 = 0;
+  }
+  initiaizeGeometry() {
+    let frameCount = this._frames$1;
+    if (!ss.emptyString(this._frameSequence$1)) {
+      frameCount = this._framesList$1.length;
+    }
+    if (this._playing$1) {
+      const ts = ss.now() - this._timeStart$1;
+      switch (this._loopType$1) {
+        case 0:
+          this._currentFrame$1 = ss.truncate(((ts / 1000 * 24) % frameCount)) + this._startFrame$1;
+          break;
+        case 1:
+          this._currentFrame$1 = Math.abs(ss.truncate(((ts / 1000 * 24 + frameCount) % (frameCount * 2 - 1))) - (frameCount - 1)) + this._startFrame$1;
+          if (this._currentFrame$1 < 0 || this._currentFrame$1 > frameCount - 1) {
+            const p = 0;
+          }
+          break;
+        case 2:
+          this._currentFrame$1 = Math.max(0, frameCount - ss.truncate(((ts / 1000 * 24) % frameCount))) + this._startFrame$1;
+          break;
+        case 3:
+          const temp = Math.min(ts / 1000 * 24, frameCount * 2 + 1) + frameCount;
+          this._currentFrame$1 = Math.abs((temp % (frameCount * 2 - 1)) - (frameCount - 1)) + this._startFrame$1;
+          break;
+        case 4:
+          this._currentFrame$1 = Math.min(frameCount - 1, ss.truncate((ts / 1000 * 24)));
+          break;
+        case 5:
+          this._currentFrame$1 = this._startFrame$1;
+          break;
+        case 6:
+          this._currentFrame$1 = (frameCount - 1) + this._startFrame$1;
+          break;
+        default:
+          this._currentFrame$1 = this._startFrame$1;
+          break;
+      }
+    }
+    if (!ss.emptyString(this._frameSequence$1)) {
+      if (this._currentFrame$1 < this._framesList$1.length && this._currentFrame$1 > -1) {
+        this._currentFrame$1 = this._framesList$1[this._currentFrame$1];
+      } else {
+        this._currentFrame$1 = 0;
+      }
+    }
+    this.currentRotation = 0;
+  }
 }
+Object.assign(FlipbookOverlay,Overlay);

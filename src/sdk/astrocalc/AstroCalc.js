@@ -1,12 +1,12 @@
 // wwtlib.AstroRaDec
 
-import {ELL} from './AAElliptical';
+import {ELL, EPD} from './AAElliptical';
 import {CAAParallax} from './AAParallax';
 import {CAAMoon} from './AAMoon';
 import {CAANutation} from './AANutation';
 import {CT} from './AACoordinateTransformation';
-import {CAAPhysicalJupiter} from './AAPhysicalJupiter';
-import {GM} from './AAGalileanMoons';
+import {CAAPhysicalJupiter, CAAPhysicalJupiterDetails} from './AAPhysicalJupiter';
+import {GM, GMDS} from './AAGalileanMoons';
 import {DT} from './AADate';
 import ss from '../scriptsharp/ss';
 import {CAARiseTransitSet} from './AARiseTransitSet';
@@ -176,4 +176,7 @@ AstroCalc.getRiseTrinsitSet = function(jd, lat, lng, ra1, dec1, ra2, dec2, ra3, 
   return new RiseSetDetails(RiseTransitSetTime.bValid, RiseTransitSetTime.rise, RiseTransitSetTime.transit, RiseTransitSetTime.set, neverRises);
 };
 
-
+AstroCalc._galDetails = new GMDS();
+AstroCalc._jupDetails = new EPD();
+AstroCalc._jupPhisical = new CAAPhysicalJupiterDetails();
+AstroCalc._jDateLast = 0;
