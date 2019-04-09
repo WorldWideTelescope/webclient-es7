@@ -1410,102 +1410,96 @@ LayerManager._loadOrbitsFile = function(name, data, currentMap) {
   return layer;
 };
 
-
-
-
-// wwtlib.LayerMap
-
-export function LayerMap(name, reference) {
-  this.childMaps = {};
-  this.parent = null;
-  this.layers = [];
-  this.open = false;
-  this.enabled = true;
-  this.loadedFromTour = false;
-  this.frame = new ReferenceFrame();
-  this.set_name(name);
-  this.frame.reference = reference;
-  let radius = 6371000;
-  switch (reference) {
-    case 0:
-      break;
-    case 1:
-      break;
-    case 2:
-      break;
-    case 3:
-      radius = 696000000;
-      break;
-    case 4:
-      radius = 2439700;
-      break;
-    case 5:
-      radius = 6051800;
-      break;
-    case 6:
-      radius = 6371000;
-      break;
-    case 7:
-      radius = 3390000;
-      break;
-    case 8:
-      radius = 69911000;
-      break;
-    case 9:
-      radius = 58232000;
-      break;
-    case 10:
-      radius = 25362000;
-      break;
-    case 11:
-      radius = 24622000;
-      break;
-    case 12:
-      radius = 1161000;
-      break;
-    case 13:
-      radius = 1737100;
-      break;
-    case 14:
-      radius = 1821500;
-      break;
-    case 15:
-      radius = 1561000;
-      break;
-    case 16:
-      radius = 2631200;
-      break;
-    case 17:
-      radius = 2410300;
-      break;
-    case 18:
-      break;
-    case 19:
-      break;
-    default:
-      break;
+export class LayerMap{
+  constructor(name, reference) {
+    this.childMaps = {};
+    this.parent = null;
+    this.layers = [];
+    this.open = false;
+    this.enabled = true;
+    this.loadedFromTour = false;
+    this.frame = new ReferenceFrame();
+    this.set_name(name);
+    this.frame.reference = reference;
+    let radius = 6371000;
+    switch (reference) {
+      case 0:
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        radius = 696000000;
+        break;
+      case 4:
+        radius = 2439700;
+        break;
+      case 5:
+        radius = 6051800;
+        break;
+      case 6:
+        radius = 6371000;
+        break;
+      case 7:
+        radius = 3390000;
+        break;
+      case 8:
+        radius = 69911000;
+        break;
+      case 9:
+        radius = 58232000;
+        break;
+      case 10:
+        radius = 25362000;
+        break;
+      case 11:
+        radius = 24622000;
+        break;
+      case 12:
+        radius = 1161000;
+        break;
+      case 13:
+        radius = 1737100;
+        break;
+      case 14:
+        radius = 1821500;
+        break;
+      case 15:
+        radius = 1561000;
+        break;
+      case 16:
+        radius = 2631200;
+        break;
+      case 17:
+        radius = 2410300;
+        break;
+      case 18:
+        break;
+      case 19:
+        break;
+      default:
+        break;
+    }
+    this.frame.meanRadius = radius;
   }
-  this.frame.meanRadius = radius;
-}
-
-export const LayerMap$ = {
-  addChild: function (child) {
+  addChild(child) {
     child.parent = this;
     this.childMaps[child.get_name()] = child;
-  },
-  get_name: function () {
+  }
+  get_name() {
     return this.frame.name;
-  },
-  set_name: function (value) {
+  }
+  set_name(value) {
     this.frame.name = value;
     return value;
-  },
-  computeFrame: function (renderContext) {
+  }
+  computeFrame(renderContext) {
     if (this.frame.reference === 18) {
       this.frame.computeFrame(renderContext);
     }
-  },
-  toString: function () {
+  }
+  toString() {
     return this.get_name();
   }
 };

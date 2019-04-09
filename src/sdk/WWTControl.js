@@ -1544,3 +1544,8 @@ export const WWTControl$ = {
     image.src = WWTControl.singleton.canvas.toDataURL();
   }
 };
+
+export function WWTElementEvent(x, y) {
+  this.offsetX = x || 0;
+  this.offsetY = y || 0;
+}

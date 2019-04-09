@@ -126,4 +126,3 @@ UiTools.split = (data, delimiters) => {
 };
 UiTools._beep = () => {
 };
-export const UiTools$ = {};

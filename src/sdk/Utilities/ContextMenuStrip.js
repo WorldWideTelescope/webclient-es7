@@ -113,3 +113,7 @@ export class ToolStripSeparator extends ToolStripMenuItem{
     this.name = '--------------------------------------';
   }
 }
+
+export class TagMe{
+  constructor() {}
+}

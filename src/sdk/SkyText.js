@@ -8,21 +8,20 @@ import {Util} from './Util';
 import {Colors} from './Color';
 import {TextObject} from './Tours/TextObject';
 
-export function Text3dBatch(height) {
-  this.height = 128;
-  this.items = [];
-  this._glyphVersion = -1;
-  this.viewTransform = Matrix3d.get_identity();
-  this._textObject = new TextObject();
-  this._vertCount = 0;
-  this.height = (height * 3);
-}
-
-export const Text3dBatch$ = {
-  add: function (newItem) {
+export class Text3dBatch{
+  constructor(height) {
+    this.height = 128;
+    this.items = [];
+    this._glyphVersion = -1;
+    this.viewTransform = Matrix3d.get_identity();
+    this._textObject = new TextObject();
+    this._vertCount = 0;
+    this.height = (height * 3);
+  }
+  add(newItem) {
     this.items.push(newItem);
-  },
-  draw: function (renderContext, opacity, color) {
+  }
+  draw(renderContext, opacity, color) {
     if (renderContext.gl == null) {
       const viewPoint = Vector3d._transformCoordinate(renderContext.get_viewPoint(), this.viewTransform);
       const drawHeight = (this.height / renderContext.get_fovAngle()) * renderContext.height / 180;
@@ -60,8 +59,8 @@ export const Text3dBatch$ = {
       TextShader.use(renderContext, this._vertexBuffer.vertexBuffer, this._glyphCache.get_texture().texture2d);
       renderContext.gl.drawArrays(4, 0, this._vertexBuffer.count);
     }
-  },
-  prepareBatch: function () {
+  }
+  prepareBatch() {
     if (this._glyphCache == null) {
       this._glyphCache = GlyphCache.getCache(this.height);
     }
@@ -109,8 +108,8 @@ export const Text3dBatch$ = {
     }
     this._vertexBuffer.unlock();
     this._glyphVersion = this._glyphCache.get_version();
-  },
-  cleanUp: function () {
+  }
+  cleanUp() {
     if (this._vertexBuffer != null) {
       this._vertexBuffer = null;
     }
@@ -118,36 +117,35 @@ export const Text3dBatch$ = {
   }
 };
 
-export function GlyphItem(glyph) {
-  this.referenceCount = 0;
-  this.glyph = glyph;
-  this.uvRect = new Rectangle();
-  this.size = new Vector2d();
-  this.referenceCount = 1;
-}
-
-GlyphItem.create = (glyph, uv, size, extents) => {
-  const temp = new GlyphItem(glyph);
-  temp.glyph = glyph;
-  temp.uvRect = uv;
-  temp.size = size;
-  temp.extents = extents;
-  temp.referenceCount = 1;
-  return temp;
-};
-GlyphItem._fromXML = node => {
-  const glyph = node.attributes.getNamedItem('Glyph').nodeValue;
-  const item = new GlyphItem(glyph);
-  item.uvRect = Rectangle.create(parseFloat(node.attributes.getNamedItem('UVLeft').nodeValue), parseFloat(node.attributes.getNamedItem('UVTop').nodeValue), parseFloat(node.attributes.getNamedItem('UVWidth').nodeValue), parseFloat(node.attributes.getNamedItem('UVHeight').nodeValue));
-  item.size = new Vector2d(parseFloat(node.attributes.getNamedItem('SizeWidth').nodeValue), parseFloat(node.attributes.getNamedItem('SizeHeight').nodeValue));
-  item.extents = new Vector2d(parseFloat(node.attributes.getNamedItem('ExtentsWidth').nodeValue), parseFloat(node.attributes.getNamedItem('ExtentsHeight').nodeValue));
-  return item;
-};
-export const GlyphItem$ = {
-  addRef: function () {
+export class GlyphItem{
+  constructor(glyph) {
+    this.referenceCount = 0;
+    this.glyph = glyph;
+    this.uvRect = new Rectangle();
+    this.size = new Vector2d();
+    this.referenceCount = 1;
+  }
+  static create (glyph, uv, size, extents)  {
+    const temp = new GlyphItem(glyph);
+    temp.glyph = glyph;
+    temp.uvRect = uv;
+    temp.size = size;
+    temp.extents = extents;
+    temp.referenceCount = 1;
+    return temp;
+  }
+  static _fromXML (node) {
+    const glyph = node.attributes.getNamedItem('Glyph').nodeValue;
+    const item = new GlyphItem(glyph);
+    item.uvRect = Rectangle.create(parseFloat(node.attributes.getNamedItem('UVLeft').nodeValue), parseFloat(node.attributes.getNamedItem('UVTop').nodeValue), parseFloat(node.attributes.getNamedItem('UVWidth').nodeValue), parseFloat(node.attributes.getNamedItem('UVHeight').nodeValue));
+    item.size = new Vector2d(parseFloat(node.attributes.getNamedItem('SizeWidth').nodeValue), parseFloat(node.attributes.getNamedItem('SizeHeight').nodeValue));
+    item.extents = new Vector2d(parseFloat(node.attributes.getNamedItem('ExtentsWidth').nodeValue), parseFloat(node.attributes.getNamedItem('ExtentsHeight').nodeValue));
+    return item;
+  }
+  addRef() {
     this.referenceCount++;
-  },
-  release: function () {
+  }
+  release() {
     this.referenceCount--;
   }
 };

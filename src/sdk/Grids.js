@@ -14,7 +14,7 @@ import {DT} from './astrocalc/AADate';
 import {CT} from './astrocalc/AACoordinateTransformation';
 import {Star} from './Star';
 
-export function Grids() {}
+export let Grids = {};
 Grids._createGalaxyImage = renderContext => {
   if (Grids._milkyWayImage == null) {
     Grids._milkyWayImage = Planets.loadPlanetTexture('//cdn.worldwidetelescope.org/webclient/images/milkywaybar.jpg');
@@ -899,4 +899,3 @@ Grids._makePlanetGridText = () => {
     }
   }
 };
-export const Grids$ = {};

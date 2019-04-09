@@ -1,121 +1,123 @@
 
 import {PositionTexture, Vector2d, Vector3d} from './Double3d';
 
-export function RenderTriangle() {
-  this.a = new PositionTexture();
-  this.b = new PositionTexture();
-  this.c = new PositionTexture();
-  this.normal = new Vector3d();
-  this.opacity = 1;
-  this.expansionInPixels = 0.6;
-  this.tileLevel = 0;
-  this._ta = new Vector3d();
-  this._tb = new Vector3d();
-  this._tc = new Vector3d();
-  this._expandedS0 = new Vector2d();
-  this._expandedS1 = new Vector2d();
-  this._expandedS2 = new Vector2d();
-  this.lighting = 1;
-}
-RenderTriangle.create = function(a, b, c, img, level) {
-  const temp = new RenderTriangle();
-  temp.a = a.copy();
-  temp.b = b.copy();
-  temp.c = c.copy();
-  temp._texture = img;
-  temp.tileLevel = level;
-  temp.makeNormal();
-  return temp;
-};
-RenderTriangle.createWithMiter = function(a, b, c, img, level, expansion) {
-  const temp = new RenderTriangle();
-  temp.expansionInPixels = expansion;
-  temp.a = a.copy();
-  temp.b = b.copy();
-  temp.c = c.copy();
-  temp._texture = img;
-  temp.tileLevel = level;
-  temp.makeNormal();
-  return temp;
-};
-RenderTriangle._getMiterPoint = function(p1, p2, p3, edgeOffset) {
-  const edge1 = Vector2d.subtract(p2, p1);
-  const edge2 = Vector2d.subtract(p3, p1);
-  edge1.normalize();
-  edge2.normalize();
-  const dir = new Vector2d(edge1.x + edge2.x, edge1.y + edge2.y);
-  dir.normalize();
-  const delta = new Vector2d(edge1.x - edge2.x, edge1.y - edge2.y);
-  const sineHalfAngle = delta.get_length() / 2;
-  const net = Math.min(2, edgeOffset / sineHalfAngle);
-  dir.extend(net);
-  return new Vector2d(p1.x - dir.x, p1.y - dir.y);
-};
-RenderTriangle._miterPoint = function(p1x, p1y, p2x, p2y, p3x, p3y, ExpansionInPixels) {
-  let e1x = p2x - p1x;
-  let e1y = p2y - p1y;
-  let e2x = p3x - p1x;
-  let e2y = p3y - p1y;
-  let length = Math.sqrt(e1x * e1x + e1y * e1y);
-  if (!!length) {
-    e1x /= length;
-    e1y /= length;
+export class RenderTriangle{
+  constructor() {
+    this.a = new PositionTexture();
+    this.b = new PositionTexture();
+    this.c = new PositionTexture();
+    this.normal = new Vector3d();
+    this.opacity = 1;
+    this.expansionInPixels = 0.6;
+    this.tileLevel = 0;
+    this._ta = new Vector3d();
+    this._tb = new Vector3d();
+    this._tc = new Vector3d();
+    this._expandedS0 = new Vector2d();
+    this._expandedS1 = new Vector2d();
+    this._expandedS2 = new Vector2d();
+    this.lighting = 1;
   }
-  length = Math.sqrt(e2x * e2x + e2y * e2y);
-  if (!!length) {
-    e2x /= length;
-    e2y /= length;
-  }
-  let dx = e1x + e2x;
-  let dy = e1y + e2y;
-  length = Math.sqrt(dx * dx + dy * dy);
-  if (!!length) {
-    dx /= length;
-    dy /= length;
-  }
-  const deltax = e1x - e2x;
-  const deltay = e1y - e2y;
-  length = Math.sqrt(deltax * deltax + deltay * deltay);
-  const sineHalfAngle = length / 2;
-  const net = Math.min(2, ExpansionInPixels / sineHalfAngle);
-  dx *= net;
-  dy *= net;
-  return new Vector2d(p1x - dx, p1y - dy);
-};
-RenderTriangle._miterPointOut = function(pntOut, p1x, p1y, p2x, p2y, p3x, p3y, ExpansionInPixels) {
-  let e1x = p2x - p1x;
-  let e1y = p2y - p1y;
-  let e2x = p3x - p1x;
-  let e2y = p3y - p1y;
-  let length = Math.sqrt(e1x * e1x + e1y * e1y);
-  if (!!length) {
-    e1x /= length;
-    e1y /= length;
-  }
-  length = Math.sqrt(e2x * e2x + e2y * e2y);
-  if (!!length) {
-    e2x /= length;
-    e2y /= length;
-  }
-  let dx = e1x + e2x;
-  let dy = e1y + e2y;
-  length = Math.sqrt(dx * dx + dy * dy);
-  if (!!length) {
-    dx /= length;
-    dy /= length;
-  }
-  const deltax = e1x - e2x;
-  const deltay = e1y - e2y;
-  length = Math.sqrt(deltax * deltax + deltay * deltay);
-  const sineHalfAngle = length / 2;
-  const net = Math.min(2, ExpansionInPixels / sineHalfAngle);
-  dx *= net;
-  dy *= net;
-  pntOut.x = p1x - dx;
-  pntOut.y = p1y - dy;
-};
-export const RenderTriangle$ = {
-  makeNormal: function () {
+
+  static create (a, b, c, img, level) {
+    const temp = new RenderTriangle();
+    temp.a = a.copy();
+    temp.b = b.copy();
+    temp.c = c.copy();
+    temp._texture = img;
+    temp.tileLevel = level;
+    temp.makeNormal();
+    return temp;
+  };
+  static createWithMiter (a, b, c, img, level, expansion) {
+    const temp = new RenderTriangle();
+    temp.expansionInPixels = expansion;
+    temp.a = a.copy();
+    temp.b = b.copy();
+    temp.c = c.copy();
+    temp._texture = img;
+    temp.tileLevel = level;
+    temp.makeNormal();
+    return temp;
+  };
+  static _getMiterPoint (p1, p2, p3, edgeOffset) {
+    const edge1 = Vector2d.subtract(p2, p1);
+    const edge2 = Vector2d.subtract(p3, p1);
+    edge1.normalize();
+    edge2.normalize();
+    const dir = new Vector2d(edge1.x + edge2.x, edge1.y + edge2.y);
+    dir.normalize();
+    const delta = new Vector2d(edge1.x - edge2.x, edge1.y - edge2.y);
+    const sineHalfAngle = delta.get_length() / 2;
+    const net = Math.min(2, edgeOffset / sineHalfAngle);
+    dir.extend(net);
+    return new Vector2d(p1.x - dir.x, p1.y - dir.y);
+  };
+  static _miterPoint (p1x, p1y, p2x, p2y, p3x, p3y, ExpansionInPixels) {
+    let e1x = p2x - p1x;
+    let e1y = p2y - p1y;
+    let e2x = p3x - p1x;
+    let e2y = p3y - p1y;
+    let length = Math.sqrt(e1x * e1x + e1y * e1y);
+    if (!!length) {
+      e1x /= length;
+      e1y /= length;
+    }
+    length = Math.sqrt(e2x * e2x + e2y * e2y);
+    if (!!length) {
+      e2x /= length;
+      e2y /= length;
+    }
+    let dx = e1x + e2x;
+    let dy = e1y + e2y;
+    length = Math.sqrt(dx * dx + dy * dy);
+    if (!!length) {
+      dx /= length;
+      dy /= length;
+    }
+    const deltax = e1x - e2x;
+    const deltay = e1y - e2y;
+    length = Math.sqrt(deltax * deltax + deltay * deltay);
+    const sineHalfAngle = length / 2;
+    const net = Math.min(2, ExpansionInPixels / sineHalfAngle);
+    dx *= net;
+    dy *= net;
+    return new Vector2d(p1x - dx, p1y - dy);
+  };
+  static _miterPointOut(pntOut, p1x, p1y, p2x, p2y, p3x, p3y, ExpansionInPixels) {
+    let e1x = p2x - p1x;
+    let e1y = p2y - p1y;
+    let e2x = p3x - p1x;
+    let e2y = p3y - p1y;
+    let length = Math.sqrt(e1x * e1x + e1y * e1y);
+    if (!!length) {
+      e1x /= length;
+      e1y /= length;
+    }
+    length = Math.sqrt(e2x * e2x + e2y * e2y);
+    if (!!length) {
+      e2x /= length;
+      e2y /= length;
+    }
+    let dx = e1x + e2x;
+    let dy = e1y + e2y;
+    length = Math.sqrt(dx * dx + dy * dy);
+    if (!!length) {
+      dx /= length;
+      dy /= length;
+    }
+    const deltax = e1x - e2x;
+    const deltay = e1y - e2y;
+    length = Math.sqrt(deltax * deltax + deltay * deltay);
+    const sineHalfAngle = length / 2;
+    const net = Math.min(2, ExpansionInPixels / sineHalfAngle);
+    dx *= net;
+    dy *= net;
+    pntOut.x = p1x - dx;
+    pntOut.y = p1y - dy;
+  };
+
+  makeNormal() {
     const a = this.a.position.copy();
     const b = this.b.position.copy();
     const c = this.c.position.copy();
@@ -127,15 +129,15 @@ export const RenderTriangle$ = {
     const z = a.z + b.z + c.z;
     this.normal = new Vector3d(x / 3, y / 3, z / 3);
     this.normal.normalize();
-  },
-  _checkBackface: function () {
+  }
+  _checkBackface() {
     const ab = Vector3d.subtractVectors(this._ta, this._tb);
     const ac = Vector3d.subtractVectors(this._ta, this._tc);
     const cp = Vector3d.cross(ab, ac);
     cp.normalize();
     return cp.z >= 0;
-  },
-  draw: function (ctx, wvp) {
+  }
+  draw(ctx, wvp) {
     if (ctx == null) {
       return;
     }
@@ -147,8 +149,8 @@ export const RenderTriangle$ = {
       return;
     }
     this._drawTriangle(ctx, this._texture, this._ta.x, this._ta.y, this._tb.x, this._tb.y, this._tc.x, this._tc.y, this.a.tu, this.a.tv, this.b.tu, this.b.tv, this.c.tu, this.c.tv);
-  },
-  _drawTriangle: function (ctx, im, x0, y0, x1, y1, x2, y2, sx0, sy0, sx1, sy1, sx2, sy2) {
+  }
+  _drawTriangle(ctx, im, x0, y0, x1, y1, x2, y2, sx0, sy0, sx1, sy1, sx2, sy2) {
     if (!this.intersects(0, RenderTriangle.width, 0, RenderTriangle.height, x0, y0, x1, y1, x2, y2)) {
       return false;
     }
@@ -190,8 +192,8 @@ export const RenderTriangle$ = {
     }
     ctx.restore();
     return true;
-  },
-  intersects: function (l, r, t, b, x0, y0, x1, y1, x2, y2) {
+  }
+  intersects(l, r, t, b, x0, y0, x1, y1, x2, y2) {
     if (x0 > l && x0 < r && y0 > t && y0 < b) {
       return true;
     }
@@ -206,8 +208,8 @@ export const RenderTriangle$ = {
       return false;
     }
     return this.lineRectangleIntersect(l, r, t, b, x0, y0, x1, y1) || this.lineRectangleIntersect(l, r, t, b, x1, y1, x2, y2) || this.lineRectangleIntersect(l, r, t, b, x2, y2, x0, y0);
-  },
-  lineRectangleIntersect: function (l, r, t, b, x0, y0, x1, y1) {
+  }
+  lineRectangleIntersect(l, r, t, b, x0, y0, x1, y1) {
     let top_intersection;
     let bottom_intersection;
     let toptrianglepoint;

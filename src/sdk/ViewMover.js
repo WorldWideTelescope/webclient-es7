@@ -5,35 +5,34 @@ import {CameraParameters} from './CameraParameters';
 import {Util} from './Util';
 import {SpaceTimeController} from './SpaceTimeController';
 
-export function ViewMoverKenBurnsStyle(from, to, time, fromDateTime, toDateTime, type) {
-  this.interpolationType = 0;
-  this.fastDirectionMove = false;
-  this._toTargetTime = 0;
-  this._dateTimeSpan = 0;
-  this._complete = false;
-  this._midpointFired = false;
-  this.interpolationType = type;
-  if (Math.abs(from.lng - to.lng) > 180) {
-    if (from.lng > to.lng) {
-      from.lng -= 360;
-    } else {
-      from.lng += 360;
+export class ViewMoverKenBurnsStyle{
+  constructor(from, to, time, fromDateTime, toDateTime, type) {
+    this.interpolationType = 0;
+    this.fastDirectionMove = false;
+    this._toTargetTime = 0;
+    this._dateTimeSpan = 0;
+    this._complete = false;
+    this._midpointFired = false;
+    this.interpolationType = type;
+    if (Math.abs(from.lng - to.lng) > 180) {
+      if (from.lng > to.lng) {
+        from.lng -= 360;
+      } else {
+        from.lng += 360;
+      }
     }
+    this._fromDateTime = fromDateTime;
+    this._toDateTime = toDateTime;
+    this._dateTimeSpan = toDateTime - fromDateTime;
+    this._from = from.copy();
+    this._to = to.copy();
+    this._fromTime = ss.now();
+    this._toTargetTime = time;
   }
-  this._fromDateTime = fromDateTime;
-  this._toDateTime = toDateTime;
-  this._dateTimeSpan = toDateTime - fromDateTime;
-  this._from = from.copy();
-  this._to = to.copy();
-  this._fromTime = ss.now();
-  this._toTargetTime = time;
-}
-
-export const ViewMoverKenBurnsStyle$ = {
-  get_complete: function () {
+  get_complete() {
     return this._complete;
-  },
-  get_currentPosition: function () {
+  }
+  get_currentPosition() {
     const elapsed = ss.now() - this._fromTime;
     const elapsedSeconds = (elapsed) / 1000;
     let alpha = elapsedSeconds / this._toTargetTime;
@@ -52,26 +51,26 @@ export const ViewMoverKenBurnsStyle$ = {
       return CameraParameters.interpolateGreatCircle(this._from, this._to, alpha, this.interpolationType, this.fastDirectionMove);
     }
     return CameraParameters.interpolate(this._from, this._to, alpha, this.interpolationType, this.fastDirectionMove);
-  },
-  get_currentDateTime: function () {
+  }
+  get_currentDateTime() {
     const elapsed = ss.now() - this._fromTime;
     const elapsedSeconds = (elapsed) / 1000;
     const alpha = elapsedSeconds / this._toTargetTime;
     const delta = this._dateTimeSpan * alpha;
     const retDate = new Date(this._fromDateTime.getTime() + ss.truncate(delta));
     return retDate;
-  },
-  get_midpoint: function () {
+  }
+  get_midpoint() {
     return this._midpoint;
-  },
-  set_midpoint: function (value) {
+  }
+  set_midpoint(value) {
     this._midpoint = value;
     return value;
-  },
-  get_moveTime: function () {
+  }
+  get_moveTime() {
     return this._toTargetTime;
   }
-};
+}
 
 export class ViewMoverSlew {
   constructor() {

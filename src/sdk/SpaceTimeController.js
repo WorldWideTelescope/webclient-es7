@@ -4,8 +4,8 @@ import {DT} from './astrocalc/AADate';
 import {AstroCalc} from './astrocalc/AstroCalc';
 import {Settings} from './settings';
 
-export function SpaceTimeController() {
-}
+export let SpaceTimeController = {
+};
 SpaceTimeController.updateClock = function() {
   if (SpaceTimeController._syncToClock) {
     const justNow = ss.now();
@@ -186,4 +186,3 @@ SpaceTimeController.dateToJD = function(Year, Month, Day, bGregorianCalendar) {
   }
   return ss.truncate((365.25 * (Y + 4716))) + ss.truncate((30.6001 * (M + 1))) + Day + B - 1524.5;
 };
-export const SpaceTimeController$ = {};
