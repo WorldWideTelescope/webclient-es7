@@ -370,8 +370,9 @@ export class EventArgs {
     return new EventArgs();
   }
 }
-class  CancelEventArgs {
+export class  CancelEventArgs extends EventArgs {
   constructor() {
+    super();
     this.cancel = false;
   }
 }

@@ -53,6 +53,10 @@
         </li>-->
       </ul>
     </div>
+    <div class="top-panel">
+      <explore-panel></explore-panel>
+    </div>
+
   </div>
 </template>
 
@@ -63,6 +67,7 @@ import {mapMutations, mapState, mapGetters} from 'vuex';
 import dom from '../lib/dom';
 import lib from '../lib/util';
 import Vue from 'vue';
+import explorePanel from './explore-panel';
 
 export default {
   data: () => {
@@ -142,6 +147,7 @@ export default {
     ...mapState(['ctrlInst']),
     ...mapGetters(['_', 'px'])
   },
+  components:{explorePanel},
   name: 'ribbon',
   methods: {
     ...mapMutations('modals', ['open']),

@@ -1,5 +1,5 @@
-import {Enums} from './sdk/enums';
-import ss from './sdk/scriptsharp/ss';
+import {Enums} from './enums';
+import ss from './scriptsharp/ss';
 
 export class Tour {
   constructor() {

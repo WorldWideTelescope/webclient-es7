@@ -1,16 +1,16 @@
 import ss from '../scriptsharp/ss';
 import {Color, Colors} from '../Color';
-import {ImageSetLayer} from '../ImageSetLayer';
 import {IUiController} from '../interface';
 import {Guid, Util} from '../Util';
 import pako from 'pako';
 
-let OrbitLayer,SpreadSheetLayer,GreatCirlceRouteLayer,Object3dLayer,GridLayer;
+let OrbitLayer,SpreadSheetLayer,GreatCirlceRouteLayer,Object3dLayer,GridLayer,ImageSetLayer;
 import('./Orbit').then((module) => OrbitLayer = module.OrbitLayer);
 import('./SpreadsheetLayer').then((module) => SpreadSheetLayer = module.SpreadSheetLayer);
 import('./GridLayer').then((module) => GridLayer = module.GridLayer);
 import('./GreatCircleRouteLayer').then((module) => GreatCirlceRouteLayer = module.GreatCirlceRouteLayer);
 import('./Object3d').then((module) => Object3dLayer = module.Object3dLayer);
+import('../ImageSetLayer').then((module) => ImageSetLayer = module.ImageSetLayer);
 
 export class Layer {
   constructor(obj) {

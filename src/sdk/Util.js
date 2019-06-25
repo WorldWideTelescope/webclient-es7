@@ -230,7 +230,7 @@ export class Guid{
   static newGuid(){return new Guid();}
   static fromString(id){
     const temp = new Guid();
-    temp._guid = ss.trim(id);
+    temp._guid = id.replace(/\s/g, '');
     return temp;
   }
   static create(){

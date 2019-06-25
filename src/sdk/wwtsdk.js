@@ -41,7 +41,6 @@ import {CAARiseTransitSet, CAARiseTransitSetDetails} from './astrocalc/AARiseTra
 import {
   Util,
   Guid,
-  Guid$,
   Mouse,
   Cursors,
   Cursor,
@@ -99,7 +98,7 @@ import {TileCache} from './TileCache';
 import {Color, Colors} from './Color';
 import {Coordinates, Coordinates$} from './Coordinates';
 import {BlendState} from './BlendState';
-import {Texture, Texture$} from './Graphics/Texture';
+import {Texture} from './Graphics/Texture';
 import {Imageset} from './Imageset';
 import {Triangle} from './Triangle';
 import {
@@ -118,16 +117,17 @@ import {
   SimpleLineShader2D,
   SimpleLineShader
 } from './Graphics/Shaders';
-import {LayerManager, LayerMap, LayerMap$} from './Layers/LayerManager';
-import {WWTControl, WWTControl$} from './WWTControl';
-import {SpaceTimeController, SpaceTimeController$} from './SpaceTimeController';
+import {DomainValue, Layer, LayerCollection} from './Layers/Layer';
+import {LayerManager, LayerMap} from './Layers/LayerManager';
+import {WWTControl, WWTControl$, WWTElementEvent} from './WWTControl';
+import {SpaceTimeController} from './SpaceTimeController';
 import {WebFile, WebFile$} from './WebFile';
 import {ISSLayer} from './Graphics/ISSLayer';
 import {Language} from './Language';
 import {Settings, Settings$, SettingParameter, SettingParameter$} from './settings';
 import {VoTableLayer, VoTableLayer$} from './VOTable';
 import {ImageSetLayer} from './ImageSetLayer';
-import {DomainValue, Layer,  LayerCollection} from './Layers/Layer';
+
 import {Histogram, Histogram$} from './Histogram';
 import {BodyAngles, KeplerianElements, Planets} from './Planets';
 import {Constellations, ConstellationFilter} from './Constellation';
@@ -193,7 +193,7 @@ import {LayerUI, LayerUIMenuItem, LayerUITreeNode, Object3dLayerUI} from './Laye
 import {TourDocument} from './Tours/TourDocument';
 import {FileCabinet} from './Tours/FileCabilnet';
 import {PushPin, SpreadSheetLayer} from './Layers/SpreadsheetLayer';
-import {ContextMenuStrip, ToolStripMenuItem, ToolStripSeparator} from './Utilities/ContextMenuStrip';
+import {ContextMenuStrip, TagMe, ToolStripMenuItem, ToolStripSeparator} from './Utilities/ContextMenuStrip';
 import {ViewMoverKenBurnsStyle,  ViewMoverSlew} from './ViewMover';
 import {OrbitLayer, OrbitLayerUI} from './Layers/Orbit';
 import {GridLayer} from './Layers/GridLayer';
@@ -220,6 +220,7 @@ import {Undo, UndoStep, UndoTourPropertiesChange, UndoTourSlidelistChange} from 
 import {LayerInfo, TourStop, UndoTourStopChange} from './Tours/TourStop';
 import {XmlTextWriter} from './Utilities/XmlTextWriter';
 import {ColorPicker} from './Utilities/ColorPicker';
+import {DataItem, VizLayer} from './VizLayer';
 
 let wwtlib = (() => {
   const $exports = ss.module('wwtlib', null, {
@@ -453,13 +454,13 @@ let wwtlib = (() => {
     ColorPicker,
     ContextMenuStrip,
     ToolStripMenuItem,
-    TagMe: [TagMe, TagMe$, null],
+    TagMe,
     Dialog,
     Histogram: [Histogram, Histogram$, null],
     SimpleInput,
     XmlTextWriter,
-    VizLayer: [VizLayer, VizLayer$, null],
-    DataItem: [DataItem, DataItem$, null],
+    VizLayer,
+    DataItem,
     WebFile: [WebFile, WebFile$, null],
     WWTControl: [WWTControl, WWTControl$, null],
     WWTElementEvent,

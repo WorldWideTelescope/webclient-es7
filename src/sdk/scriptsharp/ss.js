@@ -1,3 +1,4 @@
+import {CancelEventArgs, EventArgs} from '../ScriptInterface';
 
 function _ss() {
 
@@ -1449,8 +1450,8 @@ function _ss() {
     IObjectFactory: [ IObjectFactory ],
     IEventManager: [ IEventManager ],
     IInitializable: [ IInitializable ],
-    EventArgs: [ EventArgs, { } ],
-    CancelEventArgs: [ CancelEventArgs, { }, EventArgs ],
+    EventArgs,
+    CancelEventArgs,
     StringBuilder: [ StringBuilder, StringBuilder$ ],
     Stack: [ Stack, Stack$ ],
     Queue: [ Queue, Queue$ ],

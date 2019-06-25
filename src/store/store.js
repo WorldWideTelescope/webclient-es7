@@ -8,6 +8,8 @@ import util from '../lib/util';
 
 Vue.use(Vuex);
 
+let initResolver;
+let initPromise = new Promise(res => initResolver = res);
 export default new Vuex.Store({
   modules:{
     modals,
@@ -31,20 +33,23 @@ export default new Vuex.Store({
     lookAt:'Sky',
     imagery:'Digitized Sky Survey (Color)',
     imageSets:[],
+    ribbonExpanded:false,
     ctl:{},wc:{},ctrlInst:{},//todo:consolidate globally
     layerManagerHidden:false,
     instant:false,
     tracking:null
   },
   mutations: {
-    init(state,ctl){
+    init(state,{ctl,wwtlib}){
       state.ctrlInst = ctl;
+      state.wwtlib = wwtlib;
       window.wc = ctl;
-      ctl.settings.set_solarSystemMinorOrbits(true);
+      initResolver(ctl);
+      /*ctl.settings.set_solarSystemMinorOrbits(true);
       ctl.settings.set_solarSystemMinorPlanets(true);
-      /*let mars = wwtlib.WWTControl.imageSets.find(s=>s._name==='Visible Imagery');
-      mars.set_name('Mars');*/
-      ctl.setBackgroundImageByName('3D Solar System View');
+      let mars = wwtlib.WWTControl.imageSets.find(s=>s._name==='Visible Imagery');
+      mars.set_name('Mars');
+      ctl.setBackgroundImageByName('3D Solar System View');*/
     },
     setAny(state, obj){
       Object.keys(obj).forEach(k => state[k] = obj[k]);
@@ -54,6 +59,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    init(){
+      return initPromise;
+    },
     setLookAt({state,commit,dispatch}, {lookAt, imageryName, noUpdate, keepCamera}){
       commit('setAny',{lookAt});
       dispatch('lookAtChanged',{imageryName, noUpdate, keepCamera});
