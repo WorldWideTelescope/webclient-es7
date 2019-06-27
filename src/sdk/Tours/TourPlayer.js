@@ -10,40 +10,41 @@ import {Util} from '../Util';
 import {ViewMoverKenBurnsStyle} from '../ViewMover';
 import {EventArgs} from '../ScriptInterface';
 
-export function TourPlayer() {
-  this._overlayBlend = BlendState.create(false, 1000);
-  this._playerState = BlendState.create(false, 2000);
-  this._middleHover = false;
-  this._leftHover = false;
-  this._rightHover = false;
-  this._middleDown = false;
-  this._leftDown = false;
-  this._rightDown = false;
-  this._top = 1;
-  this._center = 1;
-  this._lastHit = ss.now();
-  this._imageCount = 0;
-  this._imageLoadCount = 0;
-  this._imagesLoaded = false;
-  this._downloading = false;
-  this._tour = null;
-  this._onTarget = false;
-  this._currentMasterSlide = null;
-  this._callStack = new ss.Stack();
-}
-TourPlayer.get_playing = () => TourPlayer._playing;
-TourPlayer.set_playing = value => {
-  TourPlayer._playing = value;
-  return value;
-};
-TourPlayer.add_tourEnded = value => {
-  TourPlayer.__tourEnded = ss.bindAdd(TourPlayer.__tourEnded, value);
-};
-TourPlayer.remove_tourEnded = value => {
-  TourPlayer.__tourEnded = ss.bindSub(TourPlayer.__tourEnded, value);
-};
-export const TourPlayer$ = {
-  render: function (renderContext) {
+export class TourPlayer{
+  constructor() {
+    this._overlayBlend = BlendState.create(false, 1000);
+    this._playerState = BlendState.create(false, 2000);
+    this._middleHover = false;
+    this._leftHover = false;
+    this._rightHover = false;
+    this._middleDown = false;
+    this._leftDown = false;
+    this._rightDown = false;
+    this._top = 1;
+    this._center = 1;
+    this._lastHit = ss.now();
+    this._imageCount = 0;
+    this._imageLoadCount = 0;
+    this._imagesLoaded = false;
+    this._downloading = false;
+    this._tour = null;
+    this._onTarget = false;
+    this._currentMasterSlide = null;
+    this._callStack = new ss.Stack();
+  }
+
+  static get_playing(){return TourPlayer._playing;}
+  static set_playing(value) {
+    TourPlayer._playing = value;
+    return value;
+  }
+  static add_tourEnded(value){
+    TourPlayer.__tourEnded = ss.bindAdd(TourPlayer.__tourEnded, value);
+  };
+  static remove_tourEnded (value ){
+    TourPlayer.__tourEnded = ss.bindSub(TourPlayer.__tourEnded, value);
+  };
+  render(renderContext) {
     if (this._tour == null || this._tour.get_currentTourStop() == null || !TourPlayer._playing) {
       return;
     }
@@ -134,8 +135,8 @@ export const TourPlayer$ = {
       renderContext.restore();
       this._drawPlayerControls(renderContext);
     }
-  },
-  _drawPlayerControls: function (renderContext) {
+  }
+  _drawPlayerControls(renderContext) {
     this._loadImages();
     if (!this._imagesLoaded) {
       return;
@@ -158,8 +159,8 @@ export const TourPlayer$ = {
       ctx.drawImage(middle, this._center - 32, this._top - 4);
       ctx.restore();
     }
-  },
-  _hitTextPlayerControls: function (point, click, act) {
+  }
+  _hitTextPlayerControls(point, click, act) {
     if (click) {
       this._leftDown = false;
       this._rightDown = false;
@@ -209,8 +210,8 @@ export const TourPlayer$ = {
       return true;
     }
     return false;
-  },
-  _loadImages: function () {
+  }
+  _loadImages() {
     if (!this._imagesLoaded && !this._downloading) {
       this._buttonNextDisabled = this._loadImageElement('images/button_next_disabled.png');
       this._buttonNextHover = this._loadImageElement('images/button_next_hover.png');
@@ -229,8 +230,8 @@ export const TourPlayer$ = {
       this._buttonPreviousNormal = this._loadImageElement('images/button_previous_normal.png');
       this._buttonPreviousPressed = this._loadImageElement('images/button_previous_pressed.png');
     }
-  },
-  _loadImageElement: function (url) {
+  }
+  _loadImageElement(url) {
     const $this = this;
 
     this._imageCount++;
@@ -246,15 +247,15 @@ export const TourPlayer$ = {
       }
     }, false);
     return temp;
-  },
-  get_tour: function () {
+  }
+  get_tour() {
     return this._tour;
-  },
-  set_tour: function (value) {
+  }
+  set_tour(value) {
     this._tour = value;
     return value;
-  },
-  nextSlide: function () {
+  }
+  nextSlide() {
     if (this._tour.get_currentTourStop() != null) {
       if (!this._tour.get_currentTourStop().get_masterSlide()) {
         if (this._tour.get_currentTourStop().get_musicTrack() != null) {
@@ -346,8 +347,8 @@ export const TourPlayer$ = {
         WWTControl.scriptInterface._fireTourEnded();
       }
     }
-  },
-  _stopCurrentMaster: function () {
+  }
+  _stopCurrentMaster() {
     if (this._currentMasterSlide != null) {
       if (this._currentMasterSlide.get_musicTrack() != null) {
         this._currentMasterSlide.get_musicTrack().stop();
@@ -362,10 +363,9 @@ export const TourPlayer$ = {
       }
       this._currentMasterSlide = null;
     }
-  },
-  showEndTourPopup: () => {
-  },
-  play: function () {
+  }
+  showEndTourPopup(){ }
+  play() {
     if (this._tour == null) {
       return;
     }
@@ -388,8 +388,8 @@ export const TourPlayer$ = {
     }
     this._slideStartTime = ss.now();
     TourPlayer._playing = true;
-  },
-  _playMasterForCurrent: function () {
+  }
+  _playMasterForCurrent() {
     if (!this._tour.get_currentTourStop().get_masterSlide()) {
       const currentMaster = this._tour.elapsedTimeSinceLastMaster(this._tour.get_currentTourstopIndex());
       if (currentMaster != null && this._currentMasterSlide != null) {
@@ -411,8 +411,8 @@ export const TourPlayer$ = {
         }
       }
     }
-  },
-  stop: function (noSwitchBackFullScreen) {
+  }
+  stop(noSwitchBackFullScreen) {
     if (TourPlayer._switchedToFullScreen && !noSwitchBackFullScreen) {
     }
     Settings.tourSettings = null;
@@ -445,8 +445,8 @@ export const TourPlayer$ = {
     }
     WWTControl.singleton._hideUI(TourPlayer.noRestoreUIOnStop);
     WWTControl.scriptInterface._fireTourEnded();
-  },
-  updateSlideStates: function () {
+  }
+  updateSlideStates() {
     let slideChanging = false;
     let slideElapsedTime = ss.now() - this._slideStartTime;
     if (slideElapsedTime > this._tour.get_currentTourStop().get_duration() && TourPlayer._playing) {
@@ -515,24 +515,24 @@ export const TourPlayer$ = {
         }
       }
     }
-  },
-  updateTweenPosition: function (tween) {
+  }
+  updateTweenPosition(tween) {
     const slideElapsedTime = ss.now() - this._slideStartTime;
     if (tween > -1) {
       return this._tour.get_currentTourStop().set_tweenPosition(Math.min(1, tween));
     } else {
       return this._tour.get_currentTourStop().set_tweenPosition(Math.min(1, (slideElapsedTime / this._tour.get_currentTourStop().get_duration())));
     }
-  },
-  close: function () {
+  }
+  close() {
     if (this._tour != null) {
       if (TourPlayer.get_playing()) {
         this.stop(TourPlayer._switchedToFullScreen);
       }
       this._tour = null;
     }
-  },
-  mouseDown: function (sender, e) {
+  }
+  mouseDown(sender, e) {
     let location;
     location = this.pointToView(new Vector2d(e.offsetX, e.offsetY));
     if (this._tour == null || this._tour.get_currentTourStop() == null) {
@@ -559,8 +559,8 @@ export const TourPlayer$ = {
       this._lastHit = ss.now();
     }
     return false;
-  },
-  mouseUp: function (sender, e) {
+  }
+  mouseUp(sender, e) {
     if (this._leftDown || this._rightDown || this._middleDown) {
       this._leftDown = false;
       this._rightDown = false;
@@ -568,8 +568,8 @@ export const TourPlayer$ = {
       return true;
     }
     return false;
-  },
-  mouseMove: function (sender, e) {
+  }
+  mouseMove(sender, e) {
     let location;
     try {
       location = this.pointToView(new Vector2d(e.offsetX, e.offsetY));
@@ -588,11 +588,11 @@ export const TourPlayer$ = {
       return this._hitTextPlayerControls(new Vector2d(e.offsetX, e.offsetY), false, false);
     }
     return false;
-  },
-  mouseClick: (sender, e) => false,
-  click: (sender, e) => false,
-  mouseDoubleClick: (sender, e) => false,
-  keyDown: function (sender, e) {
+  }
+  mouseClick(sender, e) {return false;}
+  click(sender, e) {return false;}
+  mouseDoubleClick(sender, e) {return  false;}
+  keyDown(sender, e) {
     switch (e.keyCode) {
       case 27:
         this.stop(TourPlayer._switchedToFullScreen);
@@ -619,26 +619,26 @@ export const TourPlayer$ = {
         return true;
     }
     return false;
-  },
-  _playNextSlide: function () {
+  }
+  _playNextSlide() {
     if ((this._tour.get_currentTourstopIndex() < this._tour.get_tourStops().length - 1) && this._tour.get_tourStops().length > 0) {
       this._playFromTourstop(this._tour.get_tourStops()[this._tour.get_currentTourstopIndex() + 1]);
     }
-  },
-  _playPreviousSlide: function () {
+  }
+  _playPreviousSlide() {
     if (this._tour.get_currentTourstopIndex() > 0) {
       this._playFromTourstop(this._tour.get_tourStops()[this._tour.get_currentTourstopIndex() - 1]);
     }
-  },
-  _playFromTourstop: function (tourStop) {
+  }
+  _playFromTourstop(tourStop) {
     this.stop(true);
     this._tour.set_currentTourStop(tourStop);
     WWTControl.singleton.gotoTarget(this._tour.get_currentTourStop().get_target(), false, true, false);
     SpaceTimeController.set_now(this._tour.get_currentTourStop().get_startTime());
     SpaceTimeController.set_syncToClock(false);
     this.play();
-  },
-  pauseTour: function () {
+  }
+  pauseTour() {
     if (TourPlayer._playing) {
       this.stop(TourPlayer._switchedToFullScreen);
       WWTControl.singleton._freezeView();
@@ -647,15 +647,15 @@ export const TourPlayer$ = {
       this.play();
       WWTControl.scriptInterface._fireTourResume();
     }
-  },
-  keyUp: (sender, e) => false,
-  hover: pnt => {
+  }
+  keyUp (sender, e) {return  false;}
+  hover(pnt) {
     if (TourPlayer._playing) {
       return true;
     }
     return false;
-  },
-  pointToView: pnt => {
+  }
+  pointToView(pnt) {
     const clientHeight = WWTControl.singleton.canvas.height;
     const clientWidth = WWTControl.singleton.canvas.width;
     const viewWidth = (clientWidth / clientHeight) * 1116;
@@ -664,3 +664,11 @@ export const TourPlayer$ = {
     return new Vector2d(x, y);
   }
 };
+
+export class MasterTime{
+  constructor(master, durration) {
+    this.durration = 0;
+    this.master = master;
+    this.durration = durration;
+  }
+}

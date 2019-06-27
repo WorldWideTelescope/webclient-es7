@@ -14,228 +14,227 @@ import {Wtml} from './WTML';
 import {FitsImage} from './Layers/FitsImage';
 
 
-export function ScriptInterface() {
-  this._missedReady = false;
-  this.hideTourFeedback = false;
-  this._smoothAnimation = false;
-  this._showCaptions = true;
-}
-
-export const ScriptInterface$ = {
-  add_ready: function (value) {
+export class ScriptInterface{
+  constructor() {
+    this._missedReady = false;
+    this.hideTourFeedback = false;
+    this._smoothAnimation = false;
+    this._showCaptions = true;
+  }
+  add_ready(value) {
     this.__ready = ss.bindAdd(this.__ready, value);
-  },
-  remove_ready: function (value) {
+  }
+  remove_ready(value) {
     this.__ready = ss.bindSub(this.__ready, value);
-  },
-  _fireReady: function () {
+  }
+  _fireReady() {
     if (this.__ready != null) {
       this.__ready(this, new EventArgs());
     } else {
       this._missedReady = true;
     }
-  },
-  add_collectionLoaded: function (value) {
+  }
+  add_collectionLoaded(value) {
     this.__collectionLoaded = ss.bindAdd(this.__collectionLoaded, value);
-  },
-  remove_collectionLoaded: function (value) {
+  }
+  remove_collectionLoaded(value) {
     this.__collectionLoaded = ss.bindSub(this.__collectionLoaded, value);
-  },
-  _fireCollectionLoaded: function (url) {
+  }
+  _fireCollectionLoaded(url) {
     if (this.__collectionLoaded != null) {
       this.__collectionLoaded(this, new CollectionLoadedEventArgs(url));
     }
-  },
-  add_colorPickerDisplay: function (value) {
+  }
+  add_colorPickerDisplay(value) {
     this.__colorPickerDisplay = ss.bindAdd(this.__colorPickerDisplay, value);
-  },
-  remove_colorPickerDisplay: function (value) {
+  }
+  remove_colorPickerDisplay(value) {
     this.__colorPickerDisplay = ss.bindSub(this.__colorPickerDisplay, value);
-  },
-  add_voTableDisplay: function (value) {
+  }
+  add_voTableDisplay(value) {
     this.__voTableDisplay = ss.bindAdd(this.__voTableDisplay, value);
-  },
-  remove_voTableDisplay: function (value) {
+  }
+  remove_voTableDisplay(value) {
     this.__voTableDisplay = ss.bindSub(this.__voTableDisplay, value);
-  },
-  add_refreshLayerManager: function (value) {
+  }
+  add_refreshLayerManager(value) {
     this.__refreshLayerManager = ss.bindAdd(this.__refreshLayerManager, value);
-  },
-  remove_refreshLayerManager: function (value) {
+  }
+  remove_refreshLayerManager(value) {
     this.__refreshLayerManager = ss.bindSub(this.__refreshLayerManager, value);
-  },
-  add_arrived: function (value) {
+  }
+  add_arrived(value) {
     this.__arrived = ss.bindAdd(this.__arrived, value);
-  },
-  remove_arrived: function (value) {
+  }
+  remove_arrived(value) {
     this.__arrived = ss.bindSub(this.__arrived, value);
-  },
-  add_clicked: function (value) {
+  }
+  add_clicked(value) {
     this.__clicked = ss.bindAdd(this.__clicked, value);
-  },
-  remove_clicked: function (value) {
+  }
+  remove_clicked(value) {
     this.__clicked = ss.bindSub(this.__clicked, value);
-  },
-  add_annotationClicked: function (value) {
+  }
+  add_annotationClicked(value) {
     this.__annotationClicked = ss.bindAdd(this.__annotationClicked, value);
-  },
-  remove_annotationClicked: function (value) {
+  }
+  remove_annotationClicked(value) {
     this.__annotationClicked = ss.bindSub(this.__annotationClicked, value);
-  },
-  add_imageryLoaded: function (value) {
+  }
+  add_imageryLoaded(value) {
     this.__imageryLoaded = ss.bindAdd(this.__imageryLoaded, value);
-  },
-  remove_imageryLoaded: function (value) {
+  }
+  remove_imageryLoaded(value) {
     this.__imageryLoaded = ss.bindSub(this.__imageryLoaded, value);
-  },
-  add_tourReady: function (value) {
+  }
+  add_tourReady(value) {
     this.__tourReady = ss.bindAdd(this.__tourReady, value);
-  },
-  remove_tourReady: function (value) {
+  }
+  remove_tourReady(value) {
     this.__tourReady = ss.bindSub(this.__tourReady, value);
-  },
-  add_tourPaused: function (value) {
+  }
+  add_tourPaused(value) {
     this.__tourPaused = ss.bindAdd(this.__tourPaused, value);
-  },
-  remove_tourPaused: function (value) {
+  }
+  remove_tourPaused(value) {
     this.__tourPaused = ss.bindSub(this.__tourPaused, value);
-  },
-  add_tourResumed: function (value) {
+  }
+  add_tourResumed(value) {
     this.__tourResumed = ss.bindAdd(this.__tourResumed, value);
-  },
-  remove_tourResumed: function (value) {
+  }
+  remove_tourResumed(value) {
     this.__tourResumed = ss.bindSub(this.__tourResumed, value);
-  },
-  add_tourEnded: function (value) {
+  }
+  add_tourEnded(value) {
     this.__tourEnded = ss.bindAdd(this.__tourEnded, value);
-  },
-  remove_tourEnded: function (value) {
+  }
+  remove_tourEnded(value) {
     this.__tourEnded = ss.bindSub(this.__tourEnded, value);
-  },
-  add_slideChanged: function (value) {
+  }
+  add_slideChanged(value) {
     this.__slideChanged = ss.bindAdd(this.__slideChanged, value);
-  },
-  remove_slideChanged: function (value) {
+  }
+  remove_slideChanged(value) {
     this.__slideChanged = ss.bindSub(this.__slideChanged, value);
-  },
-  add_timeScrubberHook: function (value) {
+  }
+  add_timeScrubberHook(value) {
     this.__timeScrubberHook = ss.bindAdd(this.__timeScrubberHook, value);
-  },
-  remove_timeScrubberHook: function (value) {
+  }
+  remove_timeScrubberHook(value) {
     this.__timeScrubberHook = ss.bindSub(this.__timeScrubberHook, value);
-  },
-  setTimeScrubberPosition: function (posLeft) {
+  }
+  setTimeScrubberPosition(posLeft) {
     LayerManager.setTimeSliderValue(posLeft);
-  },
-  setTimeSlider: function (name, value) {
+  }
+  setTimeSlider(name, value) {
     this.__timeScrubberHook(name, value);
-  },
-  showColorPicker: function (pickerInstance, e) {
+  }
+  showColorPicker(pickerInstance, e) {
     if (this.__colorPickerDisplay != null) {
       this.__colorPickerDisplay(pickerInstance, e);
     }
-  },
-  displayVoTableLayer: function (layer) {
+  }
+  displayVoTableLayer(layer) {
     if (this.__voTableDisplay != null) {
       this.__voTableDisplay(layer, new EventArgs());
     }
-  },
-  refreshLayerManagerNow: function () {
+  }
+  refreshLayerManagerNow() {
     if (this.__refreshLayerManager != null) {
       this.__refreshLayerManager(null, new EventArgs());
     }
-  },
-  _fireTourReady: function () {
+  }
+  _fireTourReady() {
     if (this.__tourReady != null) {
       this.__tourReady(this, new EventArgs());
     }
-  },
-  _fireTourPaused: function () {
+  }
+  _fireTourPaused() {
     if (this.__tourPaused != null) {
       this.__tourPaused(this, new EventArgs());
     }
-  },
-  _fireTourResume: function () {
+  }
+  _fireTourResume() {
     if (this.__tourResumed != null) {
       this.__tourResumed(this, new EventArgs());
     }
-  },
-  _fireTourEnded: function () {
+  }
+  _fireTourEnded() {
     if (this.__tourEnded != null) {
       this.__tourEnded(this, new EventArgs());
     }
-  },
-  _fireImageryLoaded: function () {
+  }
+  _fireImageryLoaded() {
     if (this.__imageryLoaded != null) {
       this.__imageryLoaded(this, new EventArgs());
     }
-  },
-  _fireClick: function (ra, dec) {
+  }
+  _fireClick(ra, dec) {
     if (this.__clicked != null) {
       this.__clicked(this, new ArrivedEventArgs(ra, dec, WWTControl.singleton.renderContext.viewCamera.zoom));
     }
-  },
-  _fireArrived: function (ra, dec, zoom) {
+  }
+  _fireArrived(ra, dec, zoom) {
     if (this.__arrived != null) {
       this.__arrived(this, new ArrivedEventArgs(ra, dec, zoom));
     }
-  },
-  _fireAnnotationclicked: function (RA, Dec, id) {
+  }
+  _fireAnnotationclicked(RA, Dec, id) {
     try {
       if (this.__annotationClicked != null) {
         this.__annotationClicked(this, new AnnotationClickEventArgs(RA, Dec, id));
       }
     } catch ($e1) {
     }
-  },
-  _fireSlideChanged: function (caption) {
+  }
+  _fireSlideChanged(caption) {
     try {
       if (this.__slideChanged != null) {
         this.__slideChanged(this, new SlideChangedEventArgs(caption));
       }
     } catch ($e1) {
     }
-  },
-  endInit: function () {
+  }
+  endInit() {
     if (this._missedReady) {
       this._fireReady();
     }
-  },
-  gotoRaDecZoom: function (ra, dec, zoom, instant) {
+  }
+  gotoRaDecZoom(ra, dec, zoom, instant) {
     if (WWTControl.singleton != null) {
       WWTControl.singleton.gotoRADecZoom(ra / 15, dec, zoom * 6, instant);
     }
-  },
-  setBackgroundImageByName: function (name) {
+  }
+  setBackgroundImageByName(name) {
     if (WWTControl.singleton != null) {
       WWTControl.singleton.setBackgroundImageByName(name);
     }
-  },
-  addVoTableLayer: function (table) {
+  }
+  addVoTableLayer(table) {
     return LayerManager.addVoTableLayer(table, 'Vo Table');
-  },
-  setForegroundImageByName: function (name) {
+  }
+  setForegroundImageByName(name) {
     if (WWTControl.singleton != null) {
       WWTControl.singleton.setForegroundImageByName(name);
       WWTControl.singleton.renderContext.viewCamera.opacity = 100;
     }
-  },
-  setForegroundOpacity: function (opacity) {
+  }
+  setForegroundOpacity(opacity) {
     if (WWTControl.singleton != null) {
       WWTControl.singleton.renderContext.viewCamera.opacity = opacity;
     }
-  },
-  hideUI: function (hide) {
-  },
-  loadTour: function (url) {
+  }
+  hideUI(hide) {
+  }
+  loadTour(url) {
     if (WWTControl.singleton != null) {
       WWTControl.singleton.playTour(url);
     }
-  },
-  loadFits: function (url) {
+  }
+  loadFits(url) {
     return this.loadFitsLayer(url, '', true, null);
-  },
-  loadFitsLayer: function (url, name, gotoTarget, loaded) {
+  }
+  loadFitsLayer(url, name, gotoTarget, loaded) {
     if (ss.whitespace(name)) {
       name = LayerManager.getNextFitsName();
     }
@@ -256,25 +255,25 @@ export const ScriptInterface$ = {
       }
     });
     return imagesetLayer;
-  },
-  get_hideTourFeedback: function () {
+  }
+  get_hideTourFeedback() {
     return this.hideTourFeedback;
-  },
-  set_hideTourFeedback: function (value) {
+  }
+  set_hideTourFeedback(value) {
     this.hideTourFeedback = value;
     return value;
-  },
-  playTour: function () {
+  }
+  playTour() {
     if (WWTControl.singleton != null) {
       WWTControl.singleton.playCurrentTour();
     }
-  },
-  stopTour: function () {
+  }
+  stopTour() {
     if (WWTControl.singleton != null) {
       WWTControl.singleton.stopCurrentTour();
     }
-  },
-  loadImageCollection: function (url) {
+  }
+  loadImageCollection(url) {
     const $this = this;
 
     this._imageUrl = url;
@@ -283,81 +282,81 @@ export const ScriptInterface$ = {
       Wtml.loadImagesets($this._imageFolder);
       $this._fireCollectionLoaded(url);
     });
-  },
-  _imageFileLoaded: function () {
+  }
+  _imageFileLoaded() {
     this._fireCollectionLoaded(this._imageUrl);
-  },
-  zoom: function (factor) {
+  }
+  zoom(factor) {
     if (WWTControl.singleton != null) {
       WWTControl.singleton.zoom(factor);
     }
     return;
-  },
-  getRA: function () {
+  }
+  getRA() {
     if (WWTControl.singleton != null) {
       return WWTControl.singleton.renderContext.get_RA();
     }
     return 0;
-  },
-  getDec: function () {
+  }
+  getDec() {
     if (WWTControl.singleton != null) {
       return WWTControl.singleton.renderContext.get_dec();
     }
     return 0;
-  },
-  createFolder: function () {
+  }
+  createFolder() {
     const folder = new Folder();
     return folder;
-  },
-  createPolygon: function (fill) {
+  }
+  createPolygon(fill) {
     const p = new Poly();
     p.set_fill(fill);
     return p;
-  },
-  createPolyLine: function (fill) {
+  }
+  createPolyLine(fill) {
     return new PolyLine();
-  },
-  createCircle: function (fill) {
+  }
+  createCircle(fill) {
     const c = new Circle();
     c.set_fill(fill);
     return c;
-  },
-  addAnnotation: function (annotation) {
+  }
+  addAnnotation(annotation) {
     if (annotation != null && ss.canCast(annotation, Annotation)) {
       if (WWTControl.singleton != null) {
         WWTControl.singleton._addAnnotation(annotation);
       }
     }
-  },
-  removeAnnotation: function (annotation) {
+  }
+  removeAnnotation(annotation) {
     if (annotation != null) {
       if (WWTControl.singleton != null) {
         WWTControl.singleton._removeAnnotation(annotation);
       }
     }
-  },
-  clearAnnotations: function () {
+  }
+  clearAnnotations() {
     if (WWTControl.singleton != null) {
       WWTControl.singleton._clearAnnotations();
     }
-  },
-  get_smoothAnimation: function () {
+  }
+  get_smoothAnimation() {
     return this._smoothAnimation;
-  },
-  set_smoothAnimation: function (value) {
+  }
+  set_smoothAnimation(value) {
     this._smoothAnimation = value;
     return value;
-  },
-  get_showCaptions: function () {
+  }
+  get_showCaptions() {
     return this._showCaptions;
-  },
-  set_showCaptions: function (value) {
+  }
+  set_showCaptions(value) {
     this._showCaptions = value;
     return value;
-  },
-  loadVOTable: function (url, useCurrentView) {
-  },
-  get_fov: function () {
+  }
+  loadVOTable(url, useCurrentView) {
+  }
+  get_fov() {
     if (WWTControl.singleton != null) {
       return WWTControl.singleton.renderContext.viewCamera.zoom / 6;
     }
@@ -371,12 +370,12 @@ export class EventArgs {
     return new EventArgs();
   }
 }
-class  CancelEventArgs {
+export class  CancelEventArgs extends EventArgs {
   constructor() {
+    super();
     this.cancel = false;
   }
 }
-
 
 export class SlideChangedEventArgs extends EventArgs{
   constructor(caption) {

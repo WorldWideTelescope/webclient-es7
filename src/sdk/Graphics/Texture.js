@@ -1,47 +1,49 @@
 import {Tile} from '../Tile';
 import {Util} from '../Util';
 
-export function Texture() {
-  this.imageElement = null;
-  this.texture2d = null;
-  this._downloading = false;
-  this._ready = false;
-  this._errored = false;
-  this.URL = '';
-}
-Texture.getEmpty = function() {
-  if (Texture.empty == null) {
-    Texture.empty = Tile.prepDevice.createTexture();
-    Tile.prepDevice.bindTexture(3553, Texture.empty);
-    Tile.prepDevice.texImage2D(3553, 0, 6408, 1, 1, 0, 6408, 5121, new Uint8Array([ 0, 0, 0, 0 ]));
-    Tile.prepDevice.bindTexture(3553, null);
+export class Texture{
+  constructor() {
+    this.imageElement = null;
+    this.texture2d = null;
+    this._downloading = false;
+    this._ready = false;
+    this._errored = false;
+    this.URL = '';
   }
-  return Texture.empty;
-};
-Texture.fromUrl = function(url) {
-  const tex = new Texture();
-  tex.load(url);
-  return tex;
-};
-Texture.isPowerOfTwo = function(val) {
-  return !(val & (val - 1));
-};
-Texture.fitPowerOfTwo = function(val) {
-  val--;
-  for (let i = 1; i < 32; i <<= 1) {
-    val = val | val >> i;
+
+  static getEmpty () {
+    if (Texture.empty == null) {
+      Texture.empty = Tile.prepDevice.createTexture();
+      Tile.prepDevice.bindTexture(3553, Texture.empty);
+      Tile.prepDevice.texImage2D(3553, 0, 6408, 1, 1, 0, 6408, 5121, new Uint8Array([ 0, 0, 0, 0 ]));
+      Tile.prepDevice.bindTexture(3553, null);
+    }
+    return Texture.empty;
   }
-  return val + 1;
-};
-export const Texture$ = {
-  cleanUp: function () {
+  static fromUrl (url) {
+    const tex = new Texture();
+    tex.load(url);
+    return tex;
+  }
+  static isPowerOfTwo (val) {
+    return !(val & (val - 1));
+  }
+  static fitPowerOfTwo (val) {
+    val--;
+    for (let i = 1; i < 32; i <<= 1) {
+      val = val | val >> i;
+    }
+    return val + 1;
+  }
+
+  cleanUp() {
     this.imageElement = null;
     Tile.prepDevice.deleteTexture(this.texture2d);
-  },
-  dispose: function () {
+  }
+  dispose() {
     this.cleanUp();
-  },
-  load: function (url) {
+  }
+  load(url) {
     const $this = this;
 
     this.URL = url;
@@ -68,8 +70,8 @@ export const Texture$ = {
       xdomimg.crossOrigin = 'anonymous';
       this.imageElement.src = this.URL;
     }
-  },
-  makeTexture: function () {
+  }
+  makeTexture() {
     if (Tile.prepDevice != null) {
       try {
         this.texture2d = Tile.prepDevice.createTexture();

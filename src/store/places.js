@@ -6,6 +6,7 @@ let ctrlInst;
 export default {
   namespaced:true,
   state:{
+    ctl:{},
     root:{},
     rootFolders:{},
     openCollectionsFolder:{}
@@ -25,34 +26,33 @@ export default {
     }
   },
   actions:{
-    init({commit}){
-      initPromise = initPromise || new Promise(res => {
-        const tryInit = () => {
+    init({state,commit}){
 
-          if (!this.state.ctrlInst) {
-            setTimeout(tryInit, 333);
-            return;
-          }
-          ctrlInst = this.state.ctrlInst;
+      initPromise = initPromise || new Promise(res => {
+
+        const tryInit = (ctl) => {
+
+          ctrlInst = ctl;
           let root = ctrlInst.createFolder();
           let openCollectionsFolder;
           let collection;
-          VoTable.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?W=WCExploreRoot',  () => {
+          commit('setAny', {root});
+          root.loadFromUrl('//worldwidetelescope.org/wwtweb/catalog.aspx?W=WCExploreRoot',  () => {
 
             if (util.getQSParam('wtml') != null) {
               openCollectionsFolder = ctrlInst.createFolder();
               openCollectionsFolder.set_name('Open Collections');
               collection = ctrlInst.createFolder();
-              VoTable.loadFromUrl(util.getQSParam('wtml'),  () => {
+              root.loadFromUrl(util.getQSParam('wtml'),  () => {
                 collection.get_children();
                 openCollectionsFolder.addChildFolder(collection);
                 root.addChildFolder(openCollectionsFolder);
                 res(root.get_children());
-                commit('setAny',{root, collection, openCollectionsFolder});
+                commit('setAny',{ collection, openCollectionsFolder});
               });
             } else if (location.href.indexOf('?image=') !== -1) {
             //addVampFeeds();
-              importImage(location.href.split('?image=')[1]).then(function (data) {
+              this.importImage(location.href.split('?image=')[1]).then(function (data) {
                 res(root.get_children());
               });
 
@@ -62,8 +62,12 @@ export default {
             }
           });
         };
-        tryInit();
+        this.dispatch('init').then(ctl => {
+          state.ctl = ctl;
+          tryInit(ctl);
+        });
       });
+      return initPromise;
     },
     getChildren(ctx,obj) {
       return new Promise(res => {
@@ -81,7 +85,7 @@ export default {
     },
     getRoot({commit, state}) {
       rootPromise = rootPromise || new Promise(res => {
-        initPromise.then(function (folders) {
+        this.dispatch('places/init').then(function (folders) {
           commit('setAny',{rootFolders:folders});
           folders.forEach(item => {
             item.guid = item.get_name();
@@ -101,7 +105,7 @@ export default {
         commit('ensureOCFolder');
 
         let collection = ctrlInst.createFolder();
-        VoTable.loadFromUrl(url, function () {
+        state.root.loadFromUrl(url, function () {
           //collection.get_children();
           collection.url = url;
           state.openCollectionsFolder.addChildFolder(collection);
@@ -123,7 +127,7 @@ export default {
         if (manualData) {
           encodedUrl += manualData;
         }
-        VoTable.loadFromUrl('//worldwidetelescope.org/WWTWeb/TileImage.aspx?imageurl=' + encodedUrl, function () {
+        state.root.loadFromUrl('//worldwidetelescope.org/WWTWeb/TileImage.aspx?imageurl=' + encodedUrl, function () {
           if (Number(collection.get_children()[0].get_RA()) !== 0 || Number(collection.get_children()[0].get_dec()) !== 0) {
             state.openCollectionsFolder.addChildFolder(collection);
             dispatch('getChildren',collection).then((children) => {
@@ -165,9 +169,10 @@ const fixThumb = item => {
 const transformData = items => {
   items.forEach(item => {
     try {
+      item.name = item.get_name();
+
       if (typeof item.get_type == 'function') {
         item.isPlanet = item.get_type() === 1;
-        //item.isFolder = item.get_type() === 0;
         item.isFGImage = item.get_type() === 2 && typeof item.get_camParams == 'function';
       }
       if (typeof item.get_dataSetType == 'function') {
@@ -182,6 +187,10 @@ const transformData = items => {
           cleanseUrl(key, item);
         }
       });
+      if (item.get_url){
+        item.url = item.get_url();
+      }
+      item.isFolder = Boolean(item.get_isFolder && item.get_isFolder());
     } catch (er) {
       util.log(item, er);
     }
@@ -189,7 +198,7 @@ const transformData = items => {
   return items;
 };
 
-const findChildById=(guid, collection) =>collection.find(item=>item.guid === guid.replace(/_/g, ' '));
+const findChildById = (guid, collection) => collection.find(item => item.guid === guid.replace(/_/g, ' '));
 
 
 //return api;

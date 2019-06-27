@@ -1,17 +1,7 @@
 import store from '../store/store';
 
-let setAny = obj=>store.commit('setAny',obj);
+let setAny = obj => store.commit('setAny',obj);
 let state = key => store.state[key];
-
-const api = {
-  init,
-  clickThumb,
-  calcPageSize,
-  spliceOnePage,
-  goFwd,
-  goBack
-};
-
 
 // Each component calls init and passes in the view model to extend
 function init(listModel, name) {
@@ -162,16 +152,16 @@ function calcPageSize(listModel, isContextPanel) {
   if (isContextPanel && (listModel.lookAt === 'Sky' || listModel.lookAt === 'SolarSystem')) {
     winWid = winWid - 216; //angular.element('body.desktop .fov-panel').width();
   }
-  listModel.pageSize = util.isMobile ? 99999 : Math.floor(winWid / tnWid);
+  listModel.pageSize = store.state.isMobile ? 99999 : Math.floor(winWid / tnWid);
 
   if (listModel.expanded) {
     listModel.pageSize *= 5;
   }
   const listLength = list ? list.length : 2;
-  $timeout(function () {
-    listModel.pageCount = Math.ceil(listLength / listModel.pageSize);
-    spliceOnePage(listModel);
-  }, 10);
+  //$timeout(function () {
+  listModel.pageCount = Math.ceil(listLength / listModel.pageSize);
+  spliceOnePage(listModel);
+  //}, 10);
 };
 
 function goBack(scope) {
@@ -191,4 +181,11 @@ function spliceOnePage(scope) {
     scope.collectionPage = scope.collection.slice(start, start + scope.pageSize);
   }
 };
-export default api;
+export default {
+  init,
+  clickThumb,
+  calcPageSize,
+  spliceOnePage,
+  goFwd,
+  goBack
+};

@@ -1,21 +1,21 @@
 import {Vector3d} from './Double3d';
 import {Colors} from './Color';
 
-export function KeplerVertex() {
-  this.ABC = new Vector3d();
-  this.abc1 = new Vector3d();
-  this.pointSize = 0;
-  this.w = 0;
-  this.e = 0;
-  this.n = 0;
-  this.t = 0;
-  this.a = 0;
-  this.z = 0;
-  this.orbitPos = 0;
-  this.orbits = 0;
-}
-export const KeplerVertex$ = {
-  fill: function (ee) {
+export class KeplerVertex{
+  constructor() {
+    this.ABC = new Vector3d();
+    this.abc1 = new Vector3d();
+    this.pointSize = 0;
+    this.w = 0;
+    this.e = 0;
+    this.n = 0;
+    this.t = 0;
+    this.a = 0;
+    this.z = 0;
+    this.orbitPos = 0;
+    this.orbits = 0;
+  }
+  fill(ee) {
     const F = Math.cos(ee.omega * KeplerVertex._degrad);
     const sinOmega = Math.sin(ee.omega * KeplerVertex._degrad);
     const cosi = Math.cos(ee.i * KeplerVertex._degrad);

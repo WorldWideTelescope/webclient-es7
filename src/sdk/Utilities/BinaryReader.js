@@ -1,50 +1,50 @@
-export function BinaryReader(arraybuf) {
-  this.position = 0;
-  //this._data = null;
-  this._data = arraybuf;
-}
-export const BinaryReader$ = {
-  get_position: function () {
+export class BinaryReader{
+  constructor(arraybuf) {
+    this.position = 0;
+    //this._data = null;
+    this._data = arraybuf;
+  }
+  get_position() {
     return this.position;
-  },
-  seek: function (pos) {
+  }
+  seek(pos) {
     this.position = pos;
-  },
-  seekRelative: function (pos) {
+  }
+  seekRelative(pos) {
     this.position += pos;
-  },
-  get_length: function () {
+  }
+  get_length() {
     return this._data.length;
-  },
-  readByte: function () {
+  }
+  readByte() {
     let result;
     result = this._data[this.position];
     this.position += 1;
     return result;
-  },
-  readSByte: function () {
+  }
+  readSByte() {
     let result;
     result = this._data[this.position];
     this.position += 1;
     return result;
-  },
-  readBytes: function (count) {
+  }
+  readBytes(count) {
     const buf = new Array(count);
     for (let i = 0; i < count; i++) {
       buf[i] = this._data[this.position + i];
     }
     this.position += count;
     return buf;
-  },
-  readByteString: function (count) {
+  }
+  readByteString(count) {
     let data = '';
     for (let i = 0; i < count; i++) {
       data += String.fromCharCode(this._data[this.position + i]);
     }
     this.position += count;
     return data;
-  },
-  readSingle: function () {
+  }
+  readSingle() {
     const tmp = new Uint8Array(4);
     tmp[0] = this._data[this.position];
     tmp[1] = this._data[this.position + 1];
@@ -53,28 +53,27 @@ export const BinaryReader$ = {
     const result = new Float32Array(tmp.buffer, 0, 1)[0];
     this.position += 4;
     return result;
-  },
-  readUInt32: function () {
+  }
+  readUInt32() {
     const result = (this._data[this.position] + (this._data[this.position + 1] << 8) + (this._data[this.position + 2] << 16) + (this._data[this.position + 3] << 24));
     this.position += 4;
     return result;
-  },
-  readUInt16: function () {
+  }
+  readUInt16() {
     const result = (this._data[this.position] + (this._data[this.position + 1] << 8));
     this.position += 2;
     return result;
-  },
-  readInt32: function () {
+  }
+  readInt32() {
     const result = this.readUInt32();
     if (!!(result & 2147483648)) {
       return (-((result - 1) ^ 4294967295));
     }
     return result;
-  },
-  readInt64: function () {
+  }
+  readInt64() {
     this.position += 8;
     return BinaryReader.id++;
-  },
-  close: () => {
   }
+  close(){}
 };

@@ -3,12 +3,20 @@
     <ribbon/>
     <div id="WorldWideTelescopeControlHost" class="fullscreen">
       <div id="WWTCanvas" @contextmenu="showFinder" :style="{height,width}"></div>
+      <!--<div class="testmove" ref="someTarget">
+        <movable className="test" target="someTarget" @move="log">modal beh</movable>
+      </div>
+      <movable className="testmove" posTop="444" :grid="20"><span>grid:20</span></movable>
+      <movable className="testmove" posLeft="444" :bounds="{x:[0,0]}"><span>bounds:only y</span></movable>
+      <movable className="testmove" posTop="444" posLeft="444" :bounds="{y:[0,0]}"><span>bounds:only x</span></movable>-->
+      <colorpicker value="#abcdef" style="position:absolute;top:333px;left:555px;"/>
     </div>
   </div>
 </template>
 <script>
+
 import ribbon from './views/ribbon';
-import {mapMutations,mapGetters,mapActions} from 'vuex';
+import {mapMutations,mapGetters,mapActions,mapState} from 'vuex';
 import eventbus from './components/eventbus';
 const listenResize = cb => {
   window.addEventListener('resize',cb);
@@ -23,7 +31,8 @@ export default {
   },
   components:{ribbon},
   computed:{
-    ...mapGetters(['px'])
+    ...mapGetters(['px']),
+    ...mapState(['ctrlInst','wwtlib'])
   },
   methods:{
     ...mapActions(['initLocalization']),
@@ -32,6 +41,9 @@ export default {
     resize(e){
       this.height = this.px(document.body.offsetHeight);
       this.width = this.px(document.body.offsetWidth);
+    },
+    log(args){
+      console.log(args);
     },
     appClick(event){
       eventbus.$emit('appclick',event);
@@ -48,13 +60,16 @@ export default {
     this.initLocalization();
     let ctl = wwtlib.WWTControl.initControlParam('WWTCanvas', true);
     ctl.add_ready(() => {
-      this.init(ctl);
+      this.init({ctl,wwtlib});
       this.$store.dispatch('places/init');
       this.$store.dispatch('setLanguage','EN');
     });
 
     listenResize(this.resize);
     this.resize();
+  },
+  watch:{
+
   }
 };
 </script>
@@ -63,7 +78,18 @@ export default {
 </style>
 <style lang="less">
 @import "assets/webclient.less";
-
+.testmove{
+  position:absolute;
+  top:0;
+  height:100px;
+  width:100px;
+  margin:200px;
+  background:#333;color:white;
+  span,.test{
+    background:blue;
+    color:white;
+  }
+}
 html,body, .fullscreen{
     height:100%;
     width:100%;

@@ -1,5 +1,6 @@
 import ss from './scriptsharp/ss';
 import {Vector2d} from './Double3d';
+import {Color} from './Color';
 
 
 const splitString = function(target, split) {
@@ -222,25 +223,24 @@ export const Util = {
 
 // wwtlib.Guid
 
-export function Guid() {
-  this._guid = Guid.create();
-}
-Guid.newGuid = function() {
-  return new Guid();
-};
-Guid.fromString = function(id) {
-  const temp = new Guid();
-  temp._guid = ss.trim(id);
-  return temp;
-};
-Guid.create = function() {
-  return  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0,
-      v = c == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16); });;
-};
-export const Guid$ = {
-  toString: function () {
+export class Guid{
+  constructor() {
+    this._guid = Guid.create();
+  }
+  static newGuid(){return new Guid();}
+  static fromString(id){
+    const temp = new Guid();
+    temp._guid = id.replace(/\s/g, '');
+    return temp;
+  }
+  static create(){
+    return  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  toString() {
     return this._guid;
   }
 };
@@ -303,3 +303,139 @@ Cursors.get_sizeWE = () => 'ew-resize';
 Cursors.get_upArrow = () => 'help';
 Cursors.get_vSplit = () => 'col-resize';
 Cursors.get_waitCursor = () => 'wait';
+
+export class Rectangle{
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.width = 0;
+    this.height = 0;
+  }
+  static create(x, y, width, height){
+    const temp = new Rectangle();
+    temp.x = x;
+    temp.y = y;
+    temp.width = width;
+    temp.height = height;
+    return temp;
+  }
+
+  get_left() {
+    return this.x;
+  }
+  get_right() {
+    return this.x + this.width;
+  }
+  get_top() {
+    return this.y;
+  }
+  get_bottom() {
+    return this.y + this.height;
+  }
+  contains(point) {
+    return (this._between(point.x, this.x, this.x + this.width) && this._between(point.y, this.y, this.y + this.height));
+  }
+  _between (n, n1, n2) {
+    if (n1 > n2) {
+      return !(n > n1) && !(n < n2);
+    } else {
+      return !(n < n1) && !(n > n2);
+    }
+  }
+  copy() {
+    const temp = new Rectangle();
+    temp.x = this.x;
+    temp.y = this.y;
+    temp.width = this.width;
+    temp.height = this.height;
+    return temp;
+  }
+};
+
+export class SelectLink{
+  constructor(id) {
+    this._return = false;
+    this._next = true;
+    this._linkSlide = false;
+    this._slide = null;
+    this._ok = false;
+    if (id != null) {
+      this.set_id(id);
+    } else {
+      this.set_next(true);
+    }
+  }
+
+  get_returnCaller() {
+    return this._return;
+  }
+  set_returnCaller(value) {
+    if (value) {
+      this._slide = 'Return';
+    }
+    this._return = value;
+    return value;
+  }
+  get_next() {
+    return this._next;
+  }
+  set_next(value) {
+    if (value) {
+      this._slide = 'Next';
+    }
+    this._next = value;
+    return value;
+  }
+  get_linkToSlide() {
+    return this._linkSlide;
+  }
+  set_linkToSlide(value) {
+    if (value) {
+      this._slide = 'Next';
+    }
+    this._linkSlide = value;
+    return value;
+  }
+  get_id() {
+    return this._slide;
+  }
+  set_id(value) {
+    this._return = false;
+    this._next = false;
+    this._linkSlide = true;
+    this._slide = value;
+    return value;
+  }
+  get_OK() {
+    return this._ok;
+  }
+  set_OK(value) {
+    this._ok = value;
+    return value;
+  }
+};
+
+export class PopupVolume{
+  constructor() {
+    this.volume = 0;
+  }
+  showDialog() {return 1;}
+};
+
+export class PopupColorPicker{
+  constructor() {
+    this.volume = 0;
+    this.location = new Vector2d();
+    this.color = new Color();
+  }
+  showDialog() {return 1;}
+};
+
+export class OverlayProperties{
+  constructor() {
+    this.volume = 0;
+    this.location = new Vector2d();
+    this.overlay = null;
+  }
+  showDialog() {return 1;}
+}

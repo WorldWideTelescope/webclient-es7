@@ -1,10 +1,10 @@
 <template>
-  <div v-if="item.get_thumbnailUrl().length > 15" class="thumbwrap">
+  <div v-if="item && item.get_thumbnailUrl().length > 15" class="thumbwrap">
     <div @click="clickThumb(item)"
          @dblclick="clickThumb(item,true)"
          @contextmenu="showMenu"
          :index="index" class="thumbnail"
-         :title="item._name"
+         :title="item.name"
          :class="{active:guid(item) === activeItem}">
       <!--<div v-if="!item.get_isFolder() && item.get_name() != 'Up Level'"
            :id="'menuContainer' + index"
@@ -18,8 +18,8 @@
       <i class="fa fa-image"
          v-if="hasImageSet(item)"></i>
       <i class="fa fa-folder-open-o" v-if="hasChildren(item)"></i>
-      <img :src="thumbnail(item)" alt="Thumbnail of {{item._name}}"/>
-      <label>{{item._name()}}</label>
+      <img :src="thumbnail(item)" :alt="`Thumbnail of ${item.name}`"/>
+      <label>{{item.name}}</label>
     </div>
   </div>
 </template>
@@ -34,6 +34,7 @@ export default {
   name: 'thumb',
   props:['item','listModel','index'],
   computed:{
+
     thumbnail(){return item => item.thumb || item.get_thumbnailUrl();},
     hasImageSet(){return item => item._backgroundImageset != null || item._studyImageset != null;},
     isFolderUp(){return item => item._name === 'Up Level'; },
@@ -41,10 +42,14 @@ export default {
     guid(){ return item => this.thumbnail(item) + item._name;}
   },
   methods:{
+    showMenu(){},
     clickThumb(item,dblclick){
       this.activeItem = this.guid(item);
       this.listModel.clickThumb(item,dblclick);
     }
+  },
+  mounted(){
+    //console.log(this.item);
   }
 };
 </script>
